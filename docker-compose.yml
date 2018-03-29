@@ -1,0 +1,11 @@
+version: '2'
+services:
+  nginx-pwa:
+    image: 'alpheios-nginx-ssl:v1'
+    container_name: pwa-prototype-container
+    ports:
+      - '8020:80'
+      - '8120:443'
+    volumes:
+      - ./:/usr/share/nginx/html
+      - ./certs:/etc/nginx/ssl
