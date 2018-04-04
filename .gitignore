@@ -1,1 +1,3 @@
-/certs/localhost.*
+/docker-nginx-config/certs/localhost.*
+node_modules/
+dist/

@@ -1,6 +1,7 @@
-version: '2'
+version: '3'
 services:
   nginx-pwa:
+    build: ./docker-image
     image: 'alpheios-nginx-ssl:v1'
     container_name: pwa-prototype-container
     ports:
@@ -8,4 +9,5 @@ services:
       - '8120:443'
     volumes:
       - ./:/usr/share/nginx/html
-      - ./certs:/etc/nginx/ssl
+      - ./docker-nginx-config/conf.d:/etc/nginx/conf.d
+      - ./docker-nginx-config/certs:/etc/nginx/ssl
