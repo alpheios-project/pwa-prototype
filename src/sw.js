@@ -1,6 +1,5 @@
-/* global importScripts, workbox */
+/* global workbox */
 console.log('Service worker is activated')
-importScripts('node_modules/workbox-sw/build/workbox-sw.js')
 
 if (workbox) {
   console.log(`workbox is loaded`)
