@@ -33,3 +33,7 @@ The server will be available via HTTP on port 8020 and via HTTPS on port 8120. I
 please edit them in `docker-compose.yml`.
 
 The web server root is mapped to the root directory of the project.
+
+## Allow self-signed certificates in Google Chrome
+The Chrome flag `allow-insecure-localhost` will allow to develop on localhost with a self signed certificate. 
+Use the following URI to access it: `chrome://flags/#allow-insecure-localhost`.
