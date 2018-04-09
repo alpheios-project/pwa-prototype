@@ -1,5 +1,20 @@
-/* global workbox */
+/* global self, workbox, caches */
 console.log('Service worker is activated')
+
+const cacheName = 'static-cache'
+const urlsToCache = [
+  '.',
+  'index.html'
+]
+
+console.log(`Service worker`, self)
+self.addEventListener('install', event => {
+  console.log(`install`)
+  event.waitUntil(
+    caches.open(cacheName)
+      .then(cache => cache.addAll(urlsToCache))
+  )
+})
 
 if (workbox) {
   console.log(`workbox is loaded`)

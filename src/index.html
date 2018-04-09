@@ -4,77 +4,42 @@
     <title>PWA Prototype</title>
     <link rel="canonical" href="https://localhost:8120">
     <meta charset="UTF-8">
-
-    <link rel="apple-touch-icon" sizes="57x57" href="icons/apple-icon-57x57.png">
-    <link rel="apple-touch-icon" sizes="60x60" href="icons/apple-icon-60x60.png">
-    <link rel="apple-touch-icon" sizes="72x72" href="icons/apple-icon-72x72.png">
-    <link rel="apple-touch-icon" sizes="76x76" href="icons/apple-icon-76x76.png">
-    <link rel="apple-touch-icon" sizes="114x114" href="icons/apple-icon-114x114.png">
-    <link rel="apple-touch-icon" sizes="120x120" href="icons/apple-icon-120x120.png">
-    <link rel="apple-touch-icon" sizes="144x144" href="icons/apple-icon-144x144.png">
-    <link rel="apple-touch-icon" sizes="152x152" href="icons/apple-icon-152x152.png">
-    <link rel="apple-touch-icon" sizes="180x180" href="icons/apple-icon-180x180.png">
-    <link rel="icon" type="image/png" sizes="192x192"  href="icons/android-icon-192x192.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png">
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="dist/style.css">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
 
     <style>
-        .alpheios-demo-page-instructions {
-            background: lightblue;
-            padding: 10px 20px;
-            line-height: 1.5;
-        }
-
         .alpheios-demo-target-word {
             background: lightgoldenrodyellow;
         }
     </style>
 
     <script>
-      // Check that service workers are registered
-      if ('serviceWorker' in navigator) {
-        // Use the window load event to keep the page load performant
+      console.log(`Head script executing`)
+      if ('serviceWorker' in navigator) { // Checks if Service Workers are supported by the browser
         window.addEventListener('load', () => {
-          navigator.serviceWorker.register('dist/sw.js')
+          // Delay registration until document is parsed and fully loaded
+          console.log(`Registering a service worker ...`)
+          navigator.serviceWorker.register('sw.js')
+            .then(reg => console.log('Service worker has been registered!', reg))
+            .catch(err => console.log('Service worker failed to register', err));
         })
       }
+      document.addEventListener('DOMContentLoaded', () => {
+        console.log('DOM content loaded')
+      })
+      document.addEventListener('load', () => {
+        console.log('Document loaded')
+      })
+      window.addEventListener('load', () => {
+        console.log('Window loaded')
+      })
     </script>
 </head>
 
 <body>
 <h1>PWA Prototype Main Page</h1>
-
-<p class="alpheios-demo-page-instructions">
-    This pages serves as a demonstrator of Alpheios WebExtension. First, you need to load a WebExtensions as a
-    temporary extension using browser's extensions UI. This will load an extension's background script into a browser.
-    Second, you need to load a content part of an extension into an active page. For that, right click on a page and
-    select "Load Alpheios" form the menu that will appear. This will load an Alpheios panel (hidden by default) and
-    Alpheios page controls (clicking on them will either open or hide a panel). To load word data, double click on
-    a word from a text below. Only words from test cases will return any data at the moment. They are highlighted
-    with yellow. All other words will return a message saying that data of this word is not found.
-</p>
-
-<p lang="lat">
-    Quemadmodum vocabula essent imposita rebus in lingua Latina, sex libris exponere institui. De his tris ante hunc
-    feci quos Septumio misi: in quibus est de disciplina, quam vocant etymologiken: quae contra eam dicerentur, volumine
-    primo, quae pro ea, secundo, quae de ea, tertio. In his ad te scribam, a quibus rebus vocabula imposita sint in
-    lingua Latina, et ea quae sunt in consuetudine apud populum et ea quae inveniuntur apud poetas.
-</p>
-
-<p lang="lat">
-    Quemadmodum vocabula essent imposita rebus in lingua Latina, sex libris exponere institui. De his tris ante hunc
-    feci quos Septumio misi: in quibus est de disciplina, quam vocant etymologiken: quae contra eam dicerentur, volumine
-    primo, quae pro ea, secundo, quae de ea, tertio. In his ad te scribam, a quibus rebus vocabula imposita sint in
-    lingua Latina, et ea quae sunt in consuetudine apud populum et ea quae inveniuntur apud poetas.
-</p>
 
 <p lang="lat">
     Quemadmodum vocabula essent imposita rebus in lingua Latina, sex libris exponere institui. De his tris ante hunc
@@ -416,6 +381,5 @@
     habitasse platea dictumst. Sed mattis nibh in arcu porttitor commodo.
 </p>
 
-<script src="dist/app.js"></script>
 </body>
 </html>

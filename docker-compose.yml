@@ -8,6 +8,6 @@ services:
       - '8020:80'
       - '8120:443'
     volumes:
-      - ./:/usr/share/nginx/html
+      - ./dist:/usr/share/nginx/html
       - ./docker-nginx-config/conf.d:/etc/nginx/conf.d
       - ./docker-nginx-config/certs:/etc/nginx/ssl
