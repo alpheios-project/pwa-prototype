@@ -9,7 +9,6 @@ const {InjectManifest} = require('workbox-webpack-plugin')
 const projectRoot = process.cwd()
 const sourceDir = path.join(projectRoot, 'src')
 const destDir = path.join(projectRoot, 'dist')
-console.log(`Source and dest dirs:`, sourceDir, destDir)
 
 module.exports = {
   style: {
@@ -32,7 +31,7 @@ module.exports = {
     },
     tasks: [
       {
-        context: path.resolve(__dirname, '../../src/'),
+        context: path.resolve(__dirname, '../../src'),
         entry: './app.js',
         output: {
           path: path.resolve(__dirname, '../../dist'),
@@ -110,7 +109,7 @@ module.exports = {
             fingerprints: true,
             inject: true,
             lang: 'en-US',
-            start_url: 'https://localhost:8120/index.html',
+            start_url: 'https://localhost:8120',
             display: 'standalone',
             theme_color: '#73CDDE',
             background_color: '#333333',
