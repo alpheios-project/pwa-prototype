@@ -69,6 +69,12 @@ if (workbox) {
     })
   )
 
+  // External resources
+  workbox.routing.registerRoute(
+    /https:\/\/grammars.alpheios.net\/bennett.*/,
+    workbox.strategies.networkFirst()
+  )
+
   // Error handler
   workbox.routing.setCatchHandler(({url, event, params}) => {
     console.log(`Workbox routing failed:`, url, event, params)

@@ -34,6 +34,11 @@ please edit them in `docker-compose.yml`.
 
 The web server root is mapped to the root directory of the project.
 
+## Environment variables
+A docker image uses the following environment variables:
+`PWA_HTTP_PORT` - A port that is used for HTTP requests. Default value is 8020.
+`PWA_HTTPS_PORT` - A port that is used for HTTPS requests. Default value is 8120.
+
 ## Allow self-signed certificates in Google Chrome
 The Chrome flag `allow-insecure-localhost` will allow to develop on localhost with a self signed certificate. 
 Use the following URI to access it: `chrome://flags/#allow-insecure-localhost`.
