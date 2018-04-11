@@ -102,7 +102,7 @@ module.exports = {
             swSrc: path.join(projectRoot, 'src/sw.js'),
             swDest: 'sw.js',
             importWorkboxFrom: 'local',
-            include: [/\.html$/, /\.js$/, /\.css$/, 'sw.js', '/']
+            globPatterns: ['dist/*.{js,html}']
           }),
           new WebpackPwaManifest({
             name: 'Alpheios PWA',
@@ -110,7 +110,7 @@ module.exports = {
             fingerprints: true,
             inject: true,
             lang: 'en-US',
-            start_url: 'https://localhost:8120',
+            start_url: 'https://localhost:8120/index.html',
             display: 'standalone',
             theme_color: '#73CDDE',
             background_color: '#333333',
