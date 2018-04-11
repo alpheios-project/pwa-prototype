@@ -35,7 +35,7 @@ module.exports = {
         entry: './app.js',
         output: {
           path: path.resolve(__dirname, '../../dist'),
-          filename: 'app.js',
+          filename: 'app.[hash].js',
           libraryTarget: 'umd'
         },
         module: {
@@ -92,16 +92,17 @@ module.exports = {
         plugins: [
           new MiniCssExtractPlugin({
             // TODO: How to output into a subdir? path seems to be not working
-            filename: 'style.css'
-          }),
-          new InjectManifest({
-            swSrc: path.join(projectRoot, 'src/sw.js'),
-            swDest: 'sw.js',
-            importWorkboxFrom: 'local'
+            filename: 'style.[hash].css'
           }),
           new VueLoaderPlugin(),
           new HtmlWebpackPlugin({
             template: path.join(projectRoot, 'src/index.html')
+          }),
+          new InjectManifest({
+            swSrc: path.join(projectRoot, 'src/sw.js'),
+            swDest: 'sw.js',
+            importWorkboxFrom: 'local',
+            include: [/\.html$/, /\.js$/, /\.css$/, 'sw.js', '/']
           }),
           new WebpackPwaManifest({
             name: 'Alpheios PWA',

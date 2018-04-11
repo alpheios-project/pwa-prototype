@@ -9,16 +9,19 @@ const urlsToCache = [
 
 console.log(`Service worker`, self)
 self.addEventListener('install', event => {
-  console.log(`install`)
-  event.waitUntil(
+  console.log(`Service worker install event`)
+  /*event.waitUntil(
     caches.open(cacheName)
-      .then(cache => cache.addAll(urlsToCache))
-  )
+      .then(cache => {
+        console.log(`Adding files to cache`)
+        return cache.addAll(urlsToCache)
+      })
+  )*/
 })
 
 if (workbox) {
   console.log(`workbox is loaded`)
-  // workbox.logLevel = workbox.LOG_LEVEL.verbose
+  workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
   workbox.routing.registerRoute(
     // Cache JS files
@@ -65,6 +68,11 @@ if (workbox) {
       ]
     })
   )
+
+  // Error handler
+  workbox.routing.setCatchHandler(({url, event, params}) => {
+    console.log(`Workbox routing failed:`, url, event, params)
+  })
 } else {
   console.log(`workbox failed to load`)
 }

@@ -37,3 +37,12 @@ The web server root is mapped to the root directory of the project.
 ## Allow self-signed certificates in Google Chrome
 The Chrome flag `allow-insecure-localhost` will allow to develop on localhost with a self signed certificate. 
 Use the following URI to access it: `chrome://flags/#allow-insecure-localhost`.
+
+## Caching Strategy
+
+### Server Revalidated (`Cache-Control: no-cache`)
+`/`, `/index.html`, `/sw.js`
+
+### Long Max-Age (`Cache-Control: max-age=31536000`)
+Rest of the files. All those files should have a hash in their names so that the cache know when its content 
+was changed.
