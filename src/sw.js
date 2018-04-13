@@ -1,27 +1,23 @@
 /* global self, workbox, caches */
-console.log('Service worker is activated')
+const ver = '12' // A temporary solution to test service worker updates
+console.log('Service worker is registered')
 
-const cacheName = 'static-cache'
-const urlsToCache = [
-  '.',
-  'index.html'
-]
-
-console.log(`Service worker`, self)
 self.addEventListener('install', event => {
   console.log(`Service worker install event`)
-  /*event.waitUntil(
-    caches.open(cacheName)
-      .then(cache => {
-        console.log(`Adding files to cache`)
-        return cache.addAll(urlsToCache)
-      })
-  )*/
 })
 
+self.addEventListener('activate', event => {
+  console.log(`Service worker activate event`)
+})
+
+// This code runs whenever a Service Worker script is loaded, and Workbox library is loaded too
 if (workbox) {
-  console.log(`workbox is loaded`)
+  console.log(`workbox is active`)
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
+
+  // Will it cause an error if overwrite current cache files as with Cache.addAll()?
+  self.__precacheManifest = [].concat(self.__precacheManifest || [])
+  workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
 
   workbox.routing.registerRoute(
     // Cache JS files
@@ -71,7 +67,7 @@ if (workbox) {
 
   // External resources
   workbox.routing.registerRoute(
-    /https:\/\/grammars.alpheios.net\/bennett.*/,
+    /https:\/\/grammars.alpheios.net\/bennett/,
     workbox.strategies.networkFirst()
   )
 
@@ -82,3 +78,18 @@ if (workbox) {
 } else {
   console.log(`workbox failed to load`)
 }
+
+self.addEventListener('message', (event) => {
+  if (!event.data) {
+    return
+  }
+
+  switch (event.data) {
+    case 'skipWaiting':
+      self.skipWaiting()
+      break
+    default:
+      // NOOP
+      break
+  }
+})
