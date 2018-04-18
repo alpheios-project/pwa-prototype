@@ -90,6 +90,12 @@ module.exports = {
           ]
         },
         plugins: [
+          new CleanWebpackPlugin([ path.join(destDir, '*.*') ], {
+            allowExternal: true,
+            exclude: [],
+            verbose: true,
+            dry: false
+          }),
           new MiniCssExtractPlugin({
             // TODO: How to output into a subdir? path seems to be not working
             filename: 'style.[hash].css'
@@ -97,12 +103,6 @@ module.exports = {
           new VueLoaderPlugin(),
           new HtmlWebpackPlugin({
             template: path.join(projectRoot, 'src/index.html')
-          }),
-          new InjectManifest({
-            swSrc: path.join(projectRoot, 'src/sw.js'),
-            swDest: 'sw.js',
-            importWorkboxFrom: 'local',
-            globPatterns: ['dist/*.{js,html}']
           }),
           new WebpackPwaManifest({
             name: 'Alpheios PWA',
@@ -122,14 +122,11 @@ module.exports = {
               }
             ]
           }),
-          /* new CopyWebpackPlugin([
-            { from: path.join(sourceDir, 'icons'), to: path.join(destDir, 'icons') }
-          ], {}), */
-          new CleanWebpackPlugin([ path.join(destDir, '*.*') ], {
-            allowExternal: true,
-            exclude: [],
-            verbose: true,
-            dry: false
+          new InjectManifest({
+            swSrc: path.join(projectRoot, 'src/sw.js'),
+            swDest: 'sw.js',
+            importWorkboxFrom: 'local',
+            globPatterns: ['dist/*.{json,js,html}']
           })
         ]
       }

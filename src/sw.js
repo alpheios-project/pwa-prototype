@@ -1,5 +1,4 @@
 /* global self, workbox, caches */
-const ver = '12' // A temporary solution to test service worker updates
 console.log('Service worker is registered')
 
 self.addEventListener('install', event => {
@@ -17,41 +16,15 @@ if (workbox) {
 
   // Will it cause an error if overwrite current cache files as with Cache.addAll()?
   self.__precacheManifest = [].concat(self.__precacheManifest || [])
-  workbox.precaching.precacheAndRoute(self.__precacheManifest, {})
-
-  workbox.routing.registerRoute(
-    // Cache JS files
-    /.*\.html/,
-    workbox.strategies.networkFirst()
-  )
-
-  workbox.routing.registerRoute(
-    // Cache JSON files
-    /.*\.json/,
-    workbox.strategies.networkFirst()
-  )
-
-  workbox.routing.registerRoute(
-    // Cache JS files
-    /.*\.js/,
-    workbox.strategies.networkFirst()
-  )
-
-  workbox.routing.registerRoute(
-    // Cache CSS files
-    /.*\.css/,
-    // Use cache but update in the background ASAP
-    workbox.strategies.staleWhileRevalidate({
-      // Use a custom cache name
-      cacheName: 'css-cache'
-    })
+  workbox.precaching.precacheAndRoute(
+    self.__precacheManifest
   )
 
   workbox.routing.registerRoute(
     // Cache image files
     /.*\.(?:png|jpg|jpeg|svg|gif)/,
     // Use the cache if it's available
-    workbox.strategies.cacheFirst({
+    workbox.strategies.staleWhileRevalidate({
       // Use a custom cache name
       cacheName: 'image-cache',
       plugins: [
@@ -67,8 +40,10 @@ if (workbox) {
 
   // External resources
   workbox.routing.registerRoute(
-    /https:\/\/grammars.alpheios.net\/bennett/,
-    workbox.strategies.networkFirst()
+    /(?:https?:\/\/).*/,
+    workbox.strategies.staleWhileRevalidate({
+      cacheName: 'external-resources-cache'
+    })
   )
 
   // Error handler
@@ -93,3 +68,14 @@ self.addEventListener('message', (event) => {
       break
   }
 })
+
+if ('storage' in navigator && 'estimate' in navigator.storage) {
+  navigator.storage.estimate().then(({usage, quota}) => {
+    console.log(`Using ${usage} out of ${quota} bytes (${Math.round(usage / quota * 100)} %).`)
+  }).catch(error => {
+    console.error('Loading storage estimate failed:')
+    console.log(error.stack)
+  })
+} else {
+  console.error('navigator.storage.estimate API unavailable.')
+}
