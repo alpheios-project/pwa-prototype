@@ -45,6 +45,7 @@ for (let [index, value] of process.argv.entries()) {
   }
 }
 
+console.log(`Running "${taskName}" task(s) in "${mode}" mode`)
 if (taskName === 'all') {
   // Run all build tasks in a sequence
   let imageminResult = imagemin.run(config.image)
