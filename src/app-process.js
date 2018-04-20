@@ -2,7 +2,7 @@ import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, ContentOptions, ResourceOptions,
-  LocalStorageArea, UIController, UIStateAPI } from 'alpheios-components'
+  LocalStorageArea, UIController, UIStateAPI, PopupMod } from 'alpheios-components'
 
 export default class AppProcess {
   constructor () {
@@ -18,7 +18,7 @@ export default class AppProcess {
       LocalStorageArea.get.bind(this, ResourceOptions.storageDomain),
       LocalStorageArea.set.bind(this, ResourceOptions.storageDomain)
     )
-    this.ui = new UIController(this.state, this.options, this.resourceOptions)
+    this.ui = new UIController(this.state, this.options, this.resourceOptions, {}, { popupComponent: PopupMod })
     document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
   }
 
