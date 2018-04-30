@@ -2,10 +2,29 @@ import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, ContentOptionDefaults, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
-  Options, LocalStorageArea, UIController, UIStateAPI, PopupMod } from 'alpheios-components'
+  Options, LocalStorageArea, UIController, UIStateAPI } from 'alpheios-components'
+
+// Popup components
+import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
+import PopupMobile from '../node_modules/alpheios-components/src/vue-components/popup-mobile.vue'
+const popupComponents = {
+  popup: Popup,
+  popupMobile: PopupMobile
+}
+
 // CSS skins
 import SkinBlue from '../node_modules/alpheios-components/dist/skins/blue/style.min.css'
 import SkinGreen from '../node_modules/alpheios-components/dist/skins/green/style.min.css'
+const availableSkins = [
+  {
+    value: 'blue',
+    text: 'Blue Skin'
+  },
+  {
+    value: 'green',
+    text: 'Green Skin'
+  }
+]
 
 export default class AppProcess {
   constructor () {
@@ -16,8 +35,13 @@ export default class AppProcess {
     this.maAdapter = new AlpheiosTuftsAdapter() // Morphological analyzer adapter, with default arguments
     this.langOptions = new Options(DefaultsLoader.fromJSON(LanguageOptionDefaults), LocalStorageArea)
     this.uiOptions = new Options(DefaultsLoader.fromJSON(UIOptionDefaults), LocalStorageArea)
-    this.uiOptions.items.skin.addValue('blue', 'Blue Skin').addValue('green', 'Green Skin')
-    this.ui = new UIController(this.state, this.options, this.langOptions, this.uiOptions, {}, { popupComponent: PopupMod })
+    for (const skin of availableSkins) { this.uiOptions.items.skin.addValue(skin.value, skin.text) }
+    const template = {
+      popupComponents: popupComponents,
+      defaultPopupComponent: 'popupMobile'
+    }
+    this.uiOptions.items.popup.addValue('popupMobile', 'Popup Mobile')
+    this.ui = new UIController(this.state, this.options, this.langOptions, this.uiOptions, {}, template)
     document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
   }
 
