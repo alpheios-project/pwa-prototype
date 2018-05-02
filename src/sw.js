@@ -1,4 +1,4 @@
-/* global self, workbox, caches */
+/* global self, workbox */
 console.log('Service worker is registered')
 
 self.addEventListener('install', event => {

@@ -2,7 +2,8 @@ import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, ContentOptionDefaults, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
-  Options, LocalStorageArea, UIController, UIStateAPI } from 'alpheios-components'
+  Options, LocalStorageArea, UIStateAPI } from 'alpheios-components'
+import UIControllerMobile from './lib/ui-controller-mobile.js'
 
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
@@ -13,8 +14,8 @@ const popupComponents = {
 }
 
 // CSS skins
-import SkinBlue from '../node_modules/alpheios-components/dist/skins/blue/style.min.css'
-import SkinGreen from '../node_modules/alpheios-components/dist/skins/green/style.min.css'
+import SkinBlue from '../node_modules/alpheios-components/dist/skins/blue/style.min.css' // eslint-disable-line
+import SkinGreen from '../node_modules/alpheios-components/dist/skins/green/style.min.css' // eslint-disable-line
 const availableSkins = [
   {
     value: 'blue',
@@ -38,10 +39,12 @@ export default class AppProcess {
     for (const skin of availableSkins) { this.uiOptions.items.skin.addValue(skin.value, skin.text) }
     const template = {
       popupComponents: popupComponents,
-      defaultPopupComponent: 'popupMobile'
+      defaultPopupComponent: 'popupMobile',
+      draggable: false,
+      resizable: false
     }
     this.uiOptions.items.popup.addValue('popupMobile', 'Popup Mobile')
-    this.ui = new UIController(this.state, this.options, this.langOptions, this.uiOptions, {}, template)
+    this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, {}, template)
     document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
   }
 
