@@ -33,8 +33,8 @@ module.exports = {
         resolve: {
           alias: {
             // Below will force all imported modules with unresolved dependencies to use a single instance of that dependency
-            'alpheios-data-models': path.join(projectRoot, 'node_modules/alpheios-data-models/dist/alpheios-data-models.js'),
-            'alpheios-inflection-tables': path.join(projectRoot, 'node_modules/alpheios-inflection-tables/dist/inflection-tables.module-external.js'),
+            'alpheios-data-models': path.join(projectRoot, 'node_modules/alpheios-data-models/dist/alpheios-data-models.min.js'),
+            'alpheios-inflection-tables': path.join(projectRoot, 'node_modules/alpheios-inflection-tables/dist/alpheios-inflection-tables.min.js'),
             'alpheios-components': path.join(projectRoot, 'node_modules/alpheios-components/dist/alpheios-components.min.js')
           },
           mainFields: ['moduleExternal', 'module', 'main']
@@ -153,7 +153,7 @@ module.exports = {
           alias: {
             // Below will force all imported modules with unresolved dependencies to use a single instance of that dependency
             'alpheios-data-models': path.join(projectRoot, 'node_modules/alpheios-data-models/dist/alpheios-data-models.js'),
-            'alpheios-inflection-tables': path.join(projectRoot, 'node_modules/alpheios-inflection-tables/dist/inflection-tables.module-external.js'),
+            'alpheios-inflection-tables': path.join(projectRoot, 'node_modules/alpheios-inflection-tables/dist/alpheios-inflection-tables.js'),
             'alpheios-components': path.join(projectRoot, 'node_modules/alpheios-components/dist/alpheios-components.js')
           },
           mainFields: ['moduleExternal', 'module', 'main']
