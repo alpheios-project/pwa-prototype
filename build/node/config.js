@@ -1,7 +1,6 @@
 const path = require('path')
 const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 const CleanWebpackPlugin = require('clean-webpack-plugin')
-// const CopyWebpackPlugin = require('copy-webpack-plugin')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const WebpackPwaManifest = require('webpack-pwa-manifest')
 const { VueLoaderPlugin } = require('vue-loader')
@@ -96,6 +95,12 @@ module.exports = {
                   }
                 }
               ]
+            },
+            {
+              test: /\.(htmlf)$/,
+              use: {
+                loader: 'html-loader'
+              }
             }
           ]
         },
@@ -215,6 +220,12 @@ module.exports = {
                   }
                 }
               ]
+            },
+            {
+              test: /\.(htmlf)$/,
+              use: {
+                loader: 'html-loader'
+              }
             }
           ]
         },

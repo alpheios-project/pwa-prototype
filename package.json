@@ -30,6 +30,7 @@
     "css-loader": "^0.28.11",
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.11.0",
+    "html-loader": "^0.5.5",
     "html-webpack-plugin": "^3.2.0",
     "imagemin": "^5.3.1",
     "imagemin-jpegtran": "^5.0.2",
@@ -41,6 +42,7 @@
     "mini-css-extract-plugin": "^0.4.0",
     "node-sass": "^4.8.3",
     "path": "^0.12.7",
+    "raw-loader": "^0.5.1",
     "sass-loader": "^7.0.1",
     "source-map-loader": "^0.2.3",
     "standard": "^11.0.1",
@@ -53,14 +55,16 @@
     "vue-svg-loader": "^0.5.0",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.7.0",
+    "webpack-cleanup-plugin": "^0.5.1",
     "webpack-pwa-manifest": "^3.6.2",
     "workbox-sw": "^3.2.0",
     "workbox-webpack-plugin": "^3.2.0"
   },
   "scripts": {
-    "build": "standard --fix && node ./build/node/build.js",
     "build-prod": "standard --fix && node ./build/node/build.js all production",
     "build-dev": "standard --fix && node ./build/node/build.js all development",
+    "build-node-prod": "standard --fix && node --experimental-modules ./node_modules/alpheios-node-build/dist/build.mjs all production pwa-vue",
+    "build-node-dev": "standard --fix && node --experimental-modules ./node_modules/alpheios-node-build/dist/build.mjs all development pwa-vue",
     "lint": "standard --fix",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
