@@ -4,9 +4,12 @@ import {Lexeme, Feature, Definition, LanguageModelFactory, Constants} from 'alph
 import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
 
 // A panel componentrequestGrammar
-import Panel from '../../node_modules/alpheios-components/src/vue-components/panel.vue'
+// import Panel from '../../node_modules/alpheios-components/src/vue-components/panel.vue'
 // A popup component
 import Popup from '../../node_modules/alpheios-components/src/vue-components/popup.vue'
+
+// import TestComponent from '../components/test.vue'
+import PanelMobile from '../components/panel-mobile.vue'
 
 import L10n from '../../node_modules/alpheios-components/src/lib/l10n/l10n.js'
 import Locales from '../../node_modules/alpheios-components/src/locales/locales.js'
@@ -58,7 +61,7 @@ export default class UIControllerMobile extends BaseUIController {
       html: Template,
       panelId: 'alpheios-panel',
       panelComponents: {
-        panel: Panel
+        panel: PanelMobile
       },
       defaultPanelComponent: 'panel',
       popupId: 'alpheios-popup',
@@ -66,10 +69,23 @@ export default class UIControllerMobile extends BaseUIController {
         popup: Popup
       },
       defaultPopupComponent: 'popup',
-      draggable: false,
-      resizable: false
+      draggable: true,
+      resizable: true
     }
     this.template = Object.assign(templateDefaults, template)
+
+    /* let ComponentClass = Vue.extend(TestComponent)
+    let componentProps = {
+      type: 'primary',
+      uiController: this
+    }
+    let instance = new ComponentClass({
+      propsData: componentProps
+    })
+    instance.$mount()
+    console.log(`instance:`, instance.$el)
+    let body = document.querySelector('body')
+    body.appendChild(instance.$el) */
 
     this.zIndex = this.getZIndexMax()
 
@@ -86,7 +102,7 @@ export default class UIControllerMobile extends BaseUIController {
     // Initialize components
     this.panel = new Vue({
       el: `#${this.template.panelId}`,
-      components: this.template.panelComponents,
+      components: { panel: PanelMobile },
       data: {
         panelData: {
           isOpen: false,
@@ -576,6 +592,14 @@ export default class UIControllerMobile extends BaseUIController {
 
     // Set initial values of components
     this.setRootComponentClasses()
+  }
+
+  /**
+   * This is a test method. TODO: remove when finished with testing
+   * @param param
+   */
+  buttonClicked (param) {
+    console.log(`Component button clicked, param is ${param}`)
   }
 
   static get defaults () {

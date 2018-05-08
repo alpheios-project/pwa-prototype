@@ -1,9 +1,10 @@
 import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
-import { HTMLSelector, LexicalQuery, ContentOptionDefaults, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
+import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
   Options, LocalStorageArea, UIStateAPI } from 'alpheios-components'
 import UIControllerMobile from './lib/ui-controller-mobile.js'
+import ContentOptionDefaults from './settings/content-options-defaults.json'
 
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
@@ -39,9 +40,7 @@ export default class AppProcess {
     for (const skin of availableSkins) { this.uiOptions.items.skin.addValue(skin.value, skin.text) }
     const template = {
       popupComponents: popupComponents,
-      defaultPopupComponent: 'popupMobile',
-      draggable: false,
-      resizable: false
+      defaultPopupComponent: 'popupMobile'
     }
     this.uiOptions.items.popup.addValue('popupMobile', 'Popup Mobile')
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, {}, template)

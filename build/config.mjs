@@ -1,4 +1,5 @@
 import VueLoaderPlugin from '../node_modules/vue-loader/lib/plugin.js'
+import InjectManifest from '../node_modules/workbox-webpack-plugin/build/inject-manifest.js'
 import WebpackPwaManifest from 'webpack-pwa-manifest'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
 
@@ -17,7 +18,13 @@ const webpack = {
       }
     },
     plugins: [
-      new VueLoaderPlugin()
+      new VueLoaderPlugin(),
+      new InjectManifest({
+        swSrc: path.join(projectRoot, 'src/sw.js'),
+        swDest: 'sw.js',
+        importWorkboxFrom: 'cdn',
+        globPatterns: ['dist/*.{json,js,html}']
+      })
     ]
   },
 
@@ -26,6 +33,7 @@ const webpack = {
     output: {filename: 'app.min.js'},
     plugins: [
       new HtmlWebpackPlugin({
+        filename: 'index.html',
         template: path.join(projectRoot, 'src/index.html')
       }),
       new WebpackPwaManifest({
@@ -50,10 +58,11 @@ const webpack = {
   },
 
   development: {
-    mode: 'production',
+    mode: 'development',
     output: {filename: 'app.js'},
     plugins: [
       new HtmlWebpackPlugin({
+        filename: 'index-dev.html',
         template: path.join(projectRoot, 'src/index-dev.html')
       }),
       new WebpackPwaManifest({

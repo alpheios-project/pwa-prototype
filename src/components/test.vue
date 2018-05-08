@@ -1,12 +1,14 @@
 <template>
-    <div class="example">{{ msg }}</div>
+    <button :class="type" @click="clicked">Some text: <slot /></button>
 </template>
-
 <script>
   export default {
-    data () {
-      return {
-        msg: 'Hello world!'
+    name: 'Button',
+    props: [ 'type', 'uiController' ],
+    methods: {
+      clicked () {
+        console.log('A button is clicked')
+        this.uiController.buttonClicked(55)
       }
     }
   }
