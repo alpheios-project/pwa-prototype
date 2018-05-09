@@ -1,0 +1,13 @@
+<div id="alpheios-popup" >
+    <component v-bind:is="currentPopupComponent" :messages="messages" :definitions="definitions" :visible="visible" :lexemes="lexemes" :translations="translations"
+    	   :linkedfeatures="linkedFeatures"
+           :data="popupData" @close="close" @closepopupnotifications="clearNotifications" @showpaneltab="showPanelTab"
+           @sendfeature="sendFeature" @settingchange="settingChange">
+    </component>
+</div>
+<div id="alpheios-panel">
+    <component v-bind:is="currentPanelComponent" :data="panelData" @close="close" @closenotifications="clearNotifications"
+           @setposition="setPositionTo" @settingchange="settingChange" @resourcesettingchange="resourceSettingChange"
+           @ui-option-change="uiOptionChange" @changetab="changeTab" @sendfeature="sendFeature">
+    </component>
+</div>

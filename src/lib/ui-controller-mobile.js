@@ -15,7 +15,7 @@ import L10n from '../../node_modules/alpheios-components/src/lib/l10n/l10n.js'
 import Locales from '../../node_modules/alpheios-components/src/locales/locales.js'
 import enUS from '../../node_modules/alpheios-components/src/locales/en-us/messages.json'
 import enGB from '../../node_modules/alpheios-components/src/locales/en-gb/messages.json'
-import Template from '../../node_modules/alpheios-components/src/lib/controllers/template.htmlf'
+import Template from '../templates/template.htmlf'
 import { Grammars } from 'alpheios-res-client'
 import ResourceQuery from '../../node_modules/alpheios-components/src/lib/queries/resource-query.js'
 
@@ -108,6 +108,7 @@ export default class UIControllerMobile extends BaseUIController {
           isOpen: false,
           tabs: {
             definitions: false,
+            morphology: false,
             inflections: false,
             status: false,
             options: false,
@@ -117,11 +118,18 @@ export default class UIControllerMobile extends BaseUIController {
           verboseMode: this.state.verboseMode,
           grammarRes: {},
           lexemes: [],
+          definitions: {},
+          translations: {},
+          linkedFeatures: [],
+          showProviders: false,
           inflectionComponentData: {
             visible: false,
             enabled: false,
             inflectionData: false // If no inflection data present, it is set to false
           },
+          lexicalDataContainerID: 'panel-alpheios-lexical-data-container',
+          morphComponentID: 'panel-alpheios-morph-component',
+          morphDataReady: false,
           shortDefinitions: [],
           fullDefinitions: '',
           inflections: {
@@ -307,6 +315,12 @@ export default class UIControllerMobile extends BaseUIController {
 
         enableInflections: function (enabled) {
           this.panelData.inflectionComponentData.enabled = enabled
+        },
+
+        sendFeature: function (feature) {
+          this.requestGrammar(feature)
+          this.changeTab('grammar')
+          return this
         },
 
         requestGrammar: function (feature) {
@@ -731,7 +745,7 @@ export default class UIControllerMobile extends BaseUIController {
 
   newLexicalRequest () {
     this.popup.newLexicalRequest()
-    this.clear().open().changeTab('definitions')
+    this.clear().open().changeTab('morphology')
     return this
   }
 
@@ -740,9 +754,11 @@ export default class UIControllerMobile extends BaseUIController {
     this.popup.lexemes = homonym.lexemes
     if (homonym.lexemes.length > 0) {
       // TODO we could really move this into the morph component and have it be calculated for each lemma in case languages are multiple
-      this.popup.linkedFeatures = LanguageModelFactory.getLanguageModel(homonym.lexemes[0].lemma.languageID).grammarFeatures()
+      // this.popup.linkedFeatures = LanguageModelFactory.getLanguageModel(homonym.lexemes[0].lemma.languageID).grammarFeatures()
+      this.panel.panelData.linkedFeatures = LanguageModelFactory.getLanguageModel(homonym.lexemes[0].lemma.languageID).grammarFeatures()
     }
     this.popup.popupData.morphDataReady = true
+    this.panel.panelData.morphDataReady = true
     this.panel.panelData.lexemes = homonym.lexemes
     this.popup.popupData.updates = this.popup.popupData.updates + 1
     this.updateProviders(homonym)
@@ -761,6 +777,7 @@ export default class UIControllerMobile extends BaseUIController {
       })
     })
     this.popup.popupData.providers = Array.from(providers.keys())
+    this.panel.panelData.providers = Array.from(providers.keys())
   }
 
   updateGrammar (urls) {
@@ -773,6 +790,7 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   updateDefinitions (homonym) {
+    console.log(`update definitions`)
     this.panel.panelData.fullDefinitions = ''
     this.panel.panelData.shortDefinitions = []
     let definitions = {}
@@ -804,7 +822,10 @@ export default class UIControllerMobile extends BaseUIController {
 
     // Populate a popup
     this.popup.definitions = definitions
+    this.panel.panelData.definitions = definitions
+
     this.popup.popupData.defDataReady = hasFullDefs
+    this.panel.panelData.defDataReady = hasFullDefs
     this.popup.popupData.updates = this.popup.popupData.updates + 1
   }
 
