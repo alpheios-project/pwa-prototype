@@ -169,7 +169,7 @@
 </template>
 <script>
   import PanelBase from './panel-base.vue'
-  import interact from 'interactjs'
+  // import interact from 'interactjs'
 
   // Embeddable SVG icons
   import SitemapIcon from '../images/inline-icons/sitemap.svg';
@@ -196,7 +196,7 @@
       console.log('Mounted a Mobile Panel')
 
       // Initialize Interact.js: make panel resizable
-      interact(this.$el)
+      /*interact(this.$el)
         .resizable({
           // resize from all edges and corners
           edges: {left: false, right: false, bottom: false, top: true},
@@ -215,10 +215,11 @@
           inertia: true
         })
         .on('resizemove', event => {
+          console.log('resizemove')
           let target = event.target
           // update the element's style
           target.style.height = `${event.rect.height}px`
-        })
+        })*/
     }
   }
 </script>

@@ -112,8 +112,10 @@ export default class UIControllerMobile extends BaseUIController {
             inflections: false,
             status: false,
             options: false,
+            grammar: false,
             info: true,
-            treebank: false
+            treebank: false,
+            tabOrder: ['info', 'morphology', 'definitions', 'inflections', 'grammar', 'treebank', 'options']
           },
           verboseMode: this.state.verboseMode,
           grammarRes: {},
@@ -214,9 +216,37 @@ export default class UIControllerMobile extends BaseUIController {
           this.setPositionTo('right')
         },
 
+        currentTabName () {
+          for (const key of Object.keys(this.panelData.tabs)) {
+            if (this.panelData.tabs[key]) { return key }
+          }
+        },
+
+        currentTabIndex () {
+          const currentTab = this.currentTabName()
+          return this.panelData.tabs.tabOrder.indexOf(currentTab)
+        },
+
+        prevTabName () {
+          const currentTabIndex = this.currentTabIndex()
+          if (currentTabIndex > -1) {
+            const prevTabIndex = (currentTabIndex > 0) ? currentTabIndex - 1 : this.panelData.tabs.tabOrder.length - 1
+            return this.panelData.tabs.tabOrder[prevTabIndex]
+          }
+        },
+
+        nextTabName () {
+          const currentTabIndex = this.currentTabIndex()
+          if (currentTabIndex > -1) {
+            const nextTabIndex = (currentTabIndex < this.panelData.tabs.tabOrder.length - 1) ? currentTabIndex + 1 : 0
+            return this.panelData.tabs.tabOrder[nextTabIndex]
+          }
+        },
+
         changeTab (name) {
-          for (let key of Object.keys(this.panelData.tabs)) {
-            if (this.panelData.tabs[key]) { this.panelData.tabs[key] = false }
+          const currentTab = this.currentTabName()
+          if (currentTab) {
+            this.panelData.tabs[currentTab] = false
           }
           this.panelData.tabs[name] = true
           this.state.changeTab(name) // Reflect a tab change in a state
@@ -416,7 +446,7 @@ export default class UIControllerMobile extends BaseUIController {
           width: 210,
           /*
           `fixedElementsHeight` is a sum of heights of all elements of a popup, including a top bar, a button area,
-          and a bottom bar. A height of all variable elements (i.e. morphological data container) will be
+          and a bottom bar. A height of all letiable elements (i.e. morphological data container) will be
           a height of a popup less this value.
            */
           fixedElementsHeight: 120,
@@ -606,6 +636,17 @@ export default class UIControllerMobile extends BaseUIController {
 
     // Set initial values of components
     this.setRootComponentClasses()
+
+    // Enable swipe support
+    this.touchSurface('output', this.touchCallbackTest.bind(this), {
+      thresholdTime: 800,
+      thresholdDistance: 100
+    })
+
+    this.touchSurface('.alpheios-panel__header', this.tabsSwipe.bind(this), {
+      thresholdTime: 800,
+      thresholdDistance: 100
+    })
   }
 
   /**
@@ -907,5 +948,114 @@ export default class UIControllerMobile extends BaseUIController {
   changeSkin () {
     // Update skin name in classes
     this.setRootComponentClasses()
+  }
+
+  touchSurface (selector, callback, options) {
+    if (!selector) {
+      throw new Error(`Touch surface selector cannot be empty`)
+    }
+
+    let touchSurface = {
+      start: {},
+      end: {},
+      tracking: false,
+      surface: document.querySelector(selector),
+      options: options
+    }
+
+    if (touchSurface.surface) {
+      touchSurface.surface.addEventListener('pointerdown', this.gestureStart.bind(this, touchSurface), false)
+      touchSurface.surface.addEventListener('pointermove', this.gestureMove.bind(this, touchSurface), false)
+      touchSurface.surface.addEventListener('pointerup', this.gestureEnd.bind(this, touchSurface, callback), false)
+      touchSurface.surface.addEventListener('pointerleave', this.gestureEnd.bind(this, touchSurface, callback), false)
+      touchSurface.surface.addEventListener('pointercancel', this.gestureEnd.bind(this, touchSurface, callback), false)
+    } else {
+      throw new Error(`Touch surface "${selector}" does not exist`)
+    }
+  }
+
+  touchCallbackTest (target, touchEvent) {
+    target.surface.innerHTML = `${touchEvent.type || ''} ${touchEvent.direction || ''} ${touchEvent.event || ''} ${touchEvent.debug || ''}`
+    if (touchEvent.type === 'swipe') {
+      if (touchEvent.direction === 'left') {
+        const prevTabName = this.panel.prevTabName()
+        if (prevTabName) {
+          this.panel.changeTab(prevTabName)
+        } else {
+          console.warn(`Cannot determine the previous tab`)
+        }
+      } else if (touchEvent.direction === 'right') {
+        const nextTabName = this.panel.nextTabName()
+        if (nextTabName) {
+          this.panel.changeTab(nextTabName)
+        } else {
+          console.warn(`Cannot determine the next tab`)
+        }
+      }
+    }
+  }
+
+  gestureStart (target, ev) {
+    target.tracking = true
+    // Hack - would normally use e.timeStamp but it's whack in Fx/Android
+    target.start.t = new Date().getTime()
+    target.start.x = ev.clientX
+    target.start.y = ev.clientY
+  }
+
+  gestureMove (target, ev) {
+    if (target.tracking) {
+      ev.preventDefault()
+      target.end.x = ev.clientX
+      target.end.y = ev.clientY
+    }
+  }
+
+  gestureEnd (target, callback, ev) {
+    if (target.tracking) {
+      target.tracking = false
+      const now = new Date().getTime()
+      const deltaTime = now - target.start.t
+      const deltaX = target.end.x - target.start.x
+      const deltaY = target.end.y - target.start.y
+      /* work out what the movement was */
+      if (deltaTime > target.thresholdTime) {
+        /* gesture too slow */
+        callback(target, {debug: `not a swipe: too slow, event: ${ev.type}`})
+      } else {
+        if ((deltaX > target.options.thresholdDistance) && (Math.abs(deltaY) < target.options.thresholdDistance)) {
+          callback(target, {type: 'swipe', direction: 'right', event: ev.type})
+        } else if ((-deltaX > target.options.thresholdDistance) && (Math.abs(deltaY) < target.options.thresholdDistance)) {
+          callback(target, {type: 'swipe', direction: 'left', event: ev.type})
+        } else if ((deltaY > target.options.thresholdDistance) && (Math.abs(deltaX) < target.options.thresholdDistance)) {
+          callback(target, {type: 'swipe', direction: 'down', event: ev.type})
+        } else if ((-deltaY > target.options.thresholdDistance) && (Math.abs(deltaX) < target.options.thresholdDistance)) {
+          callback(target, {type: 'swipe', direction: 'up', event: ev.type})
+        } else {
+          callback(target, {debug: `not a swipe: too short, event: ${ev.type}, duration: ${deltaTime}`})
+        }
+      }
+    }
+  }
+
+  tabsSwipe (target, touchEvent) {
+    console.log(`${touchEvent.type || ''} ${touchEvent.direction || ''} ${touchEvent.event || ''} ${touchEvent.debug || ''}`)
+    if (touchEvent.type === 'swipe') {
+      if (touchEvent.direction === 'left') {
+        const prevTabName = this.panel.prevTabName()
+        if (prevTabName) {
+          this.panel.changeTab(prevTabName)
+        } else {
+          console.warn(`Cannot determine the previous tab`)
+        }
+      } else if (touchEvent.direction === 'right') {
+        const nextTabName = this.panel.nextTabName()
+        if (nextTabName) {
+          this.panel.changeTab(nextTabName)
+        } else {
+          console.warn(`Cannot determine the next tab`)
+        }
+      }
+    }
   }
 }
