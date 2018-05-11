@@ -258,5 +258,28 @@
         margin-top: 1.5rem;
     }
 
+    @media (hover: none) {
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn,
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn:hover,
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn:focus {
+            display: block;
+            width: 40px;
+            height: 40px;
+            margin: 0 5px;
+            padding-top: 5px;
+            text-align: center;
+            cursor: pointer;
+            fill: $alpheios-link-color-dark-bg;
+            stroke: $alpheios-link-color-dark-bg;
+        }
+
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn.active,
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn.active:hover,
+        .alpheios-panel--mobile .alpheios-panel__header-nav-btn.active:focus {
+            fill: $alpheios-link-hover-color;
+            stroke: $alpheios-link-hover-color;
+        }
+    }
+
 
 </style>
