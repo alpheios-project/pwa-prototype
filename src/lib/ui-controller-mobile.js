@@ -244,12 +244,13 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         changeTab (name) {
+          console.log(`A panel's change tab`)
           const currentTab = this.currentTabName()
           if (currentTab) {
             this.panelData.tabs[currentTab] = false
           }
           this.panelData.tabs[name] = true
-          this.state.changeTab(name) // Reflect a tab change in a state
+          // this.state.changeTab(name) // Reflect a tab change in a state
           return this
         },
 
@@ -638,13 +639,13 @@ export default class UIControllerMobile extends BaseUIController {
     this.setRootComponentClasses()
 
     // Enable swipe support
-    this.touchSurface('output', this.touchCallbackTest.bind(this), {
-      thresholdTime: 800,
+    this.touchSurface('#test-touch-panel', this.touchCallbackTest.bind(this), {
+      thresholdTime: 600,
       thresholdDistance: 100
     })
 
-    this.touchSurface('.alpheios-panel__header', this.tabsSwipe.bind(this), {
-      thresholdTime: 800,
+    this.touchSurface('#panel-header', this.tabsSwipe.bind(this), {
+      thresholdTime: 600,
       thresholdDistance: 100
     })
   }
@@ -775,6 +776,7 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   changeTab (tabName) {
+    console.log(`Change tab mobile`)
     this.panel.changeTab(tabName)
     return this
   }

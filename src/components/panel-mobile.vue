@@ -3,79 +3,77 @@
          data-component="alpheios-panel" data-resizable="true" v-show="data.isOpen"
          :data-notification-visible="data.notification.important"> <!-- Show only important notifications for now -->
 
-        <div class="alpheios-panel__header">
+        <div id="panel-header" class="alpheios-panel__header">
             <div class="alpheios-panel__header-logo">
                 <img class="alpheios-panel__header-logo-img" src="../images/icon.png">
             </div>
-            <span class="alpheios-panel__header-btn-group--center">
+            <div class="alpheios-panel__header-btn-group--center">
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
-                <span v-bind:class="{ active: data.tabs.info }" @click="changeTab('info')"
-                      class="alpheios-panel__header-nav-btn">
-                  <info-icon class="icon"></info-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
+                    <span v-bind:class="{ active: data.tabs.info }" @click="changeTab('info')"
+                          class="alpheios-panel__header-nav-btn">
+                      <info-icon class="icon"></info-icon>
+                    </span>
+                </alph-tooltip>
 
-              <!-- TODO: Add a translatable message for a tooltip -->
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="`Morphology`">
-                <span v-bind:class="{ active: data.tabs.morphology }" @click="changeTab('morphology')"
-                      class="alpheios-panel__header-nav-btn">
-                  <sitemap-icon class="icon"></sitemap-icon>
-                </span>
-              </alph-tooltip>
+                <!-- TODO: Add a translatable message for a tooltip -->
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="`Morphology`">
+                    <span v-bind:class="{ active: data.tabs.morphology }" @click="changeTab('morphology')"
+                          class="alpheios-panel__header-nav-btn">
+                      <sitemap-icon class="icon"></sitemap-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_DEFINITIONS">
-                <span :class="{ active: data.tabs.definitions }" @click="changeTab('definitions')"
-                      class="alpheios-panel__header-nav-btn">
-                  <definitions-icon class="icon"></definitions-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_DEFINITIONS">
+                    <span :class="{ active: data.tabs.definitions }" @click="changeTab('definitions')"
+                          class="alpheios-panel__header-nav-btn">
+                      <definitions-icon class="icon"></definitions-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_INFLECT">
-                <span v-bind:class="{ active: data.tabs.inflections }" @click="changeTab('inflections')"
-                      class="alpheios-panel__header-nav-btn">
-                  <inflections-icon class="icon"></inflections-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_INFLECT">
+                    <span v-bind:class="{ active: data.tabs.inflections }" @click="changeTab('inflections')"
+                          class="alpheios-panel__header-nav-btn">
+                      <inflections-icon class="icon"></inflections-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_GRAMMAR">
-                <span v-bind:class="{ active: data.tabs.grammar }" @click="changeTab('grammar')"
-                      class="alpheios-panel__header-nav-btn">
-                  <grammar-icon class="icon"></grammar-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_GRAMMAR">
+                    <span v-bind:class="{ active: data.tabs.grammar }" @click="changeTab('grammar')"
+                          class="alpheios-panel__header-nav-btn">
+                      <grammar-icon class="icon"></grammar-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
-                <span v-bind:class="{ active: data.tabs.treebank }" @click="changeTab('treebank')"
-                      class="alpheios-panel__header-nav-btn">
-                  <treebank-icon class="icon"></treebank-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
+                    <span v-bind:class="{ active: data.tabs.treebank }" @click="changeTab('treebank')"
+                          class="alpheios-panel__header-nav-btn">
+                      <treebank-icon class="icon"></treebank-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_OPTIONS">
-                <span v-bind:class="{ active: data.tabs.options }" @click="changeTab('options')"
-                      class="alpheios-panel__header-nav-btn">
-                  <options-icon class="icon"></options-icon>
-                </span>
-              </alph-tooltip>
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_OPTIONS">
+                    <span v-bind:class="{ active: data.tabs.options }" @click="changeTab('options')"
+                          class="alpheios-panel__header-nav-btn">
+                      <options-icon class="icon"></options-icon>
+                    </span>
+                </alph-tooltip>
 
-              <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_STATUS">
-                <span v-show="data.verboseMode" v-bind:class="{ active: data.tabs.status }" @click="changeTab('status')"
-                      class="alpheios-panel__header-nav-btn">
-                  <status-icon class="icon"></status-icon>
-                </span>
-              </alph-tooltip>
-            </span>
-            <span class="alpheios-panel__header-btn-group--end">
+                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_STATUS">
+                    <span v-show="data.verboseMode" v-bind:class="{ active: data.tabs.status }" @click="changeTab('status')"
+                          class="alpheios-panel__header-nav-btn">
+                      <status-icon class="icon"></status-icon>
+                    </span>
+                </alph-tooltip>
+            </div>
 
-              <alph-tooltip
-                      tooltipDirection="bottom-right"
-                      :tooltipText="data.l10n.messages.TOOLTIP_CLOSE_PANEL">
-                <span @click="close" class="alpheios-panel__header-action-btn">
-                    <close-icon></close-icon>
-                </span>
-              </alph-tooltip>
-            </span>
+            <div class="alpheios-panel__header-btn-group--end">
+                <alph-tooltip tooltipDirection="bottom-right" :tooltipText="data.l10n.messages.TOOLTIP_CLOSE_PANEL">
+                    <span @click="close" class="alpheios-panel__header-action-btn">
+                        <close-icon></close-icon>
+                    </span>
+                </alph-tooltip>
+            </div>
         </div>
 
         <div class="alpheios-panel__content">
@@ -123,12 +121,12 @@
             </div>
 
             <div v-show="data.tabs.grammar" class="alpheios-panel__tab-panel
-            alpheios-panel__tab-panel--no-padding alpheios-panel__tab-panel--fw">
+                alpheios-panel__tab-panel--no-padding alpheios-panel__tab-panel--fw">
                 <grammar :res="data.grammarRes"></grammar>
             </div>
 
             <div v-show="treebankTabVisible" class="alpheios-panel__tab-panel
-            alpheios-panel__tab-panel--no-padding alpheios-panel__tab-panel--fw">
+                alpheios-panel__tab-panel--no-padding alpheios-panel__tab-panel--fw">
                 <treebank :res="data.treebankComponentData.data"
                           :locale="data.settings.locale.currentValue" :visible="data.treebankComponentData.visible"
                           :messages="data.l10n.messages" @treebankcontentwidth="setTreebankContentWidth">
@@ -157,9 +155,9 @@
         </div>
         <div class="alpheios-panel__notifications uk-text-small" :class="notificationClasses"
              v-show="data.notification.important">
-            <span @click="closeNotifications" class="alpheios-panel__notifications-close-btn">
-                <close-icon></close-icon>
-            </span>
+                <span @click="closeNotifications" class="alpheios-panel__notifications-close-btn">
+                    <close-icon></close-icon>
+                </span>
             <span v-html="data.notification.text"></span>
             <setting :data="data.settings.preferredLanguage" :show-title="false"
                      :classes="['alpheios-panel__notifications--lang-switcher']" @change="settingChanged"
@@ -172,7 +170,7 @@
   // import interact from 'interactjs'
 
   // Embeddable SVG icons
-  import SitemapIcon from '../images/inline-icons/sitemap.svg';
+  import SitemapIcon from '../images/inline-icons/sitemap.svg'
 
   export default {
     extends: PanelBase,
@@ -233,6 +231,10 @@
         top: auto;
         border-top: 1px solid $alpheios-link-color-dark-bg;
         border-left: none;
+    }
+
+    .alpheios-panel--mobile .alpheios-panel__header {
+        touch-action: none; /* Required to support touch actions such as swipe by the panel */
     }
 
     .alpheios-panel.alpheios-panel-left {
