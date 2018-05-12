@@ -2,9 +2,22 @@ import VueLoaderPlugin from '../node_modules/vue-loader/lib/plugin.js'
 import InjectManifest from '../node_modules/workbox-webpack-plugin/build/inject-manifest.js'
 import WebpackPwaManifest from 'webpack-pwa-manifest'
 import HtmlWebpackPlugin from 'html-webpack-plugin'
+import Package from '../package.json'
 
 import path from 'path'
 const projectRoot = process.cwd()
+
+const sharedManifestConf = {
+  ingerprints: true,
+  inject: true,
+  icons: [
+    {
+      src: path.join(path.join(projectRoot, 'src'), 'images/icon.png'),
+      sizes: [36, 48, 72, 96, 144, 192, 512],
+      destination: 'icons'
+    }
+  ]
+}
 
 const webpack = {
   common: {
@@ -36,24 +49,11 @@ const webpack = {
         filename: 'index.html',
         template: path.join(projectRoot, 'src/index.html')
       }),
-      new WebpackPwaManifest({
-        name: 'Alpheios PWA',
-        short_name: 'Alpheios PWA',
-        fingerprints: true,
-        inject: true,
-        lang: 'en-US',
-        start_url: 'https://localhost:8120/index.html',
-        display: 'standalone',
-        theme_color: '#73CDDE',
-        background_color: '#333333',
-        icons: [
-          {
-            src: path.join(path.join(projectRoot, 'src'), 'images/icon.png'),
-            sizes: [36, 48, 72, 96, 144, 192, 512],
-            destination: 'icons'
-          }
-        ]
-      })
+      new WebpackPwaManifest(Object.assign(
+        sharedManifestConf,
+        { start_url: 'https://localhost:8120/index.html' },
+        Package.alpheios.pwa
+      ))
     ]
   },
 
@@ -65,24 +65,11 @@ const webpack = {
         filename: 'index-dev.html',
         template: path.join(projectRoot, 'src/index-dev.html')
       }),
-      new WebpackPwaManifest({
-        name: 'Alpheios PWA',
-        short_name: 'Alpheios PWA',
-        fingerprints: true,
-        inject: true,
-        lang: 'en-US',
-        start_url: 'https://localhost:8120/index-dev.html',
-        display: 'standalone',
-        theme_color: '#73CDDE',
-        background_color: '#333333',
-        icons: [
-          {
-            src: path.join(path.join(projectRoot, 'src'), 'images/icon.png'),
-            sizes: [36, 48, 72, 96, 144, 192, 512],
-            destination: 'icons'
-          }
-        ]
-      })
+      new WebpackPwaManifest(Object.assign(
+        sharedManifestConf,
+        { start_url: 'https://localhost:8120/index-dev.html' },
+        Package.alpheios.pwa
+      ))
     ]
   }
 }

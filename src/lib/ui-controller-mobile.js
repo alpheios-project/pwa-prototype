@@ -36,6 +36,9 @@ export default class UIControllerMobile extends BaseUIController {
    * @param {Options} resourceOptions - resource options (see `src/setting/language-options-defaults.js`)
    * @param {Options} uiOptions - UI options (see `src/setting/ui-options-defaults.js`)
    * @param {Object} manifest - parent application info details  (API definition pending)
+   *        Info components uses the following manifest fields:
+   *          {string} name - A name of an application
+   *          {string} version - A current version of an application
    * In some environments manifest data may not be available. Then a `{}` default value
    * will be used.
    * @param {Object} template - object with the following properties:
@@ -47,7 +50,7 @@ export default class UIControllerMobile extends BaseUIController {
    *                            popupComponent: Vue single file component of a panel element.
    *                              Allows to provide an alternative popup layout
    */
-  constructor (state, options, resourceOptions, uiOptions, manifest = {}, template = {}) {
+  constructor (state, options, resourceOptions, uiOptions, pckg, template = {}) {
     super()
     this.state = state
     this.options = options
@@ -56,7 +59,12 @@ export default class UIControllerMobile extends BaseUIController {
     this.settings = UIControllerMobile.settingValues
     this.irregularBaseFontSizeClassName = 'alpheios-irregular-base-font-size'
     this.irregularBaseFontSize = !UIControllerMobile.hasRegularBaseFontSize()
-    this.manifest = manifest
+
+    this.manifest = {
+      name: pckg.alpheios.pwa.name,
+      version: pckg.version
+    }
+
     const templateDefaults = {
       html: Template,
       panelId: 'alpheios-panel',

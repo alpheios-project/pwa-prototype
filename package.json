@@ -1,7 +1,17 @@
 {
   "name": "pwa-prototype",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A prototype for an Alpheios PWA",
+  "alpheios": {
+    "pwa": {
+      "name": "Alpheios PWA",
+      "short_name": "Alpheios PWA",
+      "lang": "en-US",
+      "display": "standalone",
+      "theme_color": "#73CDDE",
+      "background_color": "#333333"
+    }
+  },
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {

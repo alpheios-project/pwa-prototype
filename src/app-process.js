@@ -5,6 +5,7 @@ import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, D
   Options, LocalStorageArea, UIStateAPI } from 'alpheios-components'
 import UIControllerMobile from './lib/ui-controller-mobile.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
+import Package from '../package.json'
 
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
@@ -43,7 +44,13 @@ export default class AppProcess {
       defaultPopupComponent: 'popupMobile'
     }
     this.uiOptions.items.popup.addValue('popupMobile', 'Popup Mobile')
-    this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, {}, template)
+    let pckg
+    try {
+      pckg = JSON.parse(Package)
+    } catch (e) {
+      throw new Error(`Cannot parse package.json, its format is probably incorrect`)
+    }
+    this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
     document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
   }
 
