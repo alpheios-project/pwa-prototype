@@ -1,5 +1,5 @@
-import ComponentStyles from '../node_modules/alpheios-components/dist/style/style.min.css' // eslint-disable-line
-import Css from './style/style.scss' // eslint-disable-line
+import ComponentStyles from '../node_modules/alpheios-components/dist/style/style.css' // eslint-disable-line
+import Styles from './style/style.scss' // eslint-disable-line
 import AppProcess from './app-process.js'
 
 console.log(`App file loaded`)
