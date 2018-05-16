@@ -3,6 +3,7 @@ import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
   Options, LocalStorageArea, UIStateAPI } from 'alpheios-components'
+// import TextSelector from '../node_modules/alpheios-components/src/lib/selection/text-selector.js'
 import UIControllerMobile from './lib/ui-controller-mobile.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
@@ -51,7 +52,13 @@ export default class AppProcess {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
-    document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
+    document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
+    let touchTestZone = document.querySelector('#touch-events-test')
+    console.log(touchTestZone)
+    // touchTestZone.addEventListener('touchstart', this.handleStart.bind(this), false)
+    touchTestZone.addEventListener('touchend', this.handleEnd.bind(this), false)
+    // touchTestZone.addEventListener('touchcancel', this.handleCancel.bind(this), false)
+    // touchTestZone.addEventListener('touchmove', this.handleMove.bind(this), false)
   }
 
   static get defaults () {
@@ -78,5 +85,38 @@ export default class AppProcess {
         langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
       }).getData()
     }
+  }
+
+  handleStart (evt) {
+    evt.preventDefault()
+    console.log('touchstart, event is:', evt)
+  }
+
+  handleEnd (evt) {
+    evt.preventDefault()
+    console.log('touchend, event is:', evt)
+    this.ui.panel.open()
+    /* let htmlSelector = new HTMLSelector(evt, this.constructor.defaults.languageCode)
+    let textSelector = htmlSelector.createTextSelector()
+    if (!textSelector.isEmpty()) {
+      LexicalQuery.create(textSelector, {
+        htmlSelector: htmlSelector,
+        uiController: this.ui,
+        maAdapter: this.maAdapter,
+        lexicons: Lexicons,
+        resourceOptions: this.langOptions,
+        langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
+      }).getData()
+    } */
+  }
+
+  handleCancel (evt) {
+    evt.preventDefault()
+    console.log('touchcancel, event is:', evt)
+  }
+
+  handleMove (evt) {
+    evt.preventDefault()
+    console.log('touchmove, event is:', evt)
   }
 }
