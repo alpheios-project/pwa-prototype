@@ -12,9 +12,9 @@ import Popup from '../../node_modules/alpheios-components/src/vue-components/pop
 import PanelMobile from '../components/panel-mobile.vue'
 
 import L10n from '../../node_modules/alpheios-components/src/lib/l10n/l10n.js'
-import Locales from '../../node_modules/alpheios-components/src/locales/locales.js'
-import enUS from '../../node_modules/alpheios-components/src/locales/en-us/messages.json'
-import enGB from '../../node_modules/alpheios-components/src/locales/en-gb/messages.json'
+import CompL10n from '../../node_modules/alpheios-components/src/locales/locales.js'
+import EnUs from '../locales/en-us/messages.json'
+import EnGb from '../locales/en-gb/messages.json'
 import Template from '../templates/template.htmlf'
 import { Grammars } from 'alpheios-res-client'
 import ResourceQuery from '../../node_modules/alpheios-components/src/lib/queries/resource-query.js'
@@ -35,12 +35,7 @@ export default class UIControllerMobile extends BaseUIController {
    * @param {Options} options - content options (see `src/setting/content-options-defaults.js`)
    * @param {Options} resourceOptions - resource options (see `src/setting/language-options-defaults.js`)
    * @param {Options} uiOptions - UI options (see `src/setting/ui-options-defaults.js`)
-   * @param {Object} manifest - parent application info details  (API definition pending)
-   *        Info components uses the following manifest fields:
-   *          {string} name - A name of an application
-   *          {string} version - A current version of an application
-   * In some environments manifest data may not be available. Then a `{}` default value
-   * will be used.
+   * @param {Object} pckg - an object representing data from `package.json`
    * @param {Object} template - object with the following properties:
    *                            html: HTML string for the container of the Alpheios components
    *                            panelId: the id of the wrapper for the panel component,
@@ -60,6 +55,10 @@ export default class UIControllerMobile extends BaseUIController {
     this.irregularBaseFontSizeClassName = 'alpheios-irregular-base-font-size'
     this.irregularBaseFontSize = !UIControllerMobile.hasRegularBaseFontSize()
 
+    /**
+     * An object that is used by `info` component to display a PWA name and a version
+     * @type {{name: string, version: string}}
+     */
     this.manifest = {
       name: pckg.alpheios.pwa.name,
       version: pckg.version
@@ -98,9 +97,11 @@ export default class UIControllerMobile extends BaseUIController {
     this.zIndex = this.getZIndexMax()
 
     this.l10n = new L10n()
-      .addMessages(enUS, Locales.en_US)
-      .addMessages(enGB, Locales.en_GB)
-      .setLocale(Locales.en_US)
+      .addMessages(CompL10n.messages.en_US, CompL10n.en_US)
+      .addMessages(CompL10n.messages.en_GB, CompL10n.en_GB)
+      .addMessages(EnUs, CompL10n.en_US)
+      .addMessages(EnGb, CompL10n.en_GB)
+      .setLocale(CompL10n.en_US)
 
     // Inject HTML code of a plugin. Should go in reverse order.
     document.body.classList.add('alpheios')

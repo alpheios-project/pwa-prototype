@@ -9,7 +9,7 @@
             </div>
             <div class="alpheios-panel-mobile__header-btn-group--center">
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
                     <span v-bind:class="{ active: data.tabs.info }" @click="changeTab('info')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <info-icon class="icon"></info-icon>
@@ -17,49 +17,49 @@
                 </alph-tooltip>
 
                 <!-- TODO: Add a translatable message for a tooltip -->
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="`Morphology`">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_MORPHOLOGY">
                     <span v-bind:class="{ active: data.tabs.morphology }" @click="changeTab('morphology')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <sitemap-icon class="icon"></sitemap-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_DEFINITIONS">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_DEFINITIONS">
                     <span :class="{ active: data.tabs.definitions }" @click="changeTab('definitions')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <definitions-icon class="icon"></definitions-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_INFLECT">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_INFLECT">
                     <span v-bind:class="{ active: data.tabs.inflections }" @click="changeTab('inflections')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <inflections-icon class="icon"></inflections-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_GRAMMAR">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_GRAMMAR">
                     <span v-bind:class="{ active: data.tabs.grammar }" @click="changeTab('grammar')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <grammar-icon class="icon"></grammar-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
                     <span v-bind:class="{ active: data.tabs.treebank }" @click="changeTab('treebank')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <treebank-icon class="icon"></treebank-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_OPTIONS">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_OPTIONS">
                     <span v-bind:class="{ active: data.tabs.options }" @click="changeTab('options')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <options-icon class="icon"></options-icon>
                     </span>
                 </alph-tooltip>
 
-                <alph-tooltip tooltipDirection="bottom" :tooltipText="data.l10n.messages.TOOLTIP_STATUS">
+                <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_STATUS">
                     <span v-show="data.verboseMode" v-bind:class="{ active: data.tabs.status }" @click="changeTab('status')"
                           class="alpheios-panel-mobile__header-nav-btn">
                       <status-icon class="icon"></status-icon>

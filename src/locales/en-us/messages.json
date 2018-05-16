@@ -1,0 +1,7 @@
+{
+  "TOOLTIP_MORPHOLOGY": {
+    "message": "Morphology",
+    "description": "A morphology tab tooltip",
+    "component": "Panel (Mobile version)"
+  }
+}
