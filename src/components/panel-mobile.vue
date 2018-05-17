@@ -20,7 +20,7 @@
                 <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_MORPHOLOGY">
                     <span v-bind:class="{ active: data.tabs.morphology }" @click="changeTab('morphology')"
                           class="alpheios-panel-mobile__header-nav-btn">
-                      <sitemap-icon class="icon"></sitemap-icon>
+                      <morphology-icon class="icon"></morphology-icon>
                     </span>
                 </alph-tooltip>
 
@@ -170,12 +170,12 @@
   // import interact from 'interactjs'
 
   // Embeddable SVG icons
-  import SitemapIcon from '../images/inline-icons/sitemap.svg'
+  import MorphologyIcon from '../images/inline-icons/language.svg'
 
   export default {
     extends: PanelBase,
     components: {
-      sitemapIcon: SitemapIcon
+      morphologyIcon: MorphologyIcon
     },
     computed: {
       morphDataReady: function () {
