@@ -21,7 +21,7 @@
   import StatusIcon from '../../node_modules/alpheios-components/src/images/inline-icons/status.svg';
   import OptionsIcon from '../../node_modules/alpheios-components/src/images/inline-icons/options.svg';
   import GrammarIcon from '../../node_modules/alpheios-components/src/images/inline-icons/resources.svg';
-  import TreebankIcon from '../../node_modules/alpheios-components/src/images/inline-icons/tree.svg';
+  import TreebankIcon from '../../node_modules/alpheios-components/src/images/inline-icons/sitemap.svg';
   import InfoIcon from '../../node_modules/alpheios-components/src/images/inline-icons/info.svg';
 
   export default {

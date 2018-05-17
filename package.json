@@ -1,6 +1,6 @@
 {
   "name": "pwa-prototype",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "description": "A prototype for an Alpheios PWA",
   "alpheios": {
     "pwa": {
@@ -15,7 +15,7 @@
   "main": "index.js",
   "dependencies": {},
   "devDependencies": {
-    "alpheios-components": "github:alpheios-project/components#l10n-ext",
+    "alpheios-components": "file:../components",
     "alpheios-data-models": "github:alpheios-project/data-models",
     "alpheios-experience": "github:alpheios-project/experience",
     "alpheios-inflection-tables": "github:alpheios-project/inflection-tables",

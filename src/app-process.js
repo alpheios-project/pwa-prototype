@@ -54,9 +54,13 @@ export default class AppProcess {
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
     document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
     let touchTestZone = document.querySelector('#touch-events-test')
-    console.log(touchTestZone)
-    // touchTestZone.addEventListener('touchstart', this.handleStart.bind(this), false)
-    touchTestZone.addEventListener('touchend', this.handleEnd.bind(this), false)
+    touchTestZone.addEventListener('click', this.handleMouseClick.bind(this), false)
+    touchTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this), false)
+    touchTestZone.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
+    touchTestZone.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
+
+    touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this), false)
+    touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
     // touchTestZone.addEventListener('touchcancel', this.handleCancel.bind(this), false)
     // touchTestZone.addEventListener('touchmove', this.handleMove.bind(this), false)
   }
@@ -87,16 +91,16 @@ export default class AppProcess {
     }
   }
 
-  handleStart (evt) {
-    evt.preventDefault()
+  handleTouchStart (evt) {
+    evt.preventDefault() // To prevent `mousedown` and `mouseup` to be fired for touch events
     console.log('touchstart, event is:', evt)
   }
 
-  handleEnd (evt) {
-    evt.preventDefault()
+  handleTouchEnd (evt) {
+    // evt.preventDefault()
     console.log('touchend, event is:', evt)
-    this.ui.panel.open()
-    /* let htmlSelector = new HTMLSelector(evt, this.constructor.defaults.languageCode)
+    // this.ui.panel.open()
+    let htmlSelector = new HTMLSelector(evt, this.constructor.defaults.languageCode)
     let textSelector = htmlSelector.createTextSelector()
     if (!textSelector.isEmpty()) {
       LexicalQuery.create(textSelector, {
@@ -107,16 +111,36 @@ export default class AppProcess {
         resourceOptions: this.langOptions,
         langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
       }).getData()
-    } */
+    }
   }
 
-  handleCancel (evt) {
+  handleTouchCancel (evt) {
     evt.preventDefault()
     console.log('touchcancel, event is:', evt)
   }
 
-  handleMove (evt) {
+  handleTouchMove (evt) {
     evt.preventDefault()
     console.log('touchmove, event is:', evt)
+  }
+
+  handleMouseClick (evt) {
+    // evt.preventDefault()
+    console.log('mouse click, event is:', evt)
+  }
+
+  handleMouseDblClick (evt) {
+    // evt.preventDefault()
+    console.log('mouse double click, event is:', evt)
+  }
+
+  handleMouseDown (evt) {
+    // evt.preventDefault()
+    console.log('mouse down, event is:', evt)
+  }
+
+  handleMouseUp (evt) {
+    // evt.preventDefault()
+    console.log('mouse up, event is:', evt)
   }
 }
