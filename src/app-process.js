@@ -52,6 +52,10 @@ export default class AppProcess {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
+    let universalTestZone = document.querySelector('#universal-events-test')
+    universalTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this))
+    universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+
     document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
     let touchTestZone = document.querySelector('#touch-events-test')
     // touchTestZone.addEventListener('click', this.handleMouseClick.bind(this), false)
@@ -99,19 +103,7 @@ export default class AppProcess {
   handleTouchEnd (evt) {
     // evt.preventDefault()
     console.log('touchend, event is:', evt)
-    // this.ui.panel.open()
-    let htmlSelector = new HTMLSelector(evt, this.constructor.defaults.languageCode)
-    let textSelector = htmlSelector.createTextSelector()
-    if (!textSelector.isEmpty()) {
-      LexicalQuery.create(textSelector, {
-        htmlSelector: htmlSelector,
-        uiController: this.ui,
-        maAdapter: this.maAdapter,
-        lexicons: Lexicons,
-        resourceOptions: this.langOptions,
-        langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
-      }).getData()
-    }
+    this.getSelectedText(evt)
   }
 
   handleTouchCancel (evt) {
@@ -132,6 +124,7 @@ export default class AppProcess {
   handleMouseDblClick (evt) {
     // evt.preventDefault()
     console.log('mouse double click, event is:', evt)
+    this.getSelectedText(evt)
   }
 
   handleMouseDown (evt) {
