@@ -65,6 +65,10 @@ const webpack = {
         filename: 'index-dev.html',
         template: path.join(projectRoot, 'src/index-dev.html')
       }),
+      new HtmlWebpackPlugin({
+        filename: 'caesar-gallic-war.html',
+        template: path.join(projectRoot, 'src/caesar-gallic-war.html')
+      }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
         { start_url: 'https://localhost:8120/index-dev.html' },

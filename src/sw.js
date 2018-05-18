@@ -14,6 +14,47 @@ if (workbox) {
   console.log(`workbox is active`)
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
+  /* self.addEventListener('fetch', evt => {
+    console.log(`Service worker fetch evt: ${evt.request.url}`, evt)
+    if (evt.request.url.match(/page-1.html/)) {
+      console.log(`This is a content page request`)
+      evt.request.mode = 'cors'
+      console.log(evt.request)
+      if (evt.request.method !== 'GET') return
+      return new Promise((resolve, reject) => {
+        self.fetch(evt.request).then(response => {
+          console.log(`Content page was fetched successfully`)
+          response.body = 'hello'
+          console.log(response)
+          resolve(response)
+        })
+      })
+
+      //      // Prevt the default, and handle the request ourselves.
+      //      evt.respondWith(async function () {
+      //        // Try to get the response from a cache.
+      //         const cache = await self.caches.open('dynamic-v1')
+      //        const cachedResponse = await cache.match(evt.request)
+      //
+      //        if (cachedResponse) {
+      //          // If we found a match in the cache, return it, but also
+      //          // update the entry in the cache in the background.
+      //          evt.waitUntil(cache.add(evt.request))
+      //          return cachedResponse
+      //        }
+      //
+      //        // If we didn't find a match in the cache, use the network.
+      //        self.fetch(evt.request).then(response => {
+      //          console.log('Content page response received')
+      //          console.log(response)
+      //          return new Promise(resolve => {
+      //            resolve(response)
+      //          })
+      //        })
+      //      }())
+    }
+  }) */
+
   // Will it cause an error if overwrite current cache files as with Cache.addAll()?
   self.__precacheManifest = [].concat(self.__precacheManifest || [])
   workbox.precaching.precacheAndRoute(

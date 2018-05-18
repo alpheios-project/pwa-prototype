@@ -981,7 +981,7 @@ export default class UIControllerMobile extends BaseUIController {
       touchSurface.surface.addEventListener('pointerleave', this.gestureEnd.bind(this, touchSurface, callback), false)
       touchSurface.surface.addEventListener('pointercancel', this.gestureEnd.bind(this, touchSurface, callback), false)
     } else {
-      throw new Error(`Touch surface "${selector}" does not exist`)
+      console.error(`Touch surface "${selector}" does not exist`)
     }
   }
 

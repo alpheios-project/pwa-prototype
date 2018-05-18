@@ -53,20 +53,27 @@ export default class AppProcess {
     }
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
     let universalTestZone = document.querySelector('#universal-events-test')
-    universalTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this))
-    universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+    if (universalTestZone) {
+      // This is a test page
+      universalTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this))
+      universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
 
-    document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
-    let touchTestZone = document.querySelector('#touch-events-test')
-    // touchTestZone.addEventListener('click', this.handleMouseClick.bind(this), false)
-    // touchTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this), false)
-    // touchTestZone.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
-    // touchTestZone.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
+      document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
+      let touchTestZone = document.querySelector('#touch-events-test')
+      // touchTestZone.addEventListener('click', this.handleMouseClick.bind(this), false)
+      // touchTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this), false)
+      // touchTestZone.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
+      // touchTestZone.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
 
-    // touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this), false)
-    touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
-    // touchTestZone.addEventListener('touchcancel', this.handleCancel.bind(this), false)
-    // touchTestZone.addEventListener('touchmove', this.handleMove.bind(this), false)
+      // touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this), false)
+      touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+      // touchTestZone.addEventListener('touchcancel', this.handleCancel.bind(this), false)
+      // touchTestZone.addEventListener('touchmove', this.handleMove.bind(this), false)
+    } else {
+      // This is a regular page
+      document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
+      document.body.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+    }
   }
 
   static get defaults () {
