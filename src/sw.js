@@ -1,12 +1,46 @@
-/* global self, workbox */
+/* global self, workbox, Response, URL */
 console.log('Service worker is registered')
+let swScriptURL
+let clientsURL = []
+let injectionStyles = ''
+let injectionScripts = ''
+let backToTocBtn = ''
+let tocURL = ''
 
 self.addEventListener('install', event => {
   console.log(`Service worker install event`)
+  // Get a URL object for the service worker script's location.
+  swScriptURL = new URL(self.location)
+
+  // Get URL objects for each client's location.
+  self.clients.matchAll({includeUncontrolled: true}).then(clients => {
+    for (const client of clients) {
+      console.log(`Clients are`)
+      console.log(clients)
+      const clientUrl = new URL(client.url)
+      clientsURL.push(clientUrl)
+      if (/\.html$/.test(clientUrl.pathname)) {
+        // This is most likely a TOC page
+        tocURL = clientUrl.pathname
+      }
+    }
+  })
 })
 
 self.addEventListener('activate', event => {
   console.log(`Service worker activate event`)
+  console.log(`Service worker script URL is`, swScriptURL)
+  console.log(clientsURL)
+  // Parse precache manifest to determine what needs to be injected
+  for (const resource of self.__precacheManifest) {
+    if (/\.css$/.test(resource.url)) {
+      injectionStyles += `<link href="/${resource.url}" rel="stylesheet">\n`
+    }
+    if (/\.js$/.test(resource.url)) {
+      injectionScripts += `<script type="text/javascript" src="/${resource.url}"></script>\n`
+    }
+    backToTocBtn = `<a class="alpheios-pwa-content-toc-back-btn" href="${tocURL}">Back to TOC</a>`
+  }
 })
 
 // This code runs whenever a Service Worker script is loaded, and Workbox library is loaded too
@@ -14,46 +48,28 @@ if (workbox) {
   console.log(`workbox is active`)
   workbox.core.setLogLevel(workbox.core.LOG_LEVELS.debug)
 
-  /* self.addEventListener('fetch', evt => {
+  self.addEventListener('fetch', evt => {
     console.log(`Service worker fetch evt: ${evt.request.url}`, evt)
-    if (evt.request.url.match(/page-1.html/)) {
+    if (evt.request.url.match(/\/content\//)) {
       console.log(`This is a content page request`)
-      evt.request.mode = 'cors'
-      console.log(evt.request)
-      if (evt.request.method !== 'GET') return
-      return new Promise((resolve, reject) => {
-        self.fetch(evt.request).then(response => {
-          console.log(`Content page was fetched successfully`)
-          response.body = 'hello'
-          console.log(response)
-          resolve(response)
+      let response = self.fetch(evt.request).then(function (response) {
+        console.log(`Response received: `, response)
+        return response.text()
+      }).then(function (data) {
+        data = data.replace('<h2>Gallic War</h2>', '<h2>A New Gallic War</h2>')
+        data = data.replace(`</head>`, injectionStyles + `</head>`)
+        data = data.replace(`</body>`, injectionScripts + `</body>`)
+        data = data.replace(`<head>`, `<head>` + backToTocBtn)
+        return new Response(data, {
+          headers: {'Content-Type': 'text/html'}
         })
+      }).catch(function (err) {
+        console.log(`Fetch failed:`, err)
       })
 
-      //      // Prevt the default, and handle the request ourselves.
-      //      evt.respondWith(async function () {
-      //        // Try to get the response from a cache.
-      //         const cache = await self.caches.open('dynamic-v1')
-      //        const cachedResponse = await cache.match(evt.request)
-      //
-      //        if (cachedResponse) {
-      //          // If we found a match in the cache, return it, but also
-      //          // update the entry in the cache in the background.
-      //          evt.waitUntil(cache.add(evt.request))
-      //          return cachedResponse
-      //        }
-      //
-      //        // If we didn't find a match in the cache, use the network.
-      //        self.fetch(evt.request).then(response => {
-      //          console.log('Content page response received')
-      //          console.log(response)
-      //          return new Promise(resolve => {
-      //            resolve(response)
-      //          })
-      //        })
-      //      }())
+      evt.respondWith(response)
     }
-  }) */
+  })
 
   // Will it cause an error if overwrite current cache files as with Cache.addAll()?
   self.__precacheManifest = [].concat(self.__precacheManifest || [])

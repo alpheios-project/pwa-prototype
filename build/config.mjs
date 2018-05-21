@@ -66,8 +66,9 @@ const webpack = {
         template: path.join(projectRoot, 'src/index-dev.html')
       }),
       new HtmlWebpackPlugin({
-        filename: 'caesar-gallic-war.html',
-        template: path.join(projectRoot, 'src/caesar-gallic-war.html')
+        filename: 'content/caesar-gallic-war.html',
+        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
+        inject: false
       }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
