@@ -20,7 +20,7 @@ self.addEventListener('install', event => {
       console.log(clients)
       const clientUrl = new URL(client.url)
       clientsURL.push(clientUrl)
-      if (/\.html$/.test(clientUrl.pathname)) {
+      if (/.+index.*\.html$/.test(clientUrl.pathname)) {
         // This is most likely a TOC page
         tocURL = clientUrl.pathname
       }
