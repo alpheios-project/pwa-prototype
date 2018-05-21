@@ -8,13 +8,23 @@ import path from 'path'
 const projectRoot = process.cwd()
 
 const sharedManifestConf = {
-  ingerprints: true,
+  fingerprints: true,
   inject: true,
+  ios: {
+    'apple-mobile-web-app-title': 'Alpheios Reading Tools PWA',
+    'apple-mobile-web-app-status-bar-style': '#73CDDE'
+  },
   icons: [
     {
-      src: path.join(path.join(projectRoot, 'src'), 'images/icon.png'),
+      src: path.resolve('src/images/icon-1024.png'),
       sizes: [36, 48, 72, 96, 144, 192, 512],
-      destination: 'icons'
+      destination: path.join('icons', 'pwa')
+    },
+    {
+      src: path.resolve('src/images/icon-ios-1024.png'),
+      sizes: [120, 152, 167, 180, 1024],
+      destination: path.join('icons', 'ios'),
+      ios: true
     }
   ]
 }
