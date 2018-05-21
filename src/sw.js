@@ -6,6 +6,7 @@ let injectionStyles = ''
 let injectionScripts = ''
 let backToTocBtn = ''
 let tocURL = ''
+const viewportMeta = `<meta name="viewport" content="width=device-width, initial-scale=1">`
 
 self.addEventListener('install', event => {
   console.log(`Service worker install event`)
@@ -56,10 +57,14 @@ if (workbox) {
         console.log(`Response received: `, response)
         return response.text()
       }).then(function (data) {
-        data = data.replace('<h2>Gallic War</h2>', '<h2>A New Gallic War</h2>')
+        if (!(/meta name="viewport"/.test(data))) {
+          // Set initial viewport size and scaling if not set by the page to prevent Alpheios elements to have wrong size
+          data = data.replace(`<head>`, `<head>` + viewportMeta)
+        }
         data = data.replace(`</head>`, injectionStyles + `</head>`)
+        data = data.replace(`<body>`, `<body>` + backToTocBtn)
         data = data.replace(`</body>`, injectionScripts + `</body>`)
-        data = data.replace(`<head>`, `<head>` + backToTocBtn)
+
         return new Response(data, {
           headers: {'Content-Type': 'text/html'}
         })
