@@ -55,6 +55,9 @@ export default class UIControllerMobile extends BaseUIController {
     this.irregularBaseFontSizeClassName = 'alpheios-irregular-base-font-size'
     this.irregularBaseFontSize = !UIControllerMobile.hasRegularBaseFontSize()
 
+    // Checks whether this is a test page
+    this.hasTestContent = !!document.querySelector(`[data-alpheios-pwa-test-content="true"]`)
+
     /**
      * An object that is used by `info` component to display a PWA name and a version
      * @type {{name: string, version: string}}
@@ -648,10 +651,12 @@ export default class UIControllerMobile extends BaseUIController {
     this.setRootComponentClasses()
 
     // Enable swipe support
-    this.touchSurface('#test-touch-panel', this.touchCallbackTest.bind(this), {
-      thresholdTime: 600,
-      thresholdDistance: 100
-    })
+    if (this.hasTestContent) {
+      this.touchSurface('#test-touch-panel', this.touchCallbackTest.bind(this), {
+        thresholdTime: 600,
+        thresholdDistance: 100
+      })
+    }
 
     this.touchSurface('#panel-header', this.tabsSwipe.bind(this), {
       thresholdTime: 600,

@@ -52,11 +52,16 @@ export default class AppProcess {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
+    this.target = {
+      start: {},
+      end: {}
+    }
     let universalTestZone = document.querySelector('#universal-events-test')
     if (universalTestZone) {
       // This is a test page
       universalTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this))
-      universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+      universalTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
+      universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
 
       document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
       let touchTestZone = document.querySelector('#touch-events-test')
@@ -65,14 +70,15 @@ export default class AppProcess {
       // touchTestZone.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
       // touchTestZone.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
 
-      // touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this), false)
-      touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
-      // touchTestZone.addEventListener('touchcancel', this.handleCancel.bind(this), false)
-      // touchTestZone.addEventListener('touchmove', this.handleMove.bind(this), false)
+      touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
+      touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
+      // touchTestZone.addEventListener('touchcancel', this.handleTouchCancel.bind(this, this.target), false)
+      // touchTestZone.addEventListener('touchmove', this.handleTouchMove.bind(this, this.target), false)
     } else {
       // This is a regular page
       document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
-      document.body.addEventListener('touchend', this.handleTouchEnd.bind(this), false)
+      document.body.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
+      document.body.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
     }
   }
 
@@ -102,23 +108,42 @@ export default class AppProcess {
     }
   }
 
-  handleTouchStart (evt) {
+  handleTouchStart (target, evt) {
     evt.preventDefault() // To prevent `mousedown` and `mouseup` to be fired for touch events
     console.log('touchstart, event is:', evt)
+    target.tracking = true
+    // Hack - would normally use e.timeStamp but it's whack in Fx/Android
+    target.start.t = new Date().getTime()
+    target.start.x = evt.changedTouches[0].clientX
+    target.start.y = evt.changedTouches[0].clientY
   }
 
-  handleTouchEnd (evt) {
+  handleTouchEnd (target, evt) {
     // evt.preventDefault()
     console.log('touchend, event is:', evt)
-    this.getSelectedText(evt)
+    if (target.tracking) {
+      target.tracking = false
+      const now = new Date().getTime()
+      target.end.x = evt.changedTouches[0].clientX
+      target.end.y = evt.changedTouches[0].clientY
+      const timeDelta = now - target.start.t
+      const deltaX = target.end.x - target.start.x
+      const deltaY = target.end.y - target.start.y
+      const movementDelta = Math.sqrt(Math.pow(target.end.x - target.start.x, 2) + Math.pow(target.end.y - target.start.y, 2))
+      console.log(`Movement delta: [${deltaX}, ${deltaY}, ${movementDelta}], duration: ${timeDelta}`)
+      if (movementDelta < 5 && timeDelta > 1000) {
+        console.log('This is a long tap')
+        this.getSelectedText(evt)
+      }
+    }
   }
 
-  handleTouchCancel (evt) {
+  handleTouchCancel (target, evt) {
     evt.preventDefault()
     console.log('touchcancel, event is:', evt)
   }
 
-  handleTouchMove (evt) {
+  handleTouchMove (target, evt) {
     evt.preventDefault()
     console.log('touchmove, event is:', evt)
   }
