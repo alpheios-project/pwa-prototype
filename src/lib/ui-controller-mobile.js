@@ -1,5 +1,7 @@
 /* global Node */
 import {Lexeme, Feature, Definition, LanguageModelFactory, Constants} from 'alpheios-data-models'
+import { HTMLSelector, LexicalQuery } from 'alpheios-components'
+import {Lexicons} from 'alpheios-lexicon-client'
 // import {ObjectMonitor as ExpObjMon} from 'alpheios-experience'
 import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
 
@@ -649,19 +651,6 @@ export default class UIControllerMobile extends BaseUIController {
 
     // Set initial values of components
     this.setRootComponentClasses()
-
-    // Enable swipe support
-    if (this.hasTestContent) {
-      this.touchSurface('#test-touch-panel', this.touchCallbackTest.bind(this), {
-        thresholdTime: 600,
-        thresholdDistance: 100
-      })
-    }
-
-    this.touchSurface('#panel-header', this.tabsSwipe.bind(this), {
-      thresholdTime: 600,
-      thresholdDistance: 100
-    })
   }
 
   /**
@@ -1072,6 +1061,44 @@ export default class UIControllerMobile extends BaseUIController {
           console.warn(`Cannot determine the next tab`)
         }
       }
+    }
+  }
+
+  selectPrevTab () {
+    const prevTabName = this.panel.prevTabName()
+    if (prevTabName) {
+      this.panel.changeTab(prevTabName)
+    } else {
+      console.warn(`Cannot determine the previous tab`)
+    }
+  }
+
+  selectNextTab () {
+    const nextTabName = this.panel.nextTabName()
+    if (nextTabName) {
+      this.panel.changeTab(nextTabName)
+    } else {
+      console.warn(`Cannot determine the next tab`)
+    }
+  }
+
+  getSelectedText (event) {
+    /*
+    TextSelector conveys text selection information. It is more generic of the two.
+    HTMLSelector conveys page-specific information, such as location of a selection on a page.
+    It's probably better to keep them separated in order to follow a more abstract model.
+     */
+    let htmlSelector = new HTMLSelector(event, this.constructor.defaults.languageCode)
+    let textSelector = htmlSelector.createTextSelector()
+    if (!textSelector.isEmpty()) {
+      LexicalQuery.create(textSelector, {
+        htmlSelector: htmlSelector,
+        uiController: this,
+        maAdapter: this.maAdapter,
+        lexicons: Lexicons,
+        resourceOptions: this.langOptions,
+        langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
+      }).getData()
     }
   }
 }

@@ -8,6 +8,12 @@ import UIControllerMobile from './lib/ui-controller-mobile.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
 
+// Interactions
+import PointerEventHandler from './lib/pointer/pointer-event-handler.js'
+import MouseDoubleClick from './lib/pointer/events/mouse-double-click.js'
+import LongTap from './lib/pointer/events/long-tap.js'
+import Swipe from './lib/pointer/events/swipe.js'
+
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
 import PopupMobile from '../node_modules/alpheios-components/src/vue-components/popup-mobile.vue'
@@ -51,35 +57,51 @@ export default class AppProcess {
     } catch (e) {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
+
+    // Checks whether this is a test page
+    this.hasTestContent = !!document.querySelector(`[data-alpheios-pwa-test-content="true"]`)
+
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
-    this.target = {
-      start: {},
-      end: {}
-    }
-    let universalTestZone = document.querySelector('#universal-events-test')
-    if (universalTestZone) {
-      // This is a test page
-      universalTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this))
-      universalTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
-      universalTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
 
-      document.querySelector('#dblclick-test').addEventListener('dblclick', this.getSelectedText.bind(this))
+    if (this.hasTestContent) {
+      // For testing both double click and long taps
+      let universalTestZone = document.querySelector('#universal-events-test')
+      if (universalTestZone) {
+        // This is a test page
+        let utzEventHandler = new PointerEventHandler(universalTestZone)
+        utzEventHandler
+          .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
+          .addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
+      }
+
+      // For testing double clicks only
+      let doubleClickTestZone = document.querySelector('#dblclick-test')
+      if (doubleClickTestZone) {
+        let dctzEventHandler = new PointerEventHandler(doubleClickTestZone)
+        dctzEventHandler.addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
+      }
+
+      // For testing long taps only
       let touchTestZone = document.querySelector('#touch-events-test')
-      // touchTestZone.addEventListener('click', this.handleMouseClick.bind(this), false)
-      // touchTestZone.addEventListener('dblclick', this.handleMouseDblClick.bind(this), false)
-      // touchTestZone.addEventListener('mousedown', this.handleMouseDown.bind(this), false)
-      // touchTestZone.addEventListener('mouseup', this.handleMouseUp.bind(this), false)
-
-      touchTestZone.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
-      touchTestZone.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
-      // touchTestZone.addEventListener('touchcancel', this.handleTouchCancel.bind(this, this.target), false)
-      // touchTestZone.addEventListener('touchmove', this.handleTouchMove.bind(this, this.target), false)
+      if (touchTestZone) {
+        let ttzEventHandler = new PointerEventHandler(touchTestZone)
+        ttzEventHandler.addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
+      }
     } else {
       // This is a regular page
-      document.body.addEventListener('dblclick', this.getSelectedText.bind(this))
-      document.body.addEventListener('touchstart', this.handleTouchStart.bind(this, this.target), false)
-      document.body.addEventListener('touchend', this.handleTouchEnd.bind(this, this.target), false)
+      let bodyEventHandler = new PointerEventHandler(document.body)
+      bodyEventHandler
+        .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
+        .addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
     }
+
+    let panelHeader = document.querySelector('#panel-header')
+    let panelHeaderHandler = new PointerEventHandler(panelHeader)
+    panelHeaderHandler
+      .addEventListener(new Swipe(100, 600), swipe => {
+        if (swipe.isDirectedRight()) { this.ui.selectNextTab() }
+        if (swipe.isDirectedLeft()) { this.ui.selectPrevTab() }
+      })
   }
 
   static get defaults () {
@@ -106,66 +128,5 @@ export default class AppProcess {
         langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
       }).getData()
     }
-  }
-
-  handleTouchStart (target, evt) {
-    evt.preventDefault() // To prevent `mousedown` and `mouseup` to be fired for touch events
-    console.log('touchstart, event is:', evt)
-    target.tracking = true
-    // Hack - would normally use e.timeStamp but it's whack in Fx/Android
-    target.start.t = new Date().getTime()
-    target.start.x = evt.changedTouches[0].clientX
-    target.start.y = evt.changedTouches[0].clientY
-  }
-
-  handleTouchEnd (target, evt) {
-    // evt.preventDefault()
-    console.log('touchend, event is:', evt)
-    if (target.tracking) {
-      target.tracking = false
-      const now = new Date().getTime()
-      target.end.x = evt.changedTouches[0].clientX
-      target.end.y = evt.changedTouches[0].clientY
-      const timeDelta = now - target.start.t
-      const deltaX = target.end.x - target.start.x
-      const deltaY = target.end.y - target.start.y
-      const movementDelta = Math.sqrt(Math.pow(target.end.x - target.start.x, 2) + Math.pow(target.end.y - target.start.y, 2))
-      console.log(`Movement delta: [${deltaX}, ${deltaY}, ${movementDelta}], duration: ${timeDelta}`)
-      if (movementDelta < 5 && timeDelta > 1000) {
-        console.log('This is a long tap')
-        this.getSelectedText(evt)
-      }
-    }
-  }
-
-  handleTouchCancel (target, evt) {
-    evt.preventDefault()
-    console.log('touchcancel, event is:', evt)
-  }
-
-  handleTouchMove (target, evt) {
-    evt.preventDefault()
-    console.log('touchmove, event is:', evt)
-  }
-
-  handleMouseClick (evt) {
-    // evt.preventDefault()
-    console.log('mouse click, event is:', evt)
-  }
-
-  handleMouseDblClick (evt) {
-    // evt.preventDefault()
-    console.log('mouse double click, event is:', evt)
-    this.getSelectedText(evt)
-  }
-
-  handleMouseDown (evt) {
-    // evt.preventDefault()
-    console.log('mouse down, event is:', evt)
-  }
-
-  handleMouseUp (evt) {
-    // evt.preventDefault()
-    console.log('mouse up, event is:', evt)
   }
 }
