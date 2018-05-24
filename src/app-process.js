@@ -65,6 +65,7 @@ export default class AppProcess {
 
     if (this.hasTestContent) {
       // For testing both double click and long taps
+
       let universalTestZone = document.querySelector('#universal-events-test')
       if (universalTestZone) {
         // This is a test page

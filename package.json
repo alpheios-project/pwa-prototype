@@ -1,6 +1,6 @@
 {
   "name": "pwa-prototype",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "A prototype for an Alpheios PWA",
   "alpheios": {
     "pwa": {
@@ -64,7 +64,7 @@
     "uuid": "^3.2.1",
     "vue": "^2.5.16",
     "vue-jest": "^2.6.0",
-    "vue-loader": "^15.1.0",
+    "vue-loader": "^15.2.0",
     "vue-svg-loader": "^0.5.0",
     "vue-template-compiler": "^2.5.16",
     "webpack": "^4.8.3",

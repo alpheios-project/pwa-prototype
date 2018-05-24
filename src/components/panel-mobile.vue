@@ -299,9 +299,9 @@
     .alpheios-panel-mobile__header-action-btn.active:hover,
     .alpheios-panel-mobile__header-action-btn.active:focus {
         display: block;
-        width: 40px;
-        height: 40px;
-        margin: 0 5px;
+        width: 20px;
+        height: 20px;
+        margin: 0 15px;
         padding-top: 5px;
         text-align: center;
         cursor: pointer;
@@ -424,9 +424,9 @@
 
     .alpheios-panel-mobile__header-nav-btn {
         display: block;
-        width: 40px;
-        height: 40px;
-        margin: 0 5px;
+        width: 20px;
+        height: 20px;
+        margin: 0 15px;
         padding-top: 5px;
         text-align: center;
         cursor: pointer;
@@ -457,9 +457,9 @@
         .alpheios-panel-mobile__header-nav-btn:hover,
         .alpheios-panel-mobile__header-nav-btn:focus {
             display: block;
-            width: 40px;
-            height: 40px;
-            margin: 0 5px;
+            width: 20px;
+            height: 20px;
+            margin: 0 15px;
             padding-top: 5px;
             text-align: center;
             cursor: pointer;

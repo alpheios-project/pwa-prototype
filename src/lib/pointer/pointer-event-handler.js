@@ -13,12 +13,12 @@ export default class PointerEventHandler {
 
   addEventListener (evt, evtHandler) {
     if (evt instanceof MouseDoubleClick) {
-      this.element.addEventListener('dblclick', this.mouseDoubleClickHandler.bind(this, evt, evtHandler))
+      this.element.addEventListener('dblclick', this.mouseDoubleClickHandler.bind(this, evt, evtHandler), {passive: true})
     } else if (evt instanceof LongTap) {
-      this.element.addEventListener('touchstart', this.touchStartHandler.bind(this, evt, evtHandler))
+      this.element.addEventListener('touchstart', this.touchStartHandler.bind(this, evt, evtHandler), {passive: true})
       this.element.addEventListener('touchend', this.touchEndHandler.bind(this, evt, evtHandler))
     } else if (evt instanceof Swipe) {
-      this.element.addEventListener('touchstart', this.touchStartHandler.bind(this, evt, evtHandler))
+      this.element.addEventListener('touchstart', this.touchStartHandler.bind(this, evt, evtHandler), {passive: true})
       this.element.addEventListener('touchend', this.touchEndHandler.bind(this, evt, evtHandler))
     }
     return this
@@ -37,7 +37,6 @@ export default class PointerEventHandler {
   }
 
   touchEndHandler (pointerEvent, pointerEventHandler, domEvent) {
-    console.log(`Touch end`)
     if (pointerEvent.tracking) {
       pointerEvent.tracking = false
       const now = new Date().getTime()
