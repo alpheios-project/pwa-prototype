@@ -54,6 +54,7 @@ export default class AppProcess {
     let pckg
     try {
       pckg = JSON.parse(Package)
+      console.log(`PWA version is ${Package.version}`)
     } catch (e) {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
@@ -72,7 +73,7 @@ export default class AppProcess {
         let utzEventHandler = new PointerEventHandler(universalTestZone)
         utzEventHandler
           .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-          .addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
+          .addEventListener(new LongTap(5, 400), (pevt, devt) => this.getSelectedText(devt))
       }
 
       // For testing double clicks only
@@ -86,7 +87,7 @@ export default class AppProcess {
       let touchTestZone = document.querySelector('#touch-events-test')
       if (touchTestZone) {
         let ttzEventHandler = new PointerEventHandler(touchTestZone)
-        ttzEventHandler.addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
+        ttzEventHandler.addEventListener(new LongTap(5, 400), (pevt, devt) => this.getSelectedText(devt))
       }
     } else {
       // This is a regular page

@@ -45,6 +45,7 @@ export default class PointerEventHandler {
       const duration = now - pointerEvent.start.t
       const mvmtX = pointerEvent.end.x - pointerEvent.start.x
       const mvmtY = pointerEvent.end.y - pointerEvent.start.y
+      console.log(`Touch end, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}`)
 
       if (pointerEvent instanceof LongTap) {
         // Check if this is a long tap

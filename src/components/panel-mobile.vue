@@ -122,7 +122,6 @@
                     </morph>
 
                     <div class="alpheios-popup__morph-cont-providers">
-                        <div class="alpheios-popup__morph-cont-providers-header">Credits:</div>
                         <div class="alpheios-popup__morph-cont-providers-source" v-for="p in data.providers">
                             {{ p.toString() }}
                         </div>
