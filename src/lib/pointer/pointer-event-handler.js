@@ -14,6 +14,24 @@ export default class PointerEventHandler {
   }
 
   addEventListener (evt, evtHandler) {
+    // region Test listeners
+    this.element.addEventListener('selectionstart', () => {
+      console.log('Selection start event')
+      if (messageBox) {
+        messageBox.innerHTML += `Selection start event<br>`
+        messageBox.scrollTop = messageBox.scrollHeight
+      }
+    })
+
+    this.element.addEventListener('selectionchange', evt => {
+      console.log('Selection change event', evt)
+      if (messageBox) {
+        messageBox.innerHTML += `Selection change event<br>`
+        messageBox.scrollTop = messageBox.scrollHeight
+      }
+    })
+    // endregion Test listeners
+
     if (evt instanceof MouseDoubleClick) {
       this.element.addEventListener('dblclick', this.mouseDoubleClickHandler.bind(this, evt, evtHandler), {passive: true})
     } else if (evt instanceof LongTap) {
@@ -27,7 +45,10 @@ export default class PointerEventHandler {
   }
 
   mouseDoubleClickHandler (pointerEvent, pointerEventHandler, domEvent) {
-    if (messageBox) { messageBox.innerHTML += `Mouse double click event<br>` }
+    if (messageBox) {
+      messageBox.innerHTML += `<hr>Mouse double click event<br>`
+      messageBox.scrollTop = messageBox.scrollHeight
+    }
     pointerEventHandler(pointerEvent, domEvent)
   }
 
@@ -48,8 +69,11 @@ export default class PointerEventHandler {
       const duration = now - pointerEvent.start.t
       const mvmtX = pointerEvent.end.x - pointerEvent.start.x
       const mvmtY = pointerEvent.end.y - pointerEvent.start.y
-      console.log(`Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}`)
-      if (messageBox) { messageBox.innerHTML += `Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}<br>` }
+      console.log(`Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], movement: [${mvmtX}, ${mvmtY}], duration: ${duration}`)
+      if (messageBox) {
+        messageBox.innerHTML += `<hr>Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], movement: [${mvmtX}, ${mvmtY}], duration: ${duration}<br>`
+        messageBox.scrollTop = messageBox.scrollHeight
+      }
 
       if (pointerEvent instanceof LongTap) {
         // Check if this is a long tap
@@ -58,6 +82,10 @@ export default class PointerEventHandler {
           Math.pow(pointerEvent.end.y - pointerEvent.start.y, 2)
         )
         if (mvmtDistance < pointerEvent.movementThreshold && duration > pointerEvent.durationThreshold) {
+          if (messageBox) {
+            messageBox.innerHTML += `This is a long tap<br>`
+            messageBox.scrollTop = messageBox.scrollHeight
+          }
           pointerEventHandler(pointerEvent, domEvent)
           domEvent.preventDefault()
         }
@@ -78,6 +106,10 @@ export default class PointerEventHandler {
               pointerEvent.setDirectionToDown()
             } else if ((-mvmtY > pointerEvent.movementThreshold) && (mvmtXAbs < pointerEvent.movementThreshold)) {
               pointerEvent.setDirectionToUp()
+            }
+            if (messageBox) {
+              messageBox.innerHTML += `This is a swipe<br>`
+              messageBox.scrollTop = messageBox.scrollHeight
             }
             pointerEventHandler(pointerEvent, domEvent)
             domEvent.preventDefault()

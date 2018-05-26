@@ -75,7 +75,7 @@ export default class AppProcess {
         let utzEventHandler = new PointerEventHandler(universalTestZone)
         utzEventHandler
           .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-          .addEventListener(new LongTap(5, 400), (pevt, devt) => this.getSelectedText(devt))
+          .addEventListener(new LongTap(5, 100), (pevt, devt) => this.getSelectedText(devt))
       }
 
       // For testing double clicks only
@@ -89,14 +89,14 @@ export default class AppProcess {
       let touchTestZone = document.querySelector('#touch-events-test')
       if (touchTestZone) {
         let ttzEventHandler = new PointerEventHandler(touchTestZone)
-        ttzEventHandler.addEventListener(new LongTap(5, 400), (pevt, devt) => this.getSelectedText(devt))
+        ttzEventHandler.addEventListener(new LongTap(5, 200), (pevt, devt) => this.getSelectedText(devt))
       }
     } else {
       // This is a regular page
       let bodyEventHandler = new PointerEventHandler(document.body)
       bodyEventHandler
         .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-        .addEventListener(new LongTap(5, 1000), (pevt, devt) => this.getSelectedText(devt))
+        .addEventListener(new LongTap(5, 500), (pevt, devt) => this.getSelectedText(devt))
     }
 
     let panelHeader = document.querySelector('#panel-header')
