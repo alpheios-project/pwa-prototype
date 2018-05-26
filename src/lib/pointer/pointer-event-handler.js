@@ -2,6 +2,8 @@ import MouseDoubleClick from './events/mouse-double-click.js'
 import LongTap from './events/long-tap.js'
 import Swipe from './events/swipe.js'
 
+let messageBox = document.querySelector('#alpheios-pwa-test-pointer-message-box')
+
 export default class PointerEventHandler {
   /**
    * Creates a PointerEventHandler
@@ -25,6 +27,7 @@ export default class PointerEventHandler {
   }
 
   mouseDoubleClickHandler (pointerEvent, pointerEventHandler, domEvent) {
+    if (messageBox) { messageBox.innerHTML += `Mouse double click event<br>` }
     pointerEventHandler(pointerEvent, domEvent)
   }
 
@@ -45,7 +48,8 @@ export default class PointerEventHandler {
       const duration = now - pointerEvent.start.t
       const mvmtX = pointerEvent.end.x - pointerEvent.start.x
       const mvmtY = pointerEvent.end.y - pointerEvent.start.y
-      console.log(`Touch end, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}`)
+      console.log(`Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}`)
+      if (messageBox) { messageBox.innerHTML += `Touch end event, coordinates: [${pointerEvent.start.x}, ${pointerEvent.start.y}], duration: ${duration}<br>` }
 
       if (pointerEvent instanceof LongTap) {
         // Check if this is a long tap

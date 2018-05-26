@@ -54,7 +54,7 @@ export default class AppProcess {
     let pckg
     try {
       pckg = JSON.parse(Package)
-      console.log(`PWA version is ${Package.version}`)
+      console.log(`PWA version is ${pckg.version}`)
     } catch (e) {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)
     }
@@ -65,8 +65,10 @@ export default class AppProcess {
     this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
 
     if (this.hasTestContent) {
-      // For testing both double click and long taps
+      let versionBox = document.querySelector('.alpheios-pwa-test-version')
+      if (versionBox) { versionBox.innerHTML = `PWA version: ${pckg.version}` }
 
+      // For testing both double click and long taps
       let universalTestZone = document.querySelector('#universal-events-test')
       if (universalTestZone) {
         // This is a test page
