@@ -75,7 +75,7 @@ export default class AppProcess {
         let utzEventHandler = new PointerEventHandler(universalTestZone)
         utzEventHandler
           .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-          .addEventListener(new LongTap(5, 100), (pevt, devt) => this.getSelectedText(devt))
+          .addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
       }
 
       // For testing double clicks only
@@ -85,18 +85,33 @@ export default class AppProcess {
         dctzEventHandler.addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
       }
 
-      // For testing long taps only
+      // For testing taps
       let touchTestZone = document.querySelector('#touch-events-test')
       if (touchTestZone) {
         let ttzEventHandler = new PointerEventHandler(touchTestZone)
-        ttzEventHandler.addEventListener(new LongTap(5, 200), (pevt, devt) => this.getSelectedText(devt))
+        ttzEventHandler.addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
+      }
+      let touchTestZone125 = document.querySelector('#touch-events-test-125')
+      if (touchTestZone125) {
+        let ttzEventHandler125 = new PointerEventHandler(touchTestZone125)
+        ttzEventHandler125.addEventListener(new LongTap(5, 125), (pevt, devt) => this.getSelectedText(devt))
+      }
+      let touchTestZone250 = document.querySelector('#touch-events-test-250')
+      if (touchTestZone250) {
+        let ttzEventHandler250 = new PointerEventHandler(touchTestZone250)
+        ttzEventHandler250.addEventListener(new LongTap(5, 250), (pevt, devt) => this.getSelectedText(devt))
+      }
+      let touchTestZone500 = document.querySelector('#touch-events-test-500')
+      if (touchTestZone500) {
+        let ttzEventHandler500 = new PointerEventHandler(touchTestZone500)
+        ttzEventHandler500.addEventListener(new LongTap(5, 500), (pevt, devt) => this.getSelectedText(devt))
       }
     } else {
       // This is a regular page
       let bodyEventHandler = new PointerEventHandler(document.body)
       bodyEventHandler
         .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-        .addEventListener(new LongTap(5, 500), (pevt, devt) => this.getSelectedText(devt))
+        .addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
     }
 
     let panelHeader = document.querySelector('#panel-header')

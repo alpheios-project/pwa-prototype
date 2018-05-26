@@ -98,11 +98,9 @@
 
 
             <div class="alpheios-panel-mobile__header-btn-group--end">
-                <alph-tooltip tooltipDirection="bottom-right" :tooltipText="data.l10n.messages.TOOLTIP_CLOSE_PANEL">
-                    <span @click="closePanelAndMenu" class="alpheios-panel-mobile__header-action-btn">
-                        <close-icon></close-icon>
-                    </span>
-                </alph-tooltip>
+                <span @click="closePanelAndMenu" class="alpheios-panel-mobile__header-action-btn">
+                    <close-icon></close-icon>
+                </span>
             </div>
 
         </div>
@@ -317,8 +315,9 @@
         display: block;
         width: 20px;
         height: 20px;
-        margin: 0 15px;
-        padding-top: 5px;
+        position: relative;
+        top: 5px;
+        right: 10px;
         text-align: center;
         cursor: pointer;
         fill: $alpheios-link-color-dark-bg;
