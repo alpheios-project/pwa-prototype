@@ -111,6 +111,35 @@
             </div>
 
             <div v-show="data.tabs.morphology" class="alpheios-panel-mobile__tab-panel">
+                <div v-show="!morphDataReady && !noLanguage">
+                    <p class="alpheios-panel-mobile__progress-message">
+                        Getting information on a
+                        <span class="alpheios-panel-mobile__progress-message-accent">{{data.status.languageName}}</span>
+                        word <span class="alpheios-panel-mobile__progress-message-accent">{{data.status.selectedText}}</span></p>
+                    <div class="alpheios-panel-mobile__progress-wrapper">
+                        <div class="alpheios-panel-mobile__progress-border">
+                            <div class="alpheios-panel-mobile__progress-whitespace">
+                                <div class="alpheios-panel-mobile__progress-line"></div>
+                                <!-- No lexical data is available yet -->
+                                <div class="alpheios-panel-mobile__progress-text">{{data.l10n.messages.PLACEHOLDER_POPUP_DATA}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div v-show="noLanguage && !morphDataReady"
+                     class="alpheios-popup__morph-cont alpheios-popup__definitions--placeholder uk-text-small">
+                    <!-- Lexical data couldn't be populated because page language is not defined -->
+                    {{data.l10n.messages.PLACEHOLDER_NO_LANGUAGE_POPUP_DATA}}
+                </div>
+
+                <div v-show="data.morphDataNotFound"
+                     class="alpheios-popup__morph-cont alpheios-popup__definitions--placeholder uk-text-small">
+                    <!-- No morphological data is found in a morphological analyzer -->
+                    {{data.l10n.messages.MORPHOLOGICAL_DATA_NOT_FOUND}}
+                </div>
+
                 <!-- Morphological data -->
                 <div v-show="morphDataReady" :id="data.lexicalDataContainerID"
                      class="alpheios-popup__morph-cont">
@@ -183,13 +212,13 @@
         </div>
         <div class="alpheios-panel-mobile__notifications uk-text-small" :class="notificationClasses"
              v-show="data.notification.important">
-                <span @click="closeNotifications" class="alpheios-panel-mobile__notifications-close-btn">
-                    <close-icon></close-icon>
-                </span>
-            <span v-html="data.notification.text"></span>
+            <div v-html="data.notification.text" class="alpheios-panel-mobile__notifications-text"></div>
             <setting :data="data.settings.preferredLanguage" :show-title="false"
                      :classes="['alpheios-panel-mobile__notifications--lang-switcher']" @change="settingChanged"
                      v-show="data.notification.showLanguageSwitcher"></setting>
+            <div @click="closeNotifications" class="alpheios-panel-mobile__notifications-close-btn">
+                <close-icon></close-icon>
+            </div>
         </div>
     </div>
 </template>
@@ -215,7 +244,15 @@
     computed: {
       morphDataReady: function () {
         return this.data.morphDataReady
-      }
+      },
+
+      currentLanguageName: function() {
+        return this.data.currentLanguageName
+      },
+
+      noLanguage: function () {
+        return this.data.currentLanguageName === undefined
+      },
     },
     methods: {
       sendFeature (data) {
@@ -262,10 +299,9 @@
         direction: ltr;
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: #{$alpheios-panel-header-height} #{$alpheios-panel-title-height} auto 60px;
+        grid-template-rows: #{$alpheios-panel-header-height} 60px auto;
         grid-template-areas:
                 "header"
-                "title"
                 "content"
                 "content"
     }
@@ -273,9 +309,8 @@
     .alpheios-panel-mobile[data-notification-visible="true"] {
         grid-template-areas:
                 "header"
-                "title"
-                "content"
                 "notifications"
+                "content"
     }
 
     .alpheios-panel-mobile__header {
@@ -352,17 +387,24 @@
     .alpheios-panel-mobile__notifications {
         display: none;
         position: relative;
-        padding: 10px 20px;
+        padding: 10px;
         background: $alpheios-logo-color;
         grid-area: notifications;
         overflow: hidden;
+        justify-content: space-between;
+    }
+
+    @media (min-width: $alpheios-mobile-breakpoint) {
+        .alpheios-panel-mobile__notifications {
+            padding: 10px 20px;
+        }
+    }
+
+    .alpheios-panel-mobile__notifications-text {
+        flex-grow: 1;
     }
 
     .alpheios-panel-mobile__notifications-close-btn {
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        display: block;
         width: 20px;
         height: 20px;
         margin: 0;
@@ -379,9 +421,7 @@
 
     .alpheios-panel-mobile__notifications--lang-switcher {
         font-size: 12px;
-        float: right;
-        margin: -20px 10px 0 0;
-        display: inline-block;
+        margin-right: 10px;
     }
 
     .alpheios-panel-mobile__notifications--lang-switcher .uk-select {
@@ -394,11 +434,12 @@
     }
 
     [data-notification-visible="true"] .alpheios-panel-mobile__notifications {
-        display: block;
+        display: flex;
     }
 
     .alpheios-panel-mobile__tab-panel {
         display: flex;
+        flex-grow: 1;
         flex-direction: column;
         padding: 20px;
     }
@@ -614,4 +655,79 @@
         transform: translateX(-50%)
     }
     // endregion Tooltip fix
+
+    p.alpheios-panel-mobile__progress-message {
+        padding: 0 1rem;
+        margin-bottom: 10px;
+    }
+
+    .alpheios-panel-mobile__progress-message-accent {
+        color: $alpheios-toolbar-color;
+        font-weight: 700;
+    }
+
+    // region Wait animation
+    .alpheios-panel-mobile__progress-wrapper {
+        height: 1.2rem;
+        margin: 0 1rem 2rem;
+        font-size: 0.875rem;
+    }
+
+    .alpheios-panel-mobile__progress-border {
+        border: 2px solid $alpheios-icon-color;
+        height: 100%;
+        padding: 2px;
+    }
+
+    .alpheios-panel-mobile__progress-whitespace {
+        overflow: hidden;
+        height: 100%;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .alpheios-panel-mobile__progress-line {
+        position: absolute;
+        height: 100%;
+        width: 100%;
+        background-color: $alpheios-icon-color;
+        animation: cssload-slide 5.75s steps(40) infinite;
+    }
+
+    .alpheios-panel-mobile__progress-text {
+        text-transform: uppercase;
+        color: $alpheios-copy-color;
+        position: absolute;
+        width: 100%;
+        text-align: center;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    @keyframes cssload-slide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @-o-keyframes cssload-slide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @-ms-keyframes cssload-slide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @-webkit-keyframes cssload-slide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+
+    @-moz-keyframes cssload-slide {
+        0% { left: -100%; }
+        100% { left: 100%; }
+    }
+    // endregion Wait animation
 </style>

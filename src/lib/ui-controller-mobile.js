@@ -142,7 +142,8 @@ export default class UIControllerMobile extends BaseUIController {
           },
           lexicalDataContainerID: 'panel-alpheios-lexical-data-container',
           morphComponentID: 'panel-alpheios-morph-component',
-          morphDataReady: false,
+          morphDataReady: false, // Whether we have morphological data for a word ready to show
+          morphDataNotFound: false, // Whether morphological data exists for a selected word in a morphological analyzer
           shortDefinitions: [],
           fullDefinitions: '',
           inflections: {
@@ -255,7 +256,6 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         changeTab (name) {
-          console.log(`A panel's change tab`)
           const currentTab = this.currentTabName()
           if (currentTab) {
             this.panelData.tabs[currentTab] = false
@@ -266,6 +266,8 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         clearContent: function () {
+          this.panelData.morphDataReady = false
+          this.panelData.morphDataNotFound = false
           this.panelData.shortDefinitions = []
           this.panelData.fullDefinitions = ''
           this.panelData.messages = ''
@@ -365,6 +367,10 @@ export default class UIControllerMobile extends BaseUIController {
           return this
         },
 
+        newLexicalRequest: function () {
+          this.panelData.morphDataReady = false
+        },
+
         requestGrammar: function (feature) {
           // ExpObjMon.track(
           ResourceQuery.create(feature, {
@@ -381,7 +387,6 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         settingChange: function (name, value) {
-          console.log('Change inside instance', name, value)
           this.options.items[name].setTextValue(value)
           switch (name) {
             case 'locale':
@@ -399,7 +404,6 @@ export default class UIControllerMobile extends BaseUIController {
         },
         resourceSettingChange: function (name, value) {
           let keyinfo = this.resourceOptions.parseKey(name)
-          console.log('Change inside instance', keyinfo.setting, keyinfo.language, value)
           this.resourceOptions.items[keyinfo.setting].filter((f) => f.name === name).forEach((f) => { f.setTextValue(value) })
         },
         uiOptionChange: function (name, value) {
@@ -482,7 +486,7 @@ export default class UIControllerMobile extends BaseUIController {
           defDataReady: false,
           hasTreebank: false,
           inflDataReady: false,
-          morphDataReady: false,
+          morphDataReady: false, // Whether we have morphological data for a word ready to show
 
           translationsDataReady: false,
 
@@ -571,7 +575,6 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         newLexicalRequest: function () {
-          console.log('Starting a new lexical request within a popup')
           this.popupData.requestStartTime = new Date().getTime()
         },
 
@@ -630,7 +633,6 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         settingChange: function (name, value) {
-          console.log('Change inside instance', name, value)
           this.options.items[name].setTextValue(value)
           switch (name) {
             case 'locale':
@@ -648,14 +650,6 @@ export default class UIControllerMobile extends BaseUIController {
 
     // Set initial values of components
     this.setRootComponentClasses()
-  }
-
-  /**
-   * This is a test method. TODO: remove when finished with testing
-   * @param param
-   */
-  buttonClicked (param) {
-    console.log(`Component button clicked, param is ${param}`)
   }
 
   static get defaults () {
@@ -776,7 +770,6 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   changeTab (tabName) {
-    console.log(`Change tab mobile`)
     this.panel.changeTab(tabName)
     return this
   }
@@ -787,7 +780,7 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   newLexicalRequest () {
-    this.popup.newLexicalRequest()
+    this.panel.newLexicalRequest()
     this.clear().open().changeTab('morphology')
     return this
   }
@@ -805,6 +798,10 @@ export default class UIControllerMobile extends BaseUIController {
     this.panel.panelData.lexemes = homonym.lexemes
     this.popup.popupData.updates = this.popup.popupData.updates + 1
     this.updateProviders(homonym)
+  }
+
+  morphologyDataNotFound (value) {
+    this.panel.panelData.morphDataNotFound = value
   }
 
   updateProviders (homonym) {
@@ -833,7 +830,6 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   updateDefinitions (homonym) {
-    console.log(`update definitions`)
     this.panel.panelData.fullDefinitions = ''
     this.panel.panelData.shortDefinitions = []
     let definitions = {}
@@ -904,11 +900,11 @@ export default class UIControllerMobile extends BaseUIController {
     this.panel.requestGrammar({ type: 'table-of-contents', value: '', languageID: languageID })
     this.panel.enableInflections(LanguageModelFactory.getLanguageModel(languageID).canInflect())
     this.panel.panelData.infoComponentData.languageName = UIControllerMobile.getLanguageName(languageID)
+    Vue.set(this.panel.panelData, 'currentLanguageName', UIControllerMobile.getLanguageName(languageID))
     console.log(`Current language is ${this.state.currentLanguage}`)
   }
 
   updateVerboseMode () {
-    this.state.setItem('verboseMode', this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     this.state.setItem('verboseMode', this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     this.panel.panelData.verboseMode = this.state.verboseMode
     this.popup.popupData.verboseMode = this.state.verboseMode
@@ -928,12 +924,13 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   open () {
-    if (this.options.items.uiType.currentValue === this.settings.uiTypePanel) {
+    this.panel.open()
+    /* if (this.options.items.uiType.currentValue === this.settings.uiTypePanel) {
       this.panel.open()
     } else {
       if (this.panel.isOpen) { this.panel.close() }
       this.popup.open()
-    }
+    } */
     return this
   }
 
@@ -1044,19 +1041,9 @@ export default class UIControllerMobile extends BaseUIController {
     console.log(`${touchEvent.type || ''} ${touchEvent.direction || ''} ${touchEvent.event || ''} ${touchEvent.debug || ''}`)
     if (touchEvent.type === 'swipe') {
       if (touchEvent.direction === 'left') {
-        const prevTabName = this.panel.prevTabName()
-        if (prevTabName) {
-          this.panel.changeTab(prevTabName)
-        } else {
-          console.warn(`Cannot determine the previous tab`)
-        }
+        this.selectPrevTab()
       } else if (touchEvent.direction === 'right') {
-        const nextTabName = this.panel.nextTabName()
-        if (nextTabName) {
-          this.panel.changeTab(nextTabName)
-        } else {
-          console.warn(`Cannot determine the next tab`)
-        }
+        this.selectNextTab()
       }
     }
   }

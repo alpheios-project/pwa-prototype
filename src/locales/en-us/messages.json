@@ -3,5 +3,10 @@
     "message": "Morphology",
     "description": "A morphology tab tooltip",
     "component": "Panel (Mobile version)"
+  },
+  "MORPHOLOGICAL_DATA_NOT_FOUND": {
+    "message": "Morphological data is not found",
+    "description": "A message show when there is no data about a word is found in a morphological analyzer",
+    "component": "Panel (Mobile version)"
   }
 }
