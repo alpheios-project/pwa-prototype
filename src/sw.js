@@ -40,7 +40,7 @@ self.addEventListener('activate', event => {
     if (/\.js$/.test(resource.url)) {
       injectionScripts += `<script type="text/javascript" src="/${resource.url}"></script>\n`
     }
-    backToTocBtn = `<a class="alpheios-pwa-content-toc-back-btn" href="${tocURL}">Back to TOC</a>`
+    backToTocBtn = `<a class="alpheios-pwa-content-toc-back-btn" data-alpheios-exclude-custom-pointer="true" href="${tocURL}">Back to TOC</a>`
   }
 })
 

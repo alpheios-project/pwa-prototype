@@ -8,11 +8,10 @@ import UIControllerMobile from './lib/ui-controller-mobile.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
 
-// Interactions
-import PointerEventHandler from './lib/pointer/pointer-event-handler.js'
-import MouseDoubleClick from './lib/pointer/events/mouse-double-click.js'
-import LongTap from './lib/pointer/events/long-tap.js'
-import Swipe from './lib/pointer/events/swipe.js'
+// Custom pointer events
+import MouseDblClick from './lib/custom-pointer-events/mouse-dbl-click.js'
+import LongTap from './lib/custom-pointer-events/long-tap.js'
+import Swipe from './lib/custom-pointer-events/swipe.js'
 
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
@@ -68,59 +67,31 @@ export default class AppProcess {
       let versionBox = document.querySelector('.alpheios-pwa-test-version')
       if (versionBox) { versionBox.innerHTML = `PWA version: ${pckg.version}` }
 
-      // For testing both double click and long taps
-      let universalTestZone = document.querySelector('#universal-events-test')
-      if (universalTestZone) {
-        // This is a test page
-        let utzEventHandler = new PointerEventHandler(universalTestZone)
-        utzEventHandler
-          .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-          .addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
-      }
+      // Testing both double click and long taps
+      MouseDblClick.listen('#universal-events-test', evt => this.getSelectedText(evt.domEvent))
+      LongTap.listen('#universal-events-test', evt => this.getSelectedText(evt.domEvent), 5, 125)
 
-      // For testing double clicks only
-      let doubleClickTestZone = document.querySelector('#dblclick-test')
-      if (doubleClickTestZone) {
-        let dctzEventHandler = new PointerEventHandler(doubleClickTestZone)
-        dctzEventHandler.addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-      }
+      // Testing double-click only
+      MouseDblClick.listen('#dblclick-test', evt => this.getSelectedText(evt.domEvent))
 
       // For testing taps
-      let touchTestZone = document.querySelector('#touch-events-test')
-      if (touchTestZone) {
-        let ttzEventHandler = new PointerEventHandler(touchTestZone)
-        ttzEventHandler.addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
-      }
-      let touchTestZone125 = document.querySelector('#touch-events-test-125')
-      if (touchTestZone125) {
-        let ttzEventHandler125 = new PointerEventHandler(touchTestZone125)
-        ttzEventHandler125.addEventListener(new LongTap(5, 125), (pevt, devt) => this.getSelectedText(devt))
-      }
-      let touchTestZone250 = document.querySelector('#touch-events-test-250')
-      if (touchTestZone250) {
-        let ttzEventHandler250 = new PointerEventHandler(touchTestZone250)
-        ttzEventHandler250.addEventListener(new LongTap(5, 250), (pevt, devt) => this.getSelectedText(devt))
-      }
-      let touchTestZone500 = document.querySelector('#touch-events-test-500')
-      if (touchTestZone500) {
-        let ttzEventHandler500 = new PointerEventHandler(touchTestZone500)
-        ttzEventHandler500.addEventListener(new LongTap(5, 500), (pevt, devt) => this.getSelectedText(devt))
-      }
+      LongTap.listen('#touch-events-test', evt => this.getSelectedText(evt.domEvent), 5, 0)
+      LongTap.listen('#touch-events-test-125', evt => this.getSelectedText(evt.domEvent), 5, 125)
+      LongTap.listen('#touch-events-test-250', evt => this.getSelectedText(evt.domEvent), 5, 250)
+      LongTap.listen('#touch-events-test-375', evt => this.getSelectedText(evt.domEvent), 5, 375)
+      LongTap.listen('#touch-events-test-500', evt => this.getSelectedText(evt.domEvent), 5, 500)
     } else {
       // This is a regular page
-      let bodyEventHandler = new PointerEventHandler(document.body)
-      bodyEventHandler
-        .addEventListener(new MouseDoubleClick(), (pevt, devt) => this.getSelectedText(devt))
-        .addEventListener(new LongTap(5, 0), (pevt, devt) => this.getSelectedText(devt))
+      // TODO: make events take HTML element as an argument
+      console.log('Document body is', document.body)
+      MouseDblClick.listen('body', evt => this.getSelectedText(evt.domEvent))
+      LongTap.listen('body', evt => this.getSelectedText(evt.domEvent), 5, 125)
     }
 
-    let panelHeader = document.querySelector('#panel-header')
-    let panelHeaderHandler = new PointerEventHandler(panelHeader)
-    panelHeaderHandler
-      .addEventListener(new Swipe(100, 600), swipe => {
-        if (swipe.isDirectedRight()) { this.ui.selectNextTab() }
-        if (swipe.isDirectedLeft()) { this.ui.selectPrevTab() }
-      })
+    Swipe.listen('#panel-header', swipe => {
+      if (swipe.isDirectedRight()) { this.ui.selectNextTab() }
+      if (swipe.isDirectedLeft()) { this.ui.selectPrevTab() }
+    }, 100, 600)
   }
 
   static get defaults () {
