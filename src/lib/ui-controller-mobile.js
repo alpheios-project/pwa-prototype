@@ -1,6 +1,6 @@
 /* global Node */
 import {Lexeme, Feature, Definition, LanguageModelFactory, Constants} from 'alpheios-data-models'
-import { HTMLSelector, LexicalQuery } from 'alpheios-components'
+import { HTMLSelector, LexicalQuery, HTMLConsole } from 'alpheios-components'
 import {Lexicons} from 'alpheios-lexicon-client'
 // import {ObjectMonitor as ExpObjMon} from 'alpheios-experience'
 import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
@@ -906,6 +906,7 @@ export default class UIControllerMobile extends BaseUIController {
 
   updateVerboseMode () {
     this.state.setItem('verboseMode', this.options.items.verboseMode.currentValue === this.settings.verboseMode)
+    HTMLConsole.instance.enable(this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     this.panel.panelData.verboseMode = this.state.verboseMode
     this.popup.popupData.verboseMode = this.state.verboseMode
   }

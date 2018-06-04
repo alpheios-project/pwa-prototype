@@ -2,16 +2,16 @@ import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
-  Options, LocalStorageArea, UIStateAPI } from 'alpheios-components'
+  Options, LocalStorageArea, UIStateAPI, HTMLConsole } from 'alpheios-components'
 // import TextSelector from '../node_modules/alpheios-components/src/lib/selection/text-selector.js'
 import UIControllerMobile from './lib/ui-controller-mobile.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
 
 // Custom pointer events
-import MouseDblClick from './lib/custom-pointer-events/mouse-dbl-click.js'
-import LongTap from './lib/custom-pointer-events/long-tap.js'
-import Swipe from './lib/custom-pointer-events/swipe.js'
+import MouseDblClick from '../../components/src/lib/custom-pointer-events/mouse-dbl-click.js'
+import LongTap from '../../components/src/lib/custom-pointer-events/long-tap.js'
+import Swipe from '../../components/src/lib/custom-pointer-events/swipe.js'
 
 // Popup components
 import Popup from '../node_modules/alpheios-components/src/vue-components/popup.vue'
@@ -44,6 +44,7 @@ export default class AppProcess {
     this.maAdapter = new AlpheiosTuftsAdapter() // Morphological analyzer adapter, with default arguments
     this.langOptions = new Options(DefaultsLoader.fromJSON(LanguageOptionDefaults), LocalStorageArea)
     this.uiOptions = new Options(DefaultsLoader.fromJSON(UIOptionDefaults), LocalStorageArea)
+
     for (const skin of availableSkins) { this.uiOptions.items.skin.addValue(skin.value, skin.text) }
     const template = {
       popupComponents: popupComponents,
@@ -92,6 +93,15 @@ export default class AppProcess {
       if (swipe.isDirectedRight()) { this.ui.selectNextTab() }
       if (swipe.isDirectedLeft()) { this.ui.selectPrevTab() }
     }, 100, 600)
+
+    let htmlConsoleClearBtn = document.querySelector('#alpheios-html-console-clear-btn')
+    if (htmlConsoleClearBtn) {
+      htmlConsoleClearBtn.addEventListener('click', () => {
+        console.log(`Clear callback`)
+        HTMLConsole.instance.clear()
+      })
+    }
+    HTMLConsole.instance.enable(this.options.items.verboseMode.currentValue === 'verbose')
   }
 
   static get defaults () {

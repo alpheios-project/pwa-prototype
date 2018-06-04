@@ -1,6 +1,6 @@
 <template>
     <div class="auk alpheios-panel-mobile" :class="classes" :style="this.data.styles"
-         data-component="alpheios-panel" data-resizable="true" v-show="data.isOpen"
+         data-component="alpheios-panel" data-resizable="true" data-alph-exclude-long-tap-cpe="true" v-show="data.isOpen"
          :data-notification-visible="data.notification.important"> <!-- Show only important notifications for now -->
 
         <div id="panel-header" class="alpheios-panel-mobile__header">
@@ -13,7 +13,9 @@
                 <img class="alpheios-panel-mobile__header-logo-img" src="../images/icon.png">
             </div>
 
-            <div class="alpheios-panel-mobile__header-btn-group--center" v-bind:class="{ open: mobileMenuOpen }">
+            <div class="alpheios-panel-mobile__header-title">{{currentTabName}}</div>
+
+            <div class="alpheios-panel-mobile__header-toolbar" v-bind:class="{ open: mobileMenuOpen }">
                 <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.info }"
                      @click="changeTabFromMenu('info')">
                     <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
@@ -238,10 +240,18 @@
     },
     data: function() {
       return {
-        mobileMenuOpen: false // Stores a mobile menu open state, is closed by default
+        mobileMenuOpen: false, // Stores a mobile menu open state, is closed by default,
+        mIcon: MorphologyIcon
       }
     },
     computed: {
+      currentTabName () {
+        for (const key of Object.keys(this.data.tabs)) {
+          if (this.data.tabs[key]) { return key }
+        }
+        return ''
+      },
+
       morphDataReady: function () {
         return this.data.morphDataReady
       },
@@ -352,7 +362,6 @@
         height: 20px;
         position: relative;
         top: 5px;
-        right: 10px;
         text-align: center;
         cursor: pointer;
         fill: $alpheios-link-color-dark-bg;
@@ -475,7 +484,7 @@
         top: -2px;
         width: 20px;
         height: 20px;
-        margin: 0 15px;
+        margin: 0 15px 0 5px;
         text-align: center;
         cursor: pointer;
         background: transparent no-repeat center center;
@@ -541,45 +550,56 @@
     // endregion Styles of nested components
 
     // region Mobile menu styles
+    .alpheios-panel-mobile__header {
+        display: flex;
+        justify-content: space-between;
+        padding: 0 15px;
+    }
+
     .alpheios-panel-mobile__header-nav-btn--mobile-menu {
-        position: absolute;
-        left: 10px;
-        top: 7px;
+        position: relative;
+        top: 5px;
+        margin: 0;
     }
 
     .alpheios-panel-mobile__header-logo {
         display: none;
     }
 
-    .alpheios-panel-mobile__header-btn-group--center {
+    .alpheios-panel-mobile__header-title {
+        flex-grow: 1;
+        text-transform: capitalize;
+        text-align: center;
+        position: relative;
+        top: 7px;
+    }
+    .alpheios-panel-mobile__header-toolbar {
         position: absolute;
         top: $alpheios-panel-header-height;
         left: 0;
         right: 0;
+        width: 100%;
         display: none;
         flex-wrap: nowrap;
         box-sizing: border-box;
         flex-direction: column;
         justify-content: flex-start;
-        width: 100%;
         height: calc(#{$alpheios-panel-height} - #{$alpheios-panel-header-height});
         background: #FFF;
         direction: ltr;
     }
 
-    .alpheios-panel-mobile__header-btn-group--center.open {
+    .alpheios-panel-mobile__header-toolbar.open {
         display: flex;
         justify-content: space-evenly;
+        z-index: 10;
     }
 
-    .alpheios-panel-mobile__header-btn-group--center.open .tooltiptext {
+    .alpheios-panel-mobile__header-toolbar.open .tooltiptext {
         display: none;
     }
 
     .alpheios-panel-mobile__header-btn-group--end {
-        position: absolute;
-        top: 2px;
-        right: 0;
         display: flex;
         flex-wrap: nowrap;
         flex-direction: column;
@@ -596,12 +616,6 @@
     }
 
     @media (min-width: $alpheios-mobile-breakpoint) {
-        .alpheios-panel-mobile__header {
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-        }
-
         .alpheios-panel-mobile__header-nav-btn--mobile-menu {
             display: none;
         }
@@ -610,22 +624,26 @@
             display: block;
         }
 
-        .alpheios-panel-mobile__header-btn-group--center {
+        .alpheios-panel-mobile__header-toolbar {
             position: static;
             width: auto;
             height: auto;
+            background-color: transparent;
             display: flex;
             justify-content: center;
             flex-direction: row;
-            background-color: transparent;
         }
 
-        .alpheios-panel-mobile__header-btn-group--center.open {
+        .alpheios-panel-mobile__header-toolbar.open {
             justify-content: center;
         }
 
-        .alpheios-panel-mobile__header-btn-group--center.open .tooltiptext {
+        .alpheios-panel-mobile__header-toolbar.open .tooltiptext {
             display: block;
+        }
+
+        .alpheios-panel-mobile__header-title {
+            display: none;
         }
 
         .alpheios-panel-mobile__header-btn-group--end {
@@ -640,7 +658,7 @@
         }
 
         .alpheios-panel-mobile__header-nav-btn {
-
+            margin: 0 15px;
         }
 
         .alpheios-panel-mobile__header-nav-btn-text {
