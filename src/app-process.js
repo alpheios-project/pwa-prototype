@@ -64,24 +64,24 @@ export default class AppProcess {
       if (versionBox) { versionBox.innerHTML = `PWA version: ${pckg.version}` }
 
       // Testing both double click and long taps
-      MouseDblClick.listen('#universal-events-test', evt => this.getSelectedText(evt.domEvent))
-      LongTap.listen('#universal-events-test', evt => this.getSelectedText(evt.domEvent), 5, 125)
+      MouseDblClick.listen('#universal-events-test', evt => this.getSelectedText(evt))
+      LongTap.listen('#universal-events-test', evt => this.getSelectedText(evt), 5, 125)
 
       // Testing double-click only
-      MouseDblClick.listen('#dblclick-test', evt => this.getSelectedText(evt.domEvent))
+      MouseDblClick.listen('#dblclick-test', evt => this.getSelectedText(evt))
 
       // For testing taps
-      LongTap.listen('#touch-events-test', evt => this.getSelectedText(evt.domEvent), 5, 0)
-      LongTap.listen('#touch-events-test-125', evt => this.getSelectedText(evt.domEvent), 5, 125)
-      LongTap.listen('#touch-events-test-250', evt => this.getSelectedText(evt.domEvent), 5, 250)
-      LongTap.listen('#touch-events-test-375', evt => this.getSelectedText(evt.domEvent), 5, 375)
-      LongTap.listen('#touch-events-test-500', evt => this.getSelectedText(evt.domEvent), 5, 500)
+      LongTap.listen('#touch-events-test', evt => this.getSelectedText(evt), 5, 0)
+      LongTap.listen('#touch-events-test-125', evt => this.getSelectedText(evt), 5, 125)
+      LongTap.listen('#touch-events-test-250', evt => this.getSelectedText(evt), 5, 250)
+      LongTap.listen('#touch-events-test-375', evt => this.getSelectedText(evt), 5, 375)
+      LongTap.listen('#touch-events-test-500', evt => this.getSelectedText(evt), 5, 500)
     } else {
       // This is a regular page
       // TODO: make events take HTML element as an argument
       console.log('Document body is', document.body)
-      MouseDblClick.listen('body', evt => this.getSelectedText(evt.domEvent))
-      LongTap.listen('body', evt => this.getSelectedText(evt.domEvent), 5, 125)
+      MouseDblClick.listen('body', evt => this.getSelectedText(evt))
+      LongTap.listen('body', evt => this.getSelectedText(evt), 5, 125)
     }
 
     Swipe.listen('#panel-header', swipe => {
