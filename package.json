@@ -1,6 +1,6 @@
 {
   "name": "pwa-prototype",
-  "version": "0.0.28",
+  "version": "0.0.29",
   "description": "A prototype for an Alpheios PWA",
   "alpheios": {
     "pwa": {
