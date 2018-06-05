@@ -51,7 +51,7 @@ if (workbox) {
 
   self.addEventListener('fetch', evt => {
     console.log(`Service worker fetch evt: ${evt.request.url}`, evt)
-    if (evt.request.url.match(/.+caesar-gallic-war.+/)) {
+    if (evt.request.url.match(/.+dynamic.+/)) {
       console.log(`This is a content page request`)
       let response = self.fetch(evt.request).then(function (response) {
         console.log(`Response received: `, response)

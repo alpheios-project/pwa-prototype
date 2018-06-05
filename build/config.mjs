@@ -61,8 +61,7 @@ const webpack = {
       }),
       new HtmlWebpackPlugin({
         filename: 'caesar-gallic-war.html',
-        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
-        inject: false
+        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html')
       }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
@@ -82,6 +81,10 @@ const webpack = {
       }),
       new HtmlWebpackPlugin({
         filename: 'caesar-gallic-war.html',
+        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'caesar-gallic-war-dynamic.html',
         template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
         inject: false
       }),
