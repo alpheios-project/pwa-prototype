@@ -51,7 +51,7 @@ if (workbox) {
 
   self.addEventListener('fetch', evt => {
     console.log(`Service worker fetch evt: ${evt.request.url}`, evt)
-    if (evt.request.url.match(/\/content\//)) {
+    if (evt.request.url.match(/.+caesar-gallic-war.+/)) {
       console.log(`This is a content page request`)
       let response = self.fetch(evt.request).then(function (response) {
         console.log(`Response received: `, response)
@@ -69,7 +69,7 @@ if (workbox) {
           headers: {'Content-Type': 'text/html'}
         })
       }).catch(function (err) {
-        console.log(`Fetch failed:`, err)
+        console.log(`Fetch failed for ${evt.request.url}:`, err)
       })
 
       evt.respondWith(response)

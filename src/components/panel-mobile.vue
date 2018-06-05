@@ -67,7 +67,7 @@
                     <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_GRAMMAR }}</span>
                 </div>
 
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.treebank }"
+                <div v-show="treebankTabPossible" class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.treebank }"
                      @click="changeTabFromMenu('treebank')">
                     <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
                         <span class="alpheios-panel-mobile__header-nav-btn">
@@ -146,8 +146,8 @@
                 <div v-show="morphDataReady" :id="data.lexicalDataContainerID"
                      class="alpheios-popup__morph-cont">
                     <morph :id="data.morphComponentID" :lexemes="data.lexemes" :definitions="data.definitions"
-                           :translations="data.translations"
-                           :linkedfeatures="data.linkedFeatures" @sendfeature="sendFeature">
+                           :translations="data.translations" :linkedfeatures="data.linkedFeatures"
+                           :morphDataReady="morphDataReady" @sendfeature="sendFeature">
                     </morph>
 
                     <div class="alpheios-popup__morph-cont-providers">

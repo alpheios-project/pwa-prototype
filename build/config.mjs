@@ -59,9 +59,14 @@ const webpack = {
         filename: 'index.html',
         template: path.join(projectRoot, 'src/index.html')
       }),
+      new HtmlWebpackPlugin({
+        filename: 'caesar-gallic-war.html',
+        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
+        inject: false
+      }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
-        { start_url: 'https://localhost:8120/index.html' },
+        { start_url: 'https://pwa.alpheios.net/index.html' },
         Package.alpheios.pwa
       ))
     ]
@@ -72,17 +77,17 @@ const webpack = {
     output: {filename: 'app.js'},
     plugins: [
       new HtmlWebpackPlugin({
-        filename: 'index-dev.html',
+        filename: 'index.html',
         template: path.join(projectRoot, 'src/index-dev.html')
       }),
       new HtmlWebpackPlugin({
-        filename: 'content/caesar-gallic-war.html',
+        filename: 'caesar-gallic-war.html',
         template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
         inject: false
       }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
-        { start_url: 'https://localhost:8120/index-dev.html' },
+        { start_url: 'https://pwa-dev.alpheios.net/index.html' },
         Package.alpheios.pwa
       ))
     ]

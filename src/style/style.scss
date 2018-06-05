@@ -33,14 +33,14 @@
 
 
 .alpheios-pwa-content-toc-back-btn {
-    border: 1px solid gray;
+    box-sizing: border-box;
     padding: 3px 10px;
     text-decoration: none;
     text-transform: uppercase;
-    color: gray;
+    color: #FFF;
     position: fixed;
     z-index: 2000;
-    background: rgba(255,255,255,0.85);
+    background: $alpheios-link-color;
     top: 0;
     right: 0;
 }
