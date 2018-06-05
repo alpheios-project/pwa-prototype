@@ -1,14 +1,14 @@
-/* global self, workbox */
+/* global self, workbox, Response, URL */
 console.log('Service worker is registered')
-// let swScriptURL
-// let clientsURL = []
-// let injectionStyles = ''
-// let injectionScripts = ''
-// let backToTocBtn = ''
-// let tocURL = ''
-// const viewportMeta = `<meta name="viewport" content="width=device-width, initial-scale=1">`
+let swScriptURL
+let clientsURL = []
+let injectionStyles = ''
+let injectionScripts = ''
+let backToTocBtn = ''
+let tocURL = ''
+const viewportMeta = `<meta name="viewport" content="width=device-width, initial-scale=1">`
 
-/* self.addEventListener('install', event => {
+self.addEventListener('install', event => {
   console.log(`Service worker install event`)
   // Get a URL object for the service worker script's location.
   swScriptURL = new URL(self.location)
@@ -26,9 +26,9 @@ console.log('Service worker is registered')
       }
     }
   })
-}) */
+})
 
-/* self.addEventListener('activate', event => {
+self.addEventListener('activate', event => {
   console.log(`Service worker activate event`)
   console.log(`Service worker script URL is`, swScriptURL)
   console.log(clientsURL)
@@ -42,7 +42,7 @@ console.log('Service worker is registered')
     }
     backToTocBtn = `<a class="alpheios-pwa-content-toc-back-btn" data-alph-exclude-all-cpe="true" href="${tocURL}">Back to TOC</a>`
   }
-}) */
+})
 
 // This code runs whenever a Service Worker script is loaded, and Workbox library is loaded too
 if (workbox) {
@@ -51,7 +51,7 @@ if (workbox) {
 
   self.addEventListener('fetch', evt => {
     console.log(`Service worker fetch evt: ${evt.request.url}`, evt)
-    /* if (evt.request.url.match(/.+caesar-gallic-war.+/)) {
+    if (evt.request.url.match(/.+dynamic.+/)) {
       console.log(`This is a content page request`)
       let response = self.fetch(evt.request).then(function (response) {
         console.log(`Response received: `, response)
@@ -73,7 +73,7 @@ if (workbox) {
       })
 
       evt.respondWith(response)
-    } */
+    }
   })
 
   // Will it cause an error if overwrite current cache files as with Cache.addAll()?

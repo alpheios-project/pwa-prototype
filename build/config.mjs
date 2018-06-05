@@ -83,6 +83,11 @@ const webpack = {
         filename: 'caesar-gallic-war.html',
         template: path.join(projectRoot, 'src/content/caesar-gallic-war.html')
       }),
+      new HtmlWebpackPlugin({
+        filename: 'caesar-gallic-war-dynamic.html',
+        template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
+        inject: false
+      }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
         { start_url: 'https://pwa-dev.alpheios.net/index.html' },
