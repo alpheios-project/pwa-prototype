@@ -8,5 +8,51 @@
     "message": "Morphological data is not found",
     "description": "A message show when there is no data about a word is found in a morphological analyzer",
     "component": "Panel (Mobile version)"
+  },
+  "TEXT_INFO_READER_TITLE": {
+    "message": "Alpheios Mobile Reader Prototype",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_READER_DESCRIPTION": {
+    "message": "This is a prototype of a mobile-friendly Alpheios reader application intended to offer a consistent user experience across devices and in varying network conditions. We envision offering a selection of texts accessible as individual applications on your mobile device. Alpheios services will be progressively available while offline based upon individual usage. This release is a prototype only. Our primary goal is to solicit feedback on mobile design paradigms and user preferences for Alpheios functionality in a mobile environment.",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_TIPS_TITLE": {
+    "message": "Tips for Use",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_TIPS_SELECTION": {
+    "message": "Select a text from the list of Sample Texts.",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_TIPS_TOUCH": {
+    "message": "Touch a word you would like to lookup. The Alpheios panel should open in the bottom half of the display.",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_TIPS_MENU_BUTTON": {
+    "message": "Use the menu button on the panel to navigate between the morphology, definitions, grammar and inflection tables.",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_TIPS_HOME_SCREEN": {
+    "message": "Use your device's <em>Add To Home Screen</em> feature to access it directly as an app on your device. On Android devices you should be prompted automatically with this option. It can also be found in the browser menu. On iOS devices you will need to click the <em>Share</em> icon and then <em>Add to Home Screen</em> from there.",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_FEEDBACK_TITLE": {
+    "message": "Feedback",
+    "description": "info text",
+    "component": "Panel"
+  },
+  "TEXT_INFO_FEEDBACK": {
+    "message": "We are maintaining a <a href='{feedbackURL}'>list of ideas on which we would like feedback</a>. Please comment, add new ones or <a href='mailto:{feedbackEmail}'>email us</a> your thoughts and suggestions.",
+    "description": "info text",
+    "component": "Panel",
+    "params": ["feedbackURL", "feedbackEmail"]
   }
 }

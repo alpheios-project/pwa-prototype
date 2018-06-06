@@ -226,6 +226,7 @@
 </template>
 <script>
   import PanelBase from './panel-base.vue'
+  import InfoPWA from './info-pwa.vue'
   // import interact from 'interactjs'
 
   // Embeddable SVG icons
@@ -235,6 +236,7 @@
   export default {
     extends: PanelBase,
     components: {
+      info: InfoPWA,
       morphologyIcon: MorphologyIcon,
       menuIcon: MenuIcon
     },

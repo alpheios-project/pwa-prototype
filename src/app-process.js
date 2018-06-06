@@ -65,7 +65,7 @@ export default class AppProcess {
 
       // Testing both double click and long taps
       MouseDblClick.listen('#universal-events-test', evt => this.getSelectedText(evt))
-      LongTap.listen('#universal-events-test', evt => this.getSelectedText(evt), 5, 125)
+      LongTap.listen('#universal-events-test', evt => this.getSelectedText(evt), 5, 0)
 
       // Testing double-click only
       MouseDblClick.listen('#dblclick-test', evt => this.getSelectedText(evt))
@@ -81,7 +81,7 @@ export default class AppProcess {
       // TODO: make events take HTML element as an argument
       console.log('Document body is', document.body)
       MouseDblClick.listen('body', evt => this.getSelectedText(evt))
-      LongTap.listen('body', evt => this.getSelectedText(evt), 5, 125)
+      LongTap.listen('body', evt => this.getSelectedText(evt), 5, 0)
     }
 
     Swipe.listen('#panel-header', swipe => {
