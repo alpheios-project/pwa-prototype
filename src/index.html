@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>PWA Prototype</title>
+    <title>Alpheios Mobile Reader Prototype</title>
     <link rel="canonical" href="https://localhost:8120">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,6 +10,29 @@
     <meta name="theme-color" content="#ffffff">
 
     <style>
+
+        body {
+          font-family: "Lato","Helvetica Neue",Helvetica,Arial,sans-serif;
+          color: #333333;
+        }
+
+        a {
+          color: #3E8D9C;
+          text-decoration: none;
+        }
+
+        ul {
+          list-style-type: none;
+        }
+
+        a:hover, a:active {
+          color: #5BC8DC;
+        }
+
+        .alpheios-demo-word {
+          cursor: pointer;
+        }
+
         .alpheios-demo-target-word {
             background: lightgoldenrodyellow;
         }
@@ -83,11 +106,41 @@
 </head>
 
 <body>
-<h1>PWA Prototype Main Page</h1>
+<h1>Alpheios Mobile Reader Prototype</h1>
 
-<h2>Content Pages</h2>
+<p>This is a prototype of a mobile-friendly Alpheios reader application intended to offer
+  a consistent user experience across devices and in varying network conditions. We envision offering
+  a selection of texts accessible as individual applications on your mobile device.
+  Alpheios services will be progressively available while offline based upon individual usage.
+  This release is a prototype only. Our primary goal is to solicit feedback on mobile design paradigms and user preferences
+    for Alpheios functionality in a mobile environment.</p>
 
-<p><a href="/caesar-gallic-war.html">Content Page One</a></p>
+<h2>Sample Texts</h2>
+<ul>
+  <li><a href="caesar-gallic-war.html"><em>C. Julius Caesar</em>, <b>Gallic Wars</b> Book 1</a></li>
+  <li><a href="odyssey.html"><em>Homer</em>, <b>Odyssey</b> 1.1-1.100</a></li>
+  <li><a href="bookofsongs.html"><em>al-Alghani</em>, <b>Book of Songs</b> Page 1</a></li>
+  <li><a href="hafez.html"><em>Hafez</em>, <b>Divan</b> Chapter 1 Poem 1</a></li>
+</ul>
+
+<h2>Tips for Use</h2>
+    <ol>
+      <li>Select a text from the list  of Sample Texts.</li>
+      <li>Touch a word you would like to lookup. The Alpheios panel should open in the bottom half of the display. (Or try here with these words:
+        <span class="alpheios-demo-word" lang="lat">cepit</span> <span class="alpheios-demo-word" lang="grc">φιλόσοφος</span> <span class="alpheios-demo-word" lang="per" dir="rtl">ناولها</span> <span class="alpheios-demo-word" lang="ara" dir="rtl">صاحب</span>)
+      </li>
+      <li>Use the menu button on the panel to navigate between the morphology, definitions, grammar and inflection tables.</li>
+      <li>Use your device's <em>Add To Home Screen</em> feature to access it directly as an app on your device. On Android devices
+        you should be prompted automatically with this option. It can also be found in the browser menu. On iOS devices you will need
+        to click the <em>Share</em> icon and then <em>Add to Home Screen</em> from there.</li>
+    </ol>
+  </p>
+
+<h2>Feedback</h2>
+  <p>We are maintaining a <a href="https://github.com/alpheios-project/pwa-prototype/labels/user-feedback-requested">list of ideas on which we would like feedback</a>.
+    Please comment, add new ones or <a href="mailto:support@alpheios.net">email us</a> your thoughts and suggestions.
+  </p>
+
 
 <script>
   function showRefreshUI(registration) {
