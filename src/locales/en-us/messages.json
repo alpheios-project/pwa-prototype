@@ -54,5 +54,10 @@
     "description": "info text",
     "component": "Panel",
     "params": ["feedbackURL", "feedbackEmail"]
+  },
+  "TEXT_INFO_SETTINGS_MOBILE": {
+    "message": "Use the Options wheel to change the lexicons used for definitions.",
+    "description": "info text",
+    "component": "Panel"
   }
 }
