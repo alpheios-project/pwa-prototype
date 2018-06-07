@@ -1,5 +1,15 @@
 @import '../../node_modules/alpheios-components/src/styles/_alpheios.scss';
 
+// region Styles for content pages
+p {
+    line-height: 1.3;
+}
+
+li {
+    margin-bottom: 0.2rem;
+}
+// endregion Styles for content pages
+
 .alph-update-ui-cont {
     display: flex;
     position: fixed;

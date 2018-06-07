@@ -147,7 +147,8 @@
     console.log(`Show refresh UI called`)
     // Create an update UI
     var updateUIContainer = document.createElement('div');
-    updateUIContainer.classList.add('alph-update-ui-cont')
+    updateUIContainer.classList.add('alph-update-ui-cont');
+    updateUIContainer.dataset.alpheiosIgnore = "all";
     updateUIContainer.innerHTML = `
     <span class="alph-update-ui-msg">There is an update available. Do you want to activate it? All open app pages will be reloaded</span>
     <button id="alph-update-ui-ok" class="alph-update-ui-btn">Update</button>

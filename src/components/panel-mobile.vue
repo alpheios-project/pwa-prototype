@@ -4,7 +4,7 @@
          :data-notification-visible="data.notification.important"> <!-- Show only important notifications for now -->
 
         <div id="panel-header" class="alpheios-panel-mobile__header">
-            <span @click="mobileMenuOpen = !mobileMenuOpen"
+            <span @click="mobileMenuOpen = !mobileMenuOpen" data-alph-exclude-all-cpe="true"
                   class="alpheios-panel-mobile__header-nav-btn alpheios-panel-mobile__header-nav-btn--mobile-menu">
               <menu-icon class="icon"></menu-icon>
             </span>
@@ -15,7 +15,8 @@
 
             <div class="alpheios-panel-mobile__header-title">{{currentTabName}}</div>
 
-            <div class="alpheios-panel-mobile__header-toolbar" v-bind:class="{ open: mobileMenuOpen }">
+            <div class="alpheios-panel-mobile__header-toolbar" v-bind:class="{ open: mobileMenuOpen }"
+                 data-alph-exclude-all-cpe="true">
                 <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.info }"
                      @click="changeTabFromMenu('info')">
                     <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
@@ -99,7 +100,7 @@
             </div>
 
 
-            <div class="alpheios-panel-mobile__header-btn-group--end">
+            <div class="alpheios-panel-mobile__header-btn-group--end" data-alph-exclude-all-cpe="true">
                 <span @click="closePanelAndMenu" class="alpheios-panel-mobile__header-action-btn">
                     <close-icon></close-icon>
                 </span>
