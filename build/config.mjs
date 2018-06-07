@@ -63,6 +63,18 @@ const webpack = {
         filename: 'caesar-gallic-war.html',
         template: path.join(projectRoot, 'src/content/caesar-gallic-war.html')
       }),
+      new HtmlWebpackPlugin({
+        filename: 'odyssey.html',
+        template: path.join(projectRoot, 'src/content/odyssey.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'divan.html',
+        template: path.join(projectRoot, 'src/content/divan.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'bookofsongs.html',
+        template: path.join(projectRoot, 'src/content/bookofsongs.html')
+      }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
         { start_url: 'https://pwa.alpheios.net/index.html' },
@@ -87,6 +99,18 @@ const webpack = {
         filename: 'caesar-gallic-war-dynamic.html',
         template: path.join(projectRoot, 'src/content/caesar-gallic-war.html'),
         inject: false
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'odyssey.html',
+        template: path.join(projectRoot, 'src/content/odyssey.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'divan.html',
+        template: path.join(projectRoot, 'src/content/divan.html')
+      }),
+      new HtmlWebpackPlugin({
+        filename: 'bookofsongs.html',
+        template: path.join(projectRoot, 'src/content/bookofsongs.html')
       }),
       new WebpackPwaManifest(Object.assign(
         sharedManifestConf,
