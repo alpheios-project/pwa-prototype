@@ -8,11 +8,9 @@
             <p>{{ messages.TEXT_INFO_READER_DESCRIPTION }}</p>
             <h3>{{ messages.TEXT_INFO_TIPS_TITLE }}</h3>
             <ul>
-                <li v-html="messages.TEXT_INFO_TIPS_SELECTION"></li>
                 <li v-html="messages.TEXT_INFO_TIPS_TOUCH"></li>
-                <li v-html="messages.TEXT_INFO_LANGDETECT"></li>
                 <li v-html="messages.TEXT_INFO_TIPS_MENU_BUTTON"></li>
-                <li v-html="messages.TEXT_INFO_SETTINGS"></li>
+                <li v-html="messages.TEXT_INFO_SETTINGS_MOBILE"></li>
                 <li v-html="messages.TEXT_INFO_TIPS_HOME_SCREEN"></li>
             </ul>
             <h3>{{ messages.TEXT_INFO_FEEDBACK_TITLE }}</h3>

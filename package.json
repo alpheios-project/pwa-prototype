@@ -1,6 +1,6 @@
 {
   "name": "alpheios-reader",
-  "version": "0.0.38",
+  "version": "0.0.39",
   "description": "A prototype of an Alpheios Mobile Reader",
   "alpheios": {
     "pwa": {
