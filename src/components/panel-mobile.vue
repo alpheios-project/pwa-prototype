@@ -598,7 +598,7 @@
         z-index: 10;
     }
 
-    .alpheios-panel-mobile__header-toolbar.open .tooltiptext {
+    .alpheios-panel-mobile__header-toolbar .tooltiptext {
         display: none;
     }
 
@@ -639,10 +639,6 @@
 
         .alpheios-panel-mobile__header-toolbar.open {
             justify-content: center;
-        }
-
-        .alpheios-panel-mobile__header-toolbar.open .tooltiptext {
-            display: block;
         }
 
         .alpheios-panel-mobile__header-title {
