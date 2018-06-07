@@ -61,7 +61,7 @@ export default class AppProcess {
 
     if (this.hasTestContent) {
       let versionBox = document.querySelector('.alpheios-pwa-test-version')
-      if (versionBox) { versionBox.innerHTML = `PWA version: ${pckg.version}` }
+      if (versionBox) { versionBox.innerHTML = `Reader version: ${pckg.version}` }
 
       // Testing both double click and long taps
       MouseDblClick.listen('#universal-events-test', evt => this.getSelectedText(evt))

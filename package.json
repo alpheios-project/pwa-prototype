@@ -1,11 +1,11 @@
 {
-  "name": "pwa-prototype",
-  "version": "0.0.37",
-  "description": "A prototype for an Alpheios PWA",
+  "name": "alpheios-reader",
+  "version": "0.0.38",
+  "description": "A prototype of an Alpheios Mobile Reader",
   "alpheios": {
     "pwa": {
-      "name": "Alpheios Reading Tools PWA",
-      "short_name": "Alpheios PWA",
+      "name": "Alpheios Mobile Reader Prototype",
+      "short_name": "Alpheios Reader",
       "lang": "en-US",
       "display": "standalone",
       "theme_color": "#73CDDE",
