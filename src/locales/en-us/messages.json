@@ -35,7 +35,7 @@
     "component": "Panel"
   },
   "TEXT_INFO_TIPS_MENU_BUTTON": {
-    "message": "Use the menu button on the panel to navigate between the morphology, definitions, grammar and inflection tables.",
+    "message": "Use the menu button on the panel to navigate between the morphology, definitions, grammar and inflection tables. Or swipe in the panel header to switch between tabs.",
     "description": "info text",
     "component": "Panel"
   },

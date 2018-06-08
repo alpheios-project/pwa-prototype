@@ -113,7 +113,7 @@ export default class AppProcess {
      */
     let htmlSelector = new HTMLSelector(event, this.constructor.defaults.languageCode)
     let textSelector = htmlSelector.createTextSelector()
-    if (!textSelector.isEmpty() && !textSelector.ignore) {
+    if (!textSelector.isEmpty()) {
       LexicalQuery.create(textSelector, {
         htmlSelector: htmlSelector,
         uiController: this.ui,
