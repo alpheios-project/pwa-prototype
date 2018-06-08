@@ -232,7 +232,7 @@
 
   // Embeddable SVG icons
   import MorphologyIcon from '../images/inline-icons/language.svg'
-  import MenuIcon from '../images/inline-icons/ellipsis-v.svg'
+  import MenuIcon from '../images/inline-icons/menu.svg'
 
   export default {
     extends: PanelBase,
