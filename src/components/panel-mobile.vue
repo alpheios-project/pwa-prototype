@@ -1,6 +1,7 @@
 <template>
     <div class="auk alpheios-panel-mobile" :class="classes" :style="this.data.styles"
-         data-component="alpheios-panel" data-resizable="true" data-alph-exclude-long-tap-cpe="true" v-show="data.isOpen"
+         data-component="alpheios-panel" data-resizable="true" data-alph-exclude-long-tap-cpe="true"
+         v-show="data.isOpen"
          :data-notification-visible="data.notification.important"> <!-- Show only important notifications for now -->
 
         <div id="panel-header" class="alpheios-panel-mobile__header">
@@ -13,89 +14,21 @@
                 <img class="alpheios-panel-mobile__header-logo-img" src="../images/icon.png">
             </div>
 
-            <div class="alpheios-panel-mobile__header-title">{{currentTabName}}</div>
+            <div class="alpheios-panel-mobile__header-toolbar-mini">
+                <div v-for="tabItem in data.tabGroup.vueDM" v-show="visibleInToolbar(tabItem)"
+                     class="alpheios-panel-mobile__header-nav-item"
+                     v-bind:class="{ active: tabItem.selected }" @click="data.tabGroup.select(tabItem.tabName)">
+                    <span class="alpheios-panel-mobile__header-nav-btn" v-html="tabItem.icon"></span>
+                </div>
+            </div>
 
-            <div class="alpheios-panel-mobile__header-toolbar" v-bind:class="{ open: mobileMenuOpen }"
+            <div class="alpheios-panel-mobile__header-menu" v-bind:class="{ open: mobileMenuOpen }"
                  data-alph-exclude-all-cpe="true">
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.info }"
-                     @click="changeTabFromMenu('info')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_HELP">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <info-icon class="icon"></info-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_HELP }}</span>
-                </div>
-
-
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.morphology }"
-                     @click="changeTabFromMenu('morphology')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_MORPHOLOGY">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <morphology-icon class="icon"></morphology-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_MORPHOLOGY }}</span>
-                </div>
-
-                <div class="alpheios-panel-mobile__header-nav-item" :class="{ active: data.tabs.definitions }"
-                     @click="changeTabFromMenu('definitions')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_DEFINITIONS">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <definitions-icon class="icon"></definitions-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_DEFINITIONS }}</span>
-                </div>
-
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.inflections }"
-                     @click="changeTabFromMenu('inflections')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_INFLECT">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <inflections-icon class="icon"></inflections-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_INFLECT }}</span>
-                </div>
-
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.grammar }"
-                     @click="changeTabFromMenu('grammar')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_GRAMMAR">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <grammar-icon class="icon"></grammar-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_GRAMMAR }}</span>
-                </div>
-
-                <div v-show="treebankTabPossible" class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.treebank }"
-                     @click="changeTabFromMenu('treebank')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_TREEBANK">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <treebank-icon class="icon"></treebank-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_TREEBANK }}</span>
-                </div>
-
-                <div class="alpheios-panel-mobile__header-nav-item" v-bind:class="{ active: data.tabs.options }"
-                     @click="changeTabFromMenu('options')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_OPTIONS">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <options-icon class="icon"></options-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_OPTIONS }}</span>
-                </div>
-
-                <div class="alpheios-panel-mobile__header-nav-item" v-show="data.verboseMode"
-                     v-bind:class="{ active: data.tabs.status }" @click="changeTabFromMenu('status')">
-                    <alph-tooltip tooltipDirection="top" :tooltipText="data.l10n.messages.TOOLTIP_STATUS">
-                        <span class="alpheios-panel-mobile__header-nav-btn">
-                          <status-icon class="icon"></status-icon>
-                        </span>
-                    </alph-tooltip>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ data.l10n.messages.TOOLTIP_STATUS }}</span>
+                <div v-for="tabItem in data.tabGroup.vueDM" v-show="!tabItem.disabled"
+                     class="alpheios-panel-mobile__header-nav-item"
+                     v-bind:class="{ active: tabItem.selected }" @click="selectMenuItem(tabItem.tabName)">
+                    <span class="alpheios-panel-mobile__header-nav-btn" v-html="tabItem.icon"></span>
+                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ tabItem.tabName }}</span>
                 </div>
             </div>
 
@@ -109,22 +42,26 @@
         </div>
 
         <div class="alpheios-panel-mobile__content">
-            <div v-show="data.tabs.info" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabGroup.vueDM.info.selected" class="alpheios-panel-mobile__tab-panel">
                 <info :data="data.infoComponentData" :messages="data.l10n.messages"></info>
             </div>
 
-            <div v-show="data.tabs.morphology" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabGroup.vueDM.morphology.selected" class="alpheios-panel-mobile__tab-panel">
                 <div v-show="!morphDataReady && !noLanguage">
                     <p class="alpheios-panel-mobile__progress-message">
                         Getting information on a
                         <span class="alpheios-panel-mobile__progress-message-accent">{{data.status.languageName}}</span>
-                        word <span class="alpheios-panel-mobile__progress-message-accent">{{data.status.selectedText}}</span></p>
+                        word <span
+                            class="alpheios-panel-mobile__progress-message-accent">{{data.status.selectedText}}</span>
+                    </p>
                     <div class="alpheios-panel-mobile__progress-wrapper">
                         <div class="alpheios-panel-mobile__progress-border">
                             <div class="alpheios-panel-mobile__progress-whitespace">
                                 <div class="alpheios-panel-mobile__progress-line"></div>
                                 <!-- No lexical data is available yet -->
-                                <div class="alpheios-panel-mobile__progress-text">{{data.l10n.messages.PLACEHOLDER_POPUP_DATA}}</div>
+                                <div class="alpheios-panel-mobile__progress-text">
+                                    {{data.l10n.messages.PLACEHOLDER_POPUP_DATA}}
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -159,7 +96,7 @@
                 </div>
             </div>
 
-            <div v-show="data.tabs.definitions" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabGroup.vueDM.definitions.selected" class="alpheios-panel-mobile__tab-panel">
 
                 <!-- Short definitions -->
                 <div v-show="data.shortDefinitions.length < 1 && data.fullDefinitions.length < 1">
@@ -173,19 +110,21 @@
                 <div class="alpheios-panel-mobile__contentitem" v-html="data.fullDefinitions"></div>
             </div>
 
-            <div v-show="inflectionsTabVisible" :id="inflectionsPanelID" class="alpheios-panel-mobile__tab-panel">
+            <!-- v-show="inflectionsTabVisible" -->
+            <div v-show="data.tabGroup.vueDM.inflections.selected" :id="inflectionsPanelID" class="alpheios-panel-mobile__tab-panel">
                 <inflections class="alpheios-panel-mobile-inflections"
                              :data="data.inflectionComponentData" :locale="data.settings.locale.currentValue"
                              :messages="data.l10n.messages" @contentwidth="setContentWidth">
                 </inflections>
             </div>
 
-            <div v-show="data.tabs.grammar" class="alpheios-panel-mobile__tab-panel
+            <div v-show="data.tabGroup.vueDM.grammar.selected" class="alpheios-panel-mobile__tab-panel
                 alpheios-panel-mobile__tab-panel--no-padding alpheios-panel-mobile__tab-panel--fw">
                 <grammar :res="data.grammarRes"></grammar>
             </div>
 
-            <div v-show="treebankTabVisible" class="alpheios-panel-mobile__tab-panel
+            <!-- treebankTabVisible -->
+            <div v-show="data.tabGroup.vueDM.treebank.selected" class="alpheios-panel-mobile__tab-panel
                 alpheios-panel-mobile__tab-panel--no-padding alpheios-panel-mobile__tab-panel--fw">
                 <treebank :res="data.treebankComponentData.data"
                           :locale="data.settings.locale.currentValue" :visible="data.treebankComponentData.visible"
@@ -193,13 +132,13 @@
                 </treebank>
             </div>
 
-            <div v-show="data.tabs.status" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabGroup.vueDM.status.selected" class="alpheios-panel-mobile__tab-panel">
                 <div v-for="message in data.messages">
                     <div class="alpheios-panel-mobile__message">{{message}}</div>
                 </div>
             </div>
 
-            <div v-show="data.tabs.options" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabGroup.vueDM.options.selected" class="alpheios-panel-mobile__tab-panel">
                 <setting :data="data.settings.preferredLanguage" @change="settingChanged"
                          :classes="['alpheios-panel-mobile__options-item']"></setting>
                 <setting :data="data.settings.verboseMode" @change="settingChanged"
@@ -241,7 +180,7 @@
       morphologyIcon: MorphologyIcon,
       menuIcon: MenuIcon
     },
-    data: function() {
+    data: function () {
       return {
         mobileMenuOpen: false, // Stores a mobile menu open state, is closed by default,
         mIcon: MorphologyIcon
@@ -259,30 +198,37 @@
         return this.data.morphDataReady
       },
 
-      currentLanguageName: function() {
+      currentLanguageName: function () {
         return this.data.currentLanguageName
       },
 
       noLanguage: function () {
         return this.data.currentLanguageName === undefined
-      },
+      }
     },
     methods: {
       sendFeature (data) {
         this.$emit('sendfeature', data)
       },
 
-      // Closes a mobile menu and calls a standard `changeTab()` function
-      changeTabFromMenu(name) {
+      visibleInToolbar (tabItem) {
+        if (document.documentElement.clientWidth < 600) {
+          // Show only favorite tab items on narrow screens
+          return !tabItem.disabled && tabItem.favorite
+        }
+        return !tabItem.disabled
+      },
+
+      selectMenuItem (name) {
         this.mobileMenuOpen = false
-        this.changeTab(name)
+        this.data.tabGroup.select(name)
       },
 
       /*
       If menu is open at the moment of panel closing, it will be reopened next time with the panel.
       To prevent this, we need to make sure menu is closed every time we close a panel.
        */
-      closePanelAndMenu() {
+      closePanelAndMenu () {
         this.mobileMenuOpen = false
         this.close()
       }
@@ -313,17 +259,11 @@
         display: grid;
         grid-template-columns: auto;
         grid-template-rows: #{$alpheios-panel-header-height} 60px auto;
-        grid-template-areas:
-                "header"
-                "content"
-                "content"
+        grid-template-areas: "header" "content" "content"
     }
 
     .alpheios-panel-mobile[data-notification-visible="true"] {
-        grid-template-areas:
-                "header"
-                "notifications"
-                "content"
+        grid-template-areas: "header" "notifications" "content"
     }
 
     .alpheios-panel-mobile__header {
@@ -479,6 +419,7 @@
 
     .alpheios-panel-mobile__header-nav-item {
         cursor: pointer;
+        text-transform: capitalize;
     }
 
     .alpheios-panel-mobile__header-nav-btn {
@@ -550,6 +491,7 @@
         font-size: 0.875rem;
         margin-top: 1.5rem;
     }
+
     // endregion Styles of nested components
 
     // region Mobile menu styles
@@ -569,14 +511,17 @@
         display: none;
     }
 
-    .alpheios-panel-mobile__header-title {
+    .alpheios-panel-mobile__header-toolbar-mini {
         flex-grow: 1;
         text-transform: capitalize;
         text-align: center;
         position: relative;
         top: 7px;
+        display: flex;
+        justify-content: center;
     }
-    .alpheios-panel-mobile__header-toolbar {
+
+    .alpheios-panel-mobile__header-menu {
         position: absolute;
         top: $alpheios-panel-header-height;
         left: 0;
@@ -592,13 +537,13 @@
         direction: ltr;
     }
 
-    .alpheios-panel-mobile__header-toolbar.open {
+    .alpheios-panel-mobile__header-menu.open {
         display: flex;
         justify-content: space-evenly;
         z-index: 10;
     }
 
-    .alpheios-panel-mobile__header-toolbar .tooltiptext {
+    .alpheios-panel-mobile__header-menu .tooltiptext {
         display: none;
     }
 
@@ -611,6 +556,10 @@
     }
 
     .alpheios-panel-mobile__header-nav-item {
+
+    }
+
+    .alpheios-panel-mobile__header-menu .alpheios-panel-mobile__header-nav-item {
         display: flex;
         align-items: center;
         padding: 10px;
@@ -619,6 +568,7 @@
     }
 
     @media (min-width: $alpheios-mobile-breakpoint) {
+        .alpheios-panel-mobile__header-toolbar-mini,
         .alpheios-panel-mobile__header-nav-btn--mobile-menu {
             display: none;
         }
@@ -627,7 +577,7 @@
             display: block;
         }
 
-        .alpheios-panel-mobile__header-toolbar {
+        .alpheios-panel-mobile__header-menu {
             position: static;
             width: auto;
             height: auto;
@@ -637,12 +587,14 @@
             flex-direction: row;
         }
 
-        .alpheios-panel-mobile__header-toolbar.open {
-            justify-content: center;
+        .alpheios-panel-mobile__header-menu .alpheios-panel-mobile__header-nav-item {
+            padding: 0;
+            border-bottom: none;
+            flex-grow: 0;
         }
 
-        .alpheios-panel-mobile__header-title {
-            display: none;
+        .alpheios-panel-mobile__header-menu.open {
+            justify-content: center;
         }
 
         .alpheios-panel-mobile__header-btn-group--end {
@@ -664,6 +616,7 @@
             display: none;
         }
     }
+
     // endregion Mobile menu styles
 
     // region Tooltip fix
@@ -671,6 +624,7 @@
         margin-left: initial;
         transform: translateX(-50%)
     }
+
     // endregion Tooltip fix
 
     p.alpheios-panel-mobile__progress-message {
@@ -723,28 +677,49 @@
     }
 
     @keyframes cssload-slide {
-        0% { left: -100%; }
-        100% { left: 100%; }
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
 
     @-o-keyframes cssload-slide {
-        0% { left: -100%; }
-        100% { left: 100%; }
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
 
     @-ms-keyframes cssload-slide {
-        0% { left: -100%; }
-        100% { left: 100%; }
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
 
     @-webkit-keyframes cssload-slide {
-        0% { left: -100%; }
-        100% { left: 100%; }
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
 
     @-moz-keyframes cssload-slide {
-        0% { left: -100%; }
-        100% { left: 100%; }
+        0% {
+            left: -100%;
+        }
+        100% {
+            left: 100%;
+        }
     }
+
     // endregion Wait animation
 </style>

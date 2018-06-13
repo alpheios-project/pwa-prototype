@@ -5,13 +5,11 @@ import {Lexicons} from 'alpheios-lexicon-client'
 // import {ObjectMonitor as ExpObjMon} from 'alpheios-experience'
 import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
 
-// A panel componentrequestGrammar
+// A panel component
 // import Panel from '../../node_modules/alpheios-components/src/vue-components/panel.vue'
-// A popup component
-import Popup from '../../node_modules/alpheios-components/src/vue-components/popup.vue'
 
-// import TestComponent from '../components/test.vue'
 import PanelMobile from '../components/panel-mobile.vue'
+import TabGroup from './tab-group.js'
 
 import L10n from '../../node_modules/alpheios-components/src/lib/l10n/l10n.js'
 import CompL10n from '../../node_modules/alpheios-components/src/locales/locales.js'
@@ -43,9 +41,6 @@ export default class UIControllerMobile extends BaseUIController {
    *                            panelId: the id of the wrapper for the panel component,
    *                            panelComponent: Vue single file component of a panel element.
    *                              Allows to provide an alternative panel layout
-   *                            popupId: the id of the wrapper for the popup component
-   *                            popupComponent: Vue single file component of a panel element.
-   *                              Allows to provide an alternative popup layout
    */
   constructor (state, options, resourceOptions, uiOptions, pckg, template = {}) {
     super()
@@ -66,6 +61,76 @@ export default class UIControllerMobile extends BaseUIController {
       version: pckg.version
     }
 
+    // TODO: this is a very temporary solution of storing tab icons. They can't be imported as text because of a conflict with vue-sv-loader
+    const infoIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <path stroke-width="0" d="M12.13,11.59 C11.97,12.84 10.35,14.12 9.1,14.16 C6.17,14.2 9.89,9.46 8.74,8.37 C9.3,8.16 10.62,7.83 10.62,8.81 C10.62,9.63 10.12,10.55 9.88,11.32 C8.66,15.16 12.13,11.15 12.14,11.18 C12.16,11.21 12.16,11.35 12.13,11.59 C12.08,11.95 12.16,11.35 12.13,11.59 L12.13,11.59 Z M11.56,5.67 C11.56,6.67 9.36,7.15 9.36,6.03 C9.36,5 11.56,4.54 11.56,5.67 L11.56,5.67 Z"></path>
+    <circle fill="none" stroke-width="1.1" cx="10" cy="10" r="9"></circle>
+</svg>
+    `
+    const morphIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+    <path d="M782 1078q-1 3-12.5-.5T738 1066l-20-9q-44-20-87-49-7-5-41-31.5T552 948q-67 103-134 181-81 95-105 110-4 2-19.5 4t-18.5 0q6-4 82-92 21-24 85.5-115T521 918q17-30 51-98.5t36-77.5q-8-1-110 33-8 2-27.5 7.5T436 792t-17 5q-2 2-2 10.5t-1 9.5q-5 10-31 15-23 7-47 0-18-4-28-21-4-6-5-23 6-2 24.5-5t29.5-6q58-16 105-32 100-35 102-35 10-2 43-19.5t44-21.5q9-3 21.5-8t14.5-5.5 6 .5q2 12-1 33 0 2-12.5 27T655 769.5 638 803q-25 50-77 131l64 28q12 6 74.5 32t67.5 28q4 1 10.5 25.5t4.5 30.5zM577 592q3 15-4 28-12 23-50 38-30 12-60 12-26-3-49-26-14-15-18-41l1-3q3 3 19.5 5t26.5 0 58-16q36-12 55-14 17 0 21 17zm698 129l63 227-139-42zM167 1521l694-232V257L167 490v1031zm1241-317l102 31-181-657-100-31-216 536 102 31 45-110 211 65zM905 242l573 184V46zm311 1323l158 13-54 160-40-66q-130 83-276 108-58 12-91 12h-84q-79 0-199.5-39T446 1668q-8-7-8-16 0-8 5-13.5t13-5.5q4 0 18 7.5t30.5 16.5 20.5 11q73 37 159.5 61.5T842 1754q95 0 167-14.5t157-50.5q15-7 30.5-15.5t34-19 28.5-16.5zm448-1079v1079l-774-246q-14 6-375 127.5T147 1568q-13 0-18-13 0-1-1-3V474q3-9 4-10 5-6 20-11 107-36 149-50V19l558 198q2 0 160.5-55t316-108.5T1497 0q20 0 20 21v418z"/>
+</svg>
+    `
+    const definitionsIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <path stroke-width="0" d="M6,18.71 L6,14 L1,14 L1,1 L19,1 L19,14 L10.71,14 L6,18.71 L6,18.71 Z M2,13 L7,13 L7,16.29 L10.29,13 L18,13 L18,2 L2,2 L2,13 L2,13 Z"></path>
+</svg>    
+    `
+    const inflectionsIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 25 21" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+ <g>
+  <rect ry="2.9013" height="20" width="24" y=".5" x=".5" fill="none" />
+  <path d="m16.492 5.4785v14.505m-7.9923-14.506v14.505m-7.5063-4.5251h23.005m-23.005-4.9793h23.005m-23.005-4.98h23.005" stroke-width=".79406px" fill="none"/>
+ </g>
+</svg>
+    `
+    const grammarIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 24 24">
+ <ellipse rx="11.405" ry="11.405" fill="none" cy="12" cx="12"/>
+ <path stroke-width="0" d="m19.46 10.145q0 2.4908-1.1782 4.4943-1.4263 2.3554-3.9687 2.7074v-2.1659q1.2092-0.21659 1.9844-1.2454 0.68212-0.94759 0.68212-1.9764-0.43408 0.1083-0.86816 0.1083-1.3022 0-2.1704-0.8393-0.86816-0.8393-0.86816-1.8681 0-1.11 0.89917-1.8952 0.93017-0.81222 2.2014-0.81222 1.5503 0 2.4805 1.11 0.80615 0.97467 0.80615 2.3825zm-8.5336 0q0 2.4908-1.1782 4.4943-1.4263 2.3554-3.9687 2.7074v-2.1659q1.2092-0.21659 1.9844-1.2454 0.68212-0.94759 0.68212-1.9764-0.43408 0.1083-0.86816 0.1083-1.3022 0-2.1704-0.8393-0.86816-0.8393-0.86816-1.8681 0-1.11 0.89916-1.8952 0.93017-0.81222 2.2014-0.81222 1.5503 0 2.4805 1.11 0.80615 0.97467 0.80615 2.3825z"/>
+</svg>
+
+    `
+    const treebankIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg width="20" height="20" viewBox="0 0 1792 1792" xmlns="http://www.w3.org/2000/svg">
+    <path d="M1792 1248v320q0 40-28 68t-68 28h-320q-40 0-68-28t-28-68v-320q0-40 28-68t68-28h96v-192h-512v192h96q40 0 68 28t28 68v320q0 40-28 68t-68 28h-320q-40 0-68-28t-28-68v-320q0-40 28-68t68-28h96v-192h-512v192h96q40 0 68 28t28 68v320q0 40-28 68t-68 28h-320q-40 0-68-28t-28-68v-320q0-40 28-68t68-28h96v-192q0-52 38-90t90-38h512v-192h-96q-40 0-68-28t-28-68v-320q0-40 28-68t68-28h320q40 0 68 28t28 68v320q0 40-28 68t-68 28h-96v192h512q52 0 90 38t38 90v192h96q40 0 68 28t28 68z"/>
+</svg>
+    `
+    const optionsIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <circle fill="none" cx="9.997" cy="10" r="3.31"></circle>
+    <path fill="none" d="M18.488,12.285 L16.205,16.237 C15.322,15.496 14.185,15.281 13.303,15.791 C12.428,16.289 12.047,17.373 12.246,18.5 L7.735,18.5 C7.938,17.374 7.553,16.299 6.684,15.791 C5.801,15.27 4.655,15.492 3.773,16.237 L1.5,12.285 C2.573,11.871 3.317,10.999 3.317,9.991 C3.305,8.98 2.573,8.121 1.5,7.716 L3.765,3.784 C4.645,4.516 5.794,4.738 6.687,4.232 C7.555,3.722 7.939,2.637 7.735,1.5 L12.263,1.5 C12.072,2.637 12.441,3.71 13.314,4.22 C14.206,4.73 15.343,4.516 16.225,3.794 L18.487,7.714 C17.404,8.117 16.661,8.988 16.67,10.009 C16.672,11.018 17.415,11.88 18.488,12.285 L18.488,12.285 Z"></path>
+</svg>
+    `
+    const statusIcon = `
+<?xml version="1.0" encoding="utf-8"?>
+<svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
+    <circle fill="none" stroke-width="1.1" cx="10" cy="10" r="9"></circle>
+    <rect stroke-width="0" x="9" y="4" width="1" height="7"></rect>
+    <path fill="none" stroke-width="1.1" d="M13.018,14.197 L9.445,10.625"></path>
+</svg>
+    `
+
+    let tabGroup = new TabGroup(
+      ['info', infoIcon, '', 'info'],
+      ['morphology', morphIcon, '', 'morphology', true, true],
+      ['definitions', definitionsIcon, '', 'definitions', true],
+      ['inflections', inflectionsIcon, '', 'inflections', true],
+      ['grammar', grammarIcon, '', 'grammar'],
+      ['treebank', treebankIcon, '', 'treebank'],
+      ['options', optionsIcon, '', 'options'],
+      ['status', statusIcon, '', 'status']
+    )
+
     const templateDefaults = {
       html: Template,
       panelId: 'alpheios-panel',
@@ -73,11 +138,6 @@ export default class UIControllerMobile extends BaseUIController {
         panel: PanelMobile
       },
       defaultPanelComponent: 'panel',
-      popupId: 'alpheios-popup',
-      popupComponents: {
-        popup: Popup
-      },
-      defaultPopupComponent: 'popup',
       draggable: true,
       resizable: true
     }
@@ -117,21 +177,12 @@ export default class UIControllerMobile extends BaseUIController {
       data: {
         panelData: {
           isOpen: false,
-          tabs: {
-            definitions: false,
-            morphology: false,
-            inflections: false,
-            status: false,
-            options: false,
-            grammar: false,
-            info: true,
-            treebank: false,
-            tabOrder: ['info', 'morphology', 'definitions', 'inflections', 'grammar', 'treebank', 'options']
-          },
+          tabGroup: tabGroup,
           verboseMode: this.state.verboseMode,
           grammarRes: {},
           lexemes: [],
           definitions: {},
+          defDataReady: false,
           translations: {},
           linkedFeatures: [],
           showProviders: false,
@@ -140,6 +191,7 @@ export default class UIControllerMobile extends BaseUIController {
             enabled: false,
             inflectionData: false // If no inflection data present, it is set to false
           },
+          inflDataReady: false,
           lexicalDataContainerID: 'panel-alpheios-lexical-data-container',
           morphComponentID: 'panel-alpheios-morph-component',
           morphDataReady: false, // Whether we have morphological data for a word ready to show
@@ -226,43 +278,6 @@ export default class UIControllerMobile extends BaseUIController {
 
         attachToRight: function () {
           this.setPositionTo('right')
-        },
-
-        currentTabName () {
-          for (const key of Object.keys(this.panelData.tabs)) {
-            if (this.panelData.tabs[key]) { return key }
-          }
-        },
-
-        currentTabIndex () {
-          const currentTab = this.currentTabName()
-          return this.panelData.tabs.tabOrder.indexOf(currentTab)
-        },
-
-        prevTabName () {
-          const currentTabIndex = this.currentTabIndex()
-          if (currentTabIndex > -1) {
-            const prevTabIndex = (currentTabIndex > 0) ? currentTabIndex - 1 : this.panelData.tabs.tabOrder.length - 1
-            return this.panelData.tabs.tabOrder[prevTabIndex]
-          }
-        },
-
-        nextTabName () {
-          const currentTabIndex = this.currentTabIndex()
-          if (currentTabIndex > -1) {
-            const nextTabIndex = (currentTabIndex < this.panelData.tabs.tabOrder.length - 1) ? currentTabIndex + 1 : 0
-            return this.panelData.tabs.tabOrder[nextTabIndex]
-          }
-        },
-
-        changeTab (name) {
-          const currentTab = this.currentTabName()
-          if (currentTab) {
-            this.panelData.tabs[currentTab] = false
-          }
-          this.panelData.tabs[name] = true
-          // this.state.changeTab(name) // Reflect a tab change in a state
-          return this
         },
 
         clearContent: function () {
@@ -363,7 +378,7 @@ export default class UIControllerMobile extends BaseUIController {
 
         sendFeature: function (feature) {
           this.requestGrammar(feature)
-          this.changeTab('grammar')
+          this.tabGroup.select('grammar')
           return this
         },
 
@@ -412,11 +427,6 @@ export default class UIControllerMobile extends BaseUIController {
             case 'skin':
               this.uiController.changeSkin(this.uiController.uiOptions.items[name].currentValue)
               break
-            case 'popup':
-              this.uiController.popup.close() // Close an old popup
-              this.uiController.popup.currentPopupComponent = this.uiController.uiOptions.items[name].currentValue
-              this.uiController.popup.open() // Will trigger an initialisation of popup dimensions
-              break
           }
         }
       },
@@ -436,218 +446,6 @@ export default class UIControllerMobile extends BaseUIController {
       })
     })
 
-    // Create a Vue instance for a popup
-    this.popup = new Vue({
-      el: `#${this.template.popupId}`,
-      components: this.template.popupComponents,
-      data: {
-        messages: [],
-        lexemes: [],
-        definitions: {},
-
-        translations: {},
-
-        linkedFeatures: [],
-        visible: false,
-        popupData: {
-          fixedPosition: true, // Whether to put popup into a fixed position or calculate that position dynamically
-          // Default popup position, with units
-          top: '10vh',
-          left: '10vw',
-
-          draggable: this.template.draggable,
-          resizable: this.template.resizable,
-          // Default popup dimensions, in pixels, without units. These values will override CSS rules.
-          // Can be scaled down on small screens automatically.
-          width: 210,
-          /*
-          `fixedElementsHeight` is a sum of heights of all elements of a popup, including a top bar, a button area,
-          and a bottom bar. A height of all letiable elements (i.e. morphological data container) will be
-          a height of a popup less this value.
-           */
-          fixedElementsHeight: 120,
-          heightMin: 150, // Initially, popup height will be set to this value
-          heightMax: 400, // If a morphological content height is greater than `contentHeightLimit`, a popup height will be increased to this value
-          // A margin between a popup and a selection
-          placementMargin: 15,
-          // A minimal margin between a popup and a viewport border, in pixels. In effect when popup is scaled down.
-          viewportMargin: 5,
-
-          // A position of a word selection
-          targetRect: {},
-
-          /*
-          A date and time when a new request was started, in milliseconds since 1970-01-01. It is used within a
-          component to identify a new request coming in and to distinguish it from data updates of the current request.
-           */
-          requestStartTime: 0,
-          settings: this.options.items,
-          verboseMode: this.state.verboseMode,
-          defDataReady: false,
-          hasTreebank: false,
-          inflDataReady: false,
-          morphDataReady: false, // Whether we have morphological data for a word ready to show
-
-          translationsDataReady: false,
-
-          showProviders: false,
-          updates: 0,
-          classes: [], // Will be set later by `setRootComponentClasses()`
-          l10n: this.l10n,
-          notification: {
-            visible: false,
-            important: false,
-            showLanguageSwitcher: false,
-            text: ''
-          },
-          providers: [],
-          status: {
-            selectedText: '',
-            languageName: ''
-          }
-        },
-        panel: this.panel,
-        options: this.options,
-        currentPopupComponent: this.template.defaultPopupComponent,
-        uiController: this
-      },
-      methods: {
-        setTargetRect: function (targetRect) {
-          this.popupData.targetRect = targetRect
-        },
-
-        showMessage: function (message) {
-          this.messages = [message]
-          return this
-        },
-
-        appendMessage: function (message) {
-          this.messages.push(message)
-          return this
-        },
-
-        clearMessages: function () {
-          while (this.messages.length > 0) {
-            this.messages.pop()
-          }
-          return this
-        },
-
-        showNotification: function (text, important = false) {
-          this.popupData.notification.visible = true
-          this.popupData.notification.important = important
-          this.popupData.notification.showLanguageSwitcher = false
-          this.popupData.notification.text = text
-        },
-
-        showImportantNotification: function (text) {
-          this.showNotification(text, true)
-        },
-
-        showLanguageNotification: function (homonym, notFound = false) {
-          this.popupData.notification.visible = true
-          let languageName
-          if (homonym) {
-            languageName = UIControllerMobile.getLanguageName(homonym.languageID)
-          } else {
-            languageName = this.popupData.l10n.messages.TEXT_NOTICE_LANGUAGE_UNKNOWN // TODO this wil be unnecessary when the morphological adapter returns a consistent response for erors
-          }
-          if (notFound) {
-            this.popupData.notification.important = true
-            this.popupData.notification.showLanguageSwitcher = true
-            this.popupData.notification.text = this.popupData.l10n.messages.TEXT_NOTICE_CHANGE_LANGUAGE.get(languageName)
-          } else {
-            this.popupData.notification.important = false
-            this.popupData.notification.showLanguageSwitcher = false
-          }
-        },
-
-        showStatusInfo: function (selectionText, languageID) {
-          this.popupData.status.languageName = UIControllerMobile.getLanguageName(languageID)
-          this.popupData.status.selectedText = selectionText
-        },
-
-        showErrorInformation: function (errorText) {
-          this.popupData.notification.visible = true
-          this.popupData.notification.important = true
-          this.popupData.notification.showLanguageSwitcher = false
-          this.popupData.notification.text = errorText
-        },
-
-        newLexicalRequest: function () {
-          this.popupData.requestStartTime = new Date().getTime()
-        },
-
-        clearContent: function () {
-          this.definitions = {}
-          this.translations = {}
-
-          this.lexemes = []
-          this.popupData.providers = []
-          this.popupData.defDataReady = false
-          this.popupData.inflDataReady = false
-          this.popupData.morphDataReady = false
-
-          this.popupData.translationsDataReady = false
-
-          this.popupData.showProviders = false
-          this.popupData.hasTreebank = false
-          this.clearNotifications()
-          this.clearStatus()
-          return this
-        },
-
-        clearNotifications: function () {
-          this.popupData.notification.visible = false
-          this.popupData.notification.important = false
-          this.popupData.notification.showLanguageSwitcher = false
-          this.popupData.notification.text = ''
-        },
-
-        clearStatus: function () {
-          this.popupData.status.languageName = ''
-          this.popupData.status.selectedText = ''
-        },
-
-        open: function () {
-          this.visible = true
-          return this
-        },
-
-        close: function () {
-          this.visible = false
-          return this
-        },
-
-        showPanelTab: function (tabName) {
-          this.panel.changeTab(tabName)
-          this.panel.open()
-          return this
-        },
-
-        sendFeature: function (feature) {
-          this.panel.requestGrammar(feature)
-          this.panel.changeTab('grammar')
-          this.panel.open()
-          return this
-        },
-
-        settingChange: function (name, value) {
-          this.options.items[name].setTextValue(value)
-          switch (name) {
-            case 'locale':
-              if (this.uiController.presenter) {
-                this.uiController.presenter.setLocale(this.options.items.locale.currentValue)
-              }
-              break
-            case 'preferredLanguage':
-              this.uiController.updateLanguage(this.options.items.preferredLanguage.currentValue)
-              break
-          }
-        }
-      }
-    })
-
     // Set initial values of components
     this.setRootComponentClasses()
   }
@@ -661,7 +459,6 @@ export default class UIControllerMobile extends BaseUIController {
   static get settingValues () {
     return {
       uiTypePanel: 'panel',
-      uiTypePopup: 'popup',
       verboseMode: 'verbose'
     }
   }
@@ -737,9 +534,7 @@ export default class UIControllerMobile extends BaseUIController {
 
   addImportantMessage (message) {
     this.panel.appendMessage(message)
-    this.popup.appendMessage(message)
     this.panel.showImportantNotification(message)
-    this.popup.showImportantNotification(message)
   }
 
   static getLanguageName (languageID) {
@@ -752,12 +547,10 @@ export default class UIControllerMobile extends BaseUIController {
       homonym.lexemes.length < 1 ||
       homonym.lexemes.filter((l) => l.isPopulated()).length < 1
     this.panel.showLanguageNotification(homonym, notFound)
-    this.popup.showLanguageNotification(homonym, notFound)
   }
 
   showStatusInfo (selectionText, languageID) {
     this.panel.showStatusInfo(selectionText, languageID)
-    this.popup.showStatusInfo(selectionText, languageID)
   }
 
   showErrorInfo (errorText) {
@@ -766,37 +559,30 @@ export default class UIControllerMobile extends BaseUIController {
 
   showImportantNotification (message) {
     this.panel.showImportantNotification(message)
-    this.popup.showImportantNotification(message)
-  }
-
-  changeTab (tabName) {
-    this.panel.changeTab(tabName)
-    return this
   }
 
   setTargetRect (targetRect) {
-    this.popup.setTargetRect(targetRect)
+    console.warn('Empty setTargetRect call')
     return this
   }
 
   newLexicalRequest () {
     this.panel.newLexicalRequest()
-    this.clear().open().changeTab('morphology')
+    this.clear().open().panel.panelData.tabGroup.select('morphology')
     return this
   }
 
   updateMorphology (homonym) {
     homonym.lexemes.sort(Lexeme.getSortByTwoLemmaFeatures(Feature.types.frequency, Feature.types.part))
-    this.popup.lexemes = homonym.lexemes
     if (homonym.lexemes.length > 0) {
       // TODO we could really move this into the morph component and have it be calculated for each lemma in case languages are multiple
       // this.popup.linkedFeatures = LanguageModelFactory.getLanguageModel(homonym.lexemes[0].lemma.languageID).grammarFeatures()
       this.panel.panelData.linkedFeatures = LanguageModelFactory.getLanguageModel(homonym.lexemes[0].lemma.languageID).grammarFeatures()
     }
-    this.popup.popupData.morphDataReady = true
+    // this.popup.popupData.morphDataReady = true
     this.panel.panelData.morphDataReady = true
     this.panel.panelData.lexemes = homonym.lexemes
-    this.popup.popupData.updates = this.popup.popupData.updates + 1
+    // this.popup.popupData.updates = this.popup.popupData.updates + 1
     this.updateProviders(homonym)
   }
 
@@ -816,7 +602,6 @@ export default class UIControllerMobile extends BaseUIController {
         }
       })
     })
-    this.popup.popupData.providers = Array.from(providers.keys())
     this.panel.panelData.providers = Array.from(providers.keys())
   }
 
@@ -859,13 +644,10 @@ export default class UIControllerMobile extends BaseUIController {
       }
     }
 
-    // Populate a popup
-    this.popup.definitions = definitions
     this.panel.panelData.definitions = definitions
 
-    this.popup.popupData.defDataReady = hasFullDefs
     this.panel.panelData.defDataReady = hasFullDefs
-    this.popup.popupData.updates = this.popup.popupData.updates + 1
+    // this.popup.popupData.updates = this.popup.popupData.updates + 1
   }
 
   updateTranslations (homonym) {
@@ -875,9 +657,9 @@ export default class UIControllerMobile extends BaseUIController {
         translations[lexeme.lemma.ID] = lexeme.lemma.translation
       }
     }
-    this.popup.translations = translations
-    this.popup.popupData.translationsDataReady = true
-    this.popup.popupData.updates = this.popup.popupData.updates + 1
+    // this.popup.translations = translations
+    // this.popup.popupData.translationsDataReady = true
+    // this.popup.popupData.updates = this.popup.popupData.updates + 1
   }
 
   updatePageAnnotationData (data) {
@@ -887,10 +669,10 @@ export default class UIControllerMobile extends BaseUIController {
   updateWordAnnotationData (data) {
     if (data && data.treebank) {
       this.panel.panelData.treebankComponentData.data.word = data.treebank.word || {}
-      this.popup.popupData.hasTreebank = data.treebank.word
+      this.panel.panelData.hasTreebank = data.treebank.word
     } else {
       this.panel.panelData.treebankComponentData.data.word = {}
-      this.popup.popupData.hasTreebank = false
+      this.panel.panelData.hasTreebank = false
     }
   }
 
@@ -908,30 +690,22 @@ export default class UIControllerMobile extends BaseUIController {
     this.state.setItem('verboseMode', this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     HTMLConsole.instance.enable(this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     this.panel.panelData.verboseMode = this.state.verboseMode
-    this.popup.popupData.verboseMode = this.state.verboseMode
   }
 
   updateInflections (inflectionData, homonym) {
     let enabled = LanguageModelFactory.getLanguageModel(homonym.languageID).canInflect()
     this.panel.enableInflections(enabled)
     this.panel.updateInflections(inflectionData, homonym)
-    this.popup.popupData.inflDataReady = enabled && inflectionData.hasInflectionSets
+    this.panel.panelData.inflDataReady = enabled && inflectionData.hasInflectionSets
   }
 
   clear () {
     this.panel.clearContent()
-    this.popup.clearContent()
     return this
   }
 
   open () {
     this.panel.open()
-    /* if (this.options.items.uiType.currentValue === this.settings.uiTypePanel) {
-      this.panel.open()
-    } else {
-      if (this.panel.isOpen) { this.panel.close() }
-      this.popup.open()
-    } */
     return this
   }
 
@@ -942,7 +716,6 @@ export default class UIControllerMobile extends BaseUIController {
     }
     classes.push(`auk--${this.uiOptions.items.skin.currentValue}`)
     this.panel.panelData.classes = classes
-    this.popup.popupData.classes = classes
   }
 
   changeSkin () {
@@ -950,121 +723,12 @@ export default class UIControllerMobile extends BaseUIController {
     this.setRootComponentClasses()
   }
 
-  touchSurface (selector, callback, options) {
-    if (!selector) {
-      throw new Error(`Touch surface selector cannot be empty`)
-    }
-
-    let touchSurface = {
-      start: {},
-      end: {},
-      tracking: false,
-      surface: document.querySelector(selector),
-      options: options
-    }
-
-    if (touchSurface.surface) {
-      touchSurface.surface.addEventListener('pointerdown', this.gestureStart.bind(this, touchSurface), false)
-      touchSurface.surface.addEventListener('pointermove', this.gestureMove.bind(this, touchSurface), false)
-      touchSurface.surface.addEventListener('pointerup', this.gestureEnd.bind(this, touchSurface, callback), false)
-      touchSurface.surface.addEventListener('pointerleave', this.gestureEnd.bind(this, touchSurface, callback), false)
-      touchSurface.surface.addEventListener('pointercancel', this.gestureEnd.bind(this, touchSurface, callback), false)
-    } else {
-      console.error(`Touch surface "${selector}" does not exist`)
-    }
-  }
-
-  touchCallbackTest (target, touchEvent) {
-    target.surface.innerHTML = `${touchEvent.type || ''} ${touchEvent.direction || ''} ${touchEvent.event || ''} ${touchEvent.debug || ''}`
-    if (touchEvent.type === 'swipe') {
-      if (touchEvent.direction === 'left') {
-        const prevTabName = this.panel.prevTabName()
-        if (prevTabName) {
-          this.panel.changeTab(prevTabName)
-        } else {
-          console.warn(`Cannot determine the previous tab`)
-        }
-      } else if (touchEvent.direction === 'right') {
-        const nextTabName = this.panel.nextTabName()
-        if (nextTabName) {
-          this.panel.changeTab(nextTabName)
-        } else {
-          console.warn(`Cannot determine the next tab`)
-        }
-      }
-    }
-  }
-
-  gestureStart (target, ev) {
-    target.tracking = true
-    // Hack - would normally use e.timeStamp but it's whack in Fx/Android
-    target.start.t = new Date().getTime()
-    target.start.x = ev.clientX
-    target.start.y = ev.clientY
-  }
-
-  gestureMove (target, ev) {
-    if (target.tracking) {
-      ev.preventDefault()
-      target.end.x = ev.clientX
-      target.end.y = ev.clientY
-    }
-  }
-
-  gestureEnd (target, callback, ev) {
-    if (target.tracking) {
-      target.tracking = false
-      const now = new Date().getTime()
-      const deltaTime = now - target.start.t
-      const deltaX = target.end.x - target.start.x
-      const deltaY = target.end.y - target.start.y
-      /* work out what the movement was */
-      if (deltaTime > target.thresholdTime) {
-        /* gesture too slow */
-        callback(target, {debug: `not a swipe: too slow, event: ${ev.type}`})
-      } else {
-        if ((deltaX > target.options.thresholdDistance) && (Math.abs(deltaY) < target.options.thresholdDistance)) {
-          callback(target, {type: 'swipe', direction: 'right', event: ev.type})
-        } else if ((-deltaX > target.options.thresholdDistance) && (Math.abs(deltaY) < target.options.thresholdDistance)) {
-          callback(target, {type: 'swipe', direction: 'left', event: ev.type})
-        } else if ((deltaY > target.options.thresholdDistance) && (Math.abs(deltaX) < target.options.thresholdDistance)) {
-          callback(target, {type: 'swipe', direction: 'down', event: ev.type})
-        } else if ((-deltaY > target.options.thresholdDistance) && (Math.abs(deltaX) < target.options.thresholdDistance)) {
-          callback(target, {type: 'swipe', direction: 'up', event: ev.type})
-        } else {
-          callback(target, {debug: `not a swipe: too short, event: ${ev.type}, duration: ${deltaTime}`})
-        }
-      }
-    }
-  }
-
-  tabsSwipe (target, touchEvent) {
-    console.log(`${touchEvent.type || ''} ${touchEvent.direction || ''} ${touchEvent.event || ''} ${touchEvent.debug || ''}`)
-    if (touchEvent.type === 'swipe') {
-      if (touchEvent.direction === 'left') {
-        this.selectPrevTab()
-      } else if (touchEvent.direction === 'right') {
-        this.selectNextTab()
-      }
-    }
-  }
-
   selectPrevTab () {
-    const prevTabName = this.panel.prevTabName()
-    if (prevTabName) {
-      this.panel.changeTab(prevTabName)
-    } else {
-      console.warn(`Cannot determine the previous tab`)
-    }
+    this.panel.panelData.tabGroup.selectPrev()
   }
 
   selectNextTab () {
-    const nextTabName = this.panel.nextTabName()
-    if (nextTabName) {
-      this.panel.changeTab(nextTabName)
-    } else {
-      console.warn(`Cannot determine the next tab`)
-    }
+    this.panel.panelData.tabGroup.selectNext()
   }
 
   getSelectedText (event) {

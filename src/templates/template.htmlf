@@ -8,6 +8,6 @@
 <div id="alpheios-panel">
     <component v-bind:is="currentPanelComponent" :data="panelData" @close="close" @closenotifications="clearNotifications"
            @setposition="setPositionTo" @settingchange="settingChange" @resourcesettingchange="resourceSettingChange"
-           @ui-option-change="uiOptionChange" @changetab="changeTab" @sendfeature="sendFeature">
+           @ui-option-change="uiOptionChange" @sendfeature="sendFeature">
     </component>
 </div>
