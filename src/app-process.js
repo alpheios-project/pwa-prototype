@@ -2,9 +2,9 @@ import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
-  Options, LocalStorageArea, UIStateAPI, HTMLConsole, LongTap, MouseDblClick, Swipe } from 'alpheios-components'
+  Options, LocalStorageArea, UIStateAPI, Language, HTMLConsole, LongTap, MouseDblClick, Swipe } from 'alpheios-components'
 // import TextSelector from '../node_modules/alpheios-components/src/lib/selection/text-selector.js'
-import UIControllerMobile from './lib/ui-controller-mobile.js'
+import UiControllerPwa from './lib/ui-controller-pwa.js'
 import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
 
@@ -33,6 +33,7 @@ const availableSkins = [
 export default class AppProcess {
   constructor () {
     this.state = new UIStateAPI()
+    this.state.selectionLang = new Language() // A new name to avoid conflicts with currently used `currentLanguage`
     this.state.status = UIStateAPI.statuses.script.PENDING
     this.state.panelStatus = UIStateAPI.statuses.panel.CLOSED
     this.options = new Options(DefaultsLoader.fromJSON(ContentOptionDefaults), LocalStorageArea)
@@ -57,7 +58,7 @@ export default class AppProcess {
     // Checks whether this is a test page
     this.hasTestContent = !!document.querySelector(`[data-alpheios-pwa-test-content="true"]`)
 
-    this.ui = new UIControllerMobile(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
+    this.ui = new UiControllerPwa(this.state, this.options, this.langOptions, this.uiOptions, pckg, template)
 
     if (this.hasTestContent) {
       let versionBox = document.querySelector('.alpheios-pwa-test-version')

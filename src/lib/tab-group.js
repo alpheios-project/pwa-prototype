@@ -2,6 +2,7 @@ import TabItem from './tab-item.js'
 
 export default class TabGroup {
   constructor (...items) {
+    this.initial = items
     this._items = new Map()
     this.add(...items)
 
@@ -9,6 +10,16 @@ export default class TabGroup {
     for (const item of this.items) {
       this.vueDM[item.name] = item
     }
+  }
+
+  reset () {
+    for (const initialItem of this.initial) {
+      if (this._items.has(initialItem.name)) {
+        this._items.get(initialItem.name).reset(initialItem)
+      }
+    }
+    console.log(`Tab group has been reset`)
+    return this
   }
 
   get items () {

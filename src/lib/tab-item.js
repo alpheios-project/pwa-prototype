@@ -9,6 +9,10 @@ export default class TabItem {
     this.favorite = favorite
   }
 
+  reset (name, icon = '', descr = '', tabName = name, favorite = false, selected = false, disabled = false) {
+    this.disabled = disabled
+  }
+
   get enabled () {
     return !this.disabled
   }

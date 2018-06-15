@@ -1,65 +1,65 @@
 <template>
-    <div class="auk alpheios-panel-mobile" :class="classes" :style="this.data.styles"
+    <div class="auk alph-panel-pwa" :class="classes" :style="this.data.styles"
          data-component="alpheios-panel" data-resizable="true" data-alph-exclude-long-tap-cpe="true"
          v-show="data.isOpen"
          :data-notification-visible="data.notification.important"> <!-- Show only important notifications for now -->
 
-        <div id="panel-header" class="alpheios-panel-mobile__header">
+        <div id="panel-header" class="alph-panel-pwa__hdr">
             <span @click="mobileMenuOpen = !mobileMenuOpen" data-alph-exclude-all-cpe="true"
-                  class="alpheios-panel-mobile__header-nav-btn alpheios-panel-mobile__header-nav-btn--mobile-menu">
+                  class="alph-panel-pwa__hdr-nav-btn alph-panel-pwa__hdr-nav-btn--mobile-menu">
               <menu-icon class="icon"></menu-icon>
             </span>
 
-            <div class="alpheios-panel-mobile__header-logo">
-                <img class="alpheios-panel-mobile__header-logo-img" src="../images/icon.png">
+            <div class="alph-panel-pwa__hdr-logo">
+                <img class="alph-panel-pwa__hdr-logo-img" src="../images/icon.png">
             </div>
 
-            <div class="alpheios-panel-mobile__header-toolbar-mini">
-                <div v-for="tabItem in data.tabGroup.vueDM" v-show="visibleInToolbar(tabItem)"
-                     class="alpheios-panel-mobile__header-nav-item"
-                     v-bind:class="{ active: tabItem.selected }" @click="data.tabGroup.select(tabItem.tabName)">
-                    <span class="alpheios-panel-mobile__header-nav-btn" v-html="tabItem.icon"></span>
+            <div class="alph-panel-pwa__hdr-toolbar-mini">
+                <div v-for="tabItem in data.tabs.vueDM" v-show="!tabItem.disabled && tabItem.favorite"
+                     class="alph-panel-pwa__hdr-nav-item"
+                     v-bind:class="{ active: tabItem.selected }" @click="data.tabs.select(tabItem.tabName)">
+                    <span class="alph-panel-pwa__hdr-nav-btn" v-html="tabItem.icon"></span>
                 </div>
             </div>
 
-            <div class="alpheios-panel-mobile__header-menu" v-bind:class="{ open: mobileMenuOpen }"
+            <div class="alph-panel-pwa__hdr-menu" v-bind:class="{ open: mobileMenuOpen }"
                  data-alph-exclude-all-cpe="true">
-                <div v-for="tabItem in data.tabGroup.vueDM" v-show="!tabItem.disabled"
-                     class="alpheios-panel-mobile__header-nav-item"
+                <div v-for="tabItem in data.tabs.vueDM" v-show="!tabItem.disabled"
+                     class="alph-panel-pwa__hdr-nav-item"
                      v-bind:class="{ active: tabItem.selected }" @click="selectMenuItem(tabItem.tabName)">
-                    <span class="alpheios-panel-mobile__header-nav-btn" v-html="tabItem.icon"></span>
-                    <span class="alpheios-panel-mobile__header-nav-btn-text">{{ tabItem.tabName }}</span>
+                    <span class="alph-panel-pwa__hdr-nav-btn" v-html="tabItem.icon"></span>
+                    <span class="alph-panel-pwa__hdr-nav-btn-text">{{ tabItem.tabName }}</span>
                 </div>
             </div>
 
 
-            <div class="alpheios-panel-mobile__header-btn-group--end" data-alph-exclude-all-cpe="true">
-                <span @click="closePanelAndMenu" class="alpheios-panel-mobile__header-action-btn">
+            <div class="alph-panel-pwa__hdr-btn-group--end" data-alph-exclude-all-cpe="true">
+                <span @click="closePanelAndMenu" class="alph-panel-pwa__hdr-action-btn">
                     <close-icon></close-icon>
                 </span>
             </div>
 
         </div>
 
-        <div class="alpheios-panel-mobile__content">
-            <div v-show="data.tabGroup.vueDM.info.selected" class="alpheios-panel-mobile__tab-panel">
+        <div class="alph-panel-pwa__content">
+            <div v-show="data.tabs.vueDM.info.selected" class="alph-panel-pwa__tab-panel">
                 <info :data="data.infoComponentData" :messages="data.l10n.messages"></info>
             </div>
 
-            <div v-show="data.tabGroup.vueDM.morphology.selected" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabs.vueDM.morphology.selected" class="alph-panel-pwa__tab-panel">
                 <div v-show="!morphDataReady && !noLanguage">
-                    <p class="alpheios-panel-mobile__progress-message">
+                    <p class="alph-panel-pwa__progress-message">
                         Getting information on a
-                        <span class="alpheios-panel-mobile__progress-message-accent">{{data.status.languageName}}</span>
+                        <span class="alph-panel-pwa__progress-message-accent">{{data.status.languageName}}</span>
                         word <span
-                            class="alpheios-panel-mobile__progress-message-accent">{{data.status.selectedText}}</span>
+                            class="alph-panel-pwa__progress-message-accent">{{data.status.selectedText}}</span>
                     </p>
-                    <div class="alpheios-panel-mobile__progress-wrapper">
-                        <div class="alpheios-panel-mobile__progress-border">
-                            <div class="alpheios-panel-mobile__progress-whitespace">
-                                <div class="alpheios-panel-mobile__progress-line"></div>
+                    <div class="alph-panel-pwa__progress-wrapper">
+                        <div class="alph-panel-pwa__progress-border">
+                            <div class="alph-panel-pwa__progress-whitespace">
+                                <div class="alph-panel-pwa__progress-line"></div>
                                 <!-- No lexical data is available yet -->
-                                <div class="alpheios-panel-mobile__progress-text">
+                                <div class="alph-panel-pwa__progress-text">
                                     {{data.l10n.messages.PLACEHOLDER_POPUP_DATA}}
                                 </div>
                             </div>
@@ -96,69 +96,68 @@
                 </div>
             </div>
 
-            <div v-show="data.tabGroup.vueDM.definitions.selected" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabs.vueDM.definitions.selected" class="alph-panel-pwa__tab-panel">
 
                 <!-- Short definitions -->
                 <div v-show="data.shortDefinitions.length < 1 && data.fullDefinitions.length < 1">
                     {{data.l10n.messages.PLACEHOLDER_DEFINITIONS}}
                 </div>
-                <div class="alpheios-panel-mobile__contentitem" v-for="definition in data.shortDefinitions">
+                <div class="alph-panel-pwa__contentitem" v-for="definition in data.shortDefinitions">
                     <shortdef :definition="definition"></shortdef>
                 </div>
 
                 <!-- Full definitions -->
-                <div class="alpheios-panel-mobile__contentitem" v-html="data.fullDefinitions"></div>
+                <div class="alph-panel-pwa__contentitem" v-html="data.fullDefinitions"></div>
             </div>
 
             <!-- v-show="inflectionsTabVisible" -->
-            <div v-show="data.tabGroup.vueDM.inflections.selected" :id="inflectionsPanelID" class="alpheios-panel-mobile__tab-panel">
-                <inflections class="alpheios-panel-mobile-inflections"
+            <div v-show="data.tabs.vueDM.inflections.selected" :id="inflectionsPanelID" class="alph-panel-pwa__tab-panel">
+                <inflections class="alph-panel-pwa-inflections"
                              :data="data.inflectionComponentData" :locale="data.settings.locale.currentValue"
-                             :messages="data.l10n.messages" @contentwidth="setContentWidth">
+                             :messages="data.l10n.messages" @contentwidth="setContentWidth" @event="inflectionsEvent">
                 </inflections>
             </div>
 
-            <div v-show="data.tabGroup.vueDM.grammar.selected" class="alpheios-panel-mobile__tab-panel
-                alpheios-panel-mobile__tab-panel--no-padding alpheios-panel-mobile__tab-panel--fw">
+            <div v-show="data.tabs.vueDM.grammar.selected" class="alph-panel-pwa__tab-panel
+                alph-panel-pwa__tab-panel--no-padding alph-panel-pwa__tab-panel--fw">
                 <grammar :res="data.grammarRes"></grammar>
             </div>
 
-            <!-- treebankTabVisible -->
-            <div v-show="data.tabGroup.vueDM.treebank.selected" class="alpheios-panel-mobile__tab-panel
-                alpheios-panel-mobile__tab-panel--no-padding alpheios-panel-mobile__tab-panel--fw">
+            <div v-show="data.tabs.vueDM.treebank.selected" class="alph-panel-pwa__tab-panel
+                alph-panel-pwa__tab-panel--no-padding alph-panel-pwa__tab-panel--fw">
                 <treebank :res="data.treebankComponentData.data"
                           :locale="data.settings.locale.currentValue" :visible="data.treebankComponentData.visible"
                           :messages="data.l10n.messages" @treebankcontentwidth="setTreebankContentWidth">
                 </treebank>
             </div>
 
-            <div v-show="data.tabGroup.vueDM.status.selected" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabs.vueDM.status.selected" class="alph-panel-pwa__tab-panel">
                 <div v-for="message in data.messages">
-                    <div class="alpheios-panel-mobile__message">{{message}}</div>
+                    <div class="alph-panel-pwa__message">{{message}}</div>
                 </div>
             </div>
 
-            <div v-show="data.tabGroup.vueDM.options.selected" class="alpheios-panel-mobile__tab-panel">
+            <div v-show="data.tabs.vueDM.options.selected" class="alph-panel-pwa__tab-panel">
                 <setting :data="data.settings.preferredLanguage" @change="settingChanged"
-                         :classes="['alpheios-panel-mobile__options-item']"></setting>
+                         :classes="['alph-panel-pwa__options-item']"></setting>
                 <setting :data="data.settings.verboseMode" @change="settingChanged"
-                         :classes="['alpheios-panel-mobile__options-item']"></setting>
+                         :classes="['alph-panel-pwa__options-item']"></setting>
                 <setting :data="data.uiOptions.items.skin" @change="uiOptionChanged"
-                         :classes="['alpheios-panel-mobile__options-item']"></setting>
+                         :classes="['alph-panel-pwa__options-item']"></setting>
                 <setting :data="languageSetting" @change="resourceSettingChanged"
-                         :classes="['alpheios-panel-mobile__options-item']"
+                         :classes="['alph-panel-pwa__options-item']"
                          :key="languageSetting.name"
                          v-if="languageSetting.values.length > 1"
                          v-for="languageSetting in data.resourceSettings.lexicons"></setting>
             </div>
         </div>
-        <div class="alpheios-panel-mobile__notifications uk-text-small" :class="notificationClasses"
+        <div class="alph-panel-pwa__notifications uk-text-small" :class="notificationClasses"
              v-show="data.notification.important">
-            <div v-html="data.notification.text" class="alpheios-panel-mobile__notifications-text"></div>
+            <div v-html="data.notification.text" class="alph-panel-pwa__notifications-text"></div>
             <setting :data="data.settings.preferredLanguage" :show-title="false"
-                     :classes="['alpheios-panel-mobile__notifications--lang-switcher']" @change="settingChanged"
+                     :classes="['alph-panel-pwa__notifications--lang-switcher']" @change="settingChanged"
                      v-show="data.notification.showLanguageSwitcher"></setting>
-            <div @click="closeNotifications" class="alpheios-panel-mobile__notifications-close-btn">
+            <div @click="closeNotifications" class="alph-panel-pwa__notifications-close-btn">
                 <close-icon></close-icon>
             </div>
         </div>
@@ -170,30 +169,20 @@
   // import interact from 'interactjs'
 
   // Embeddable SVG icons
-  import MorphologyIcon from '../images/inline-icons/language.svg'
   import MenuIcon from '../images/inline-icons/menu.svg'
 
   export default {
     extends: PanelBase,
     components: {
       info: InfoPWA,
-      morphologyIcon: MorphologyIcon,
       menuIcon: MenuIcon
     },
     data: function () {
       return {
-        mobileMenuOpen: false, // Stores a mobile menu open state, is closed by default,
-        mIcon: MorphologyIcon
+        mobileMenuOpen: false // Stores a mobile menu open state, is closed by default,
       }
     },
     computed: {
-      currentTabName () {
-        for (const key of Object.keys(this.data.tabs)) {
-          if (this.data.tabs[key]) { return key }
-        }
-        return ''
-      },
-
       morphDataReady: function () {
         return this.data.morphDataReady
       },
@@ -211,17 +200,14 @@
         this.$emit('sendfeature', data)
       },
 
-      visibleInToolbar (tabItem) {
-        if (document.documentElement.clientWidth < 600) {
-          // Show only favorite tab items on narrow screens
-          return !tabItem.disabled && tabItem.favorite
-        }
-        return !tabItem.disabled
+      inflectionsEvent: function (type, data) {
+        // Re-throw event to a UI controller
+        this.$emit('componentevent', 'inflections', type, data)
       },
 
       selectMenuItem (name) {
         this.mobileMenuOpen = false
-        this.data.tabGroup.select(name)
+        this.data.tabs.select(name)
       },
 
       /*
@@ -241,9 +227,9 @@
     $alpheios-panel-height: 50vh;
     $alpheios-panel-header-height: 40px;
     $alpheios-panel-title-height: 20px;
-    $alpheios-mobile-breakpoint: 600px;
+    $alpheios-mobile-breakpoint: 480px;
 
-    .alpheios-panel-mobile {
+    .alph-panel-pwa {
         z-index: 2000;
         position: fixed;
         background: #FFF;
@@ -262,11 +248,11 @@
         grid-template-areas: "header" "content" "content"
     }
 
-    .alpheios-panel-mobile[data-notification-visible="true"] {
+    .alph-panel-pwa[data-notification-visible="true"] {
         grid-template-areas: "header" "notifications" "content"
     }
 
-    .alpheios-panel-mobile__header {
+    .alph-panel-pwa__hdr {
         position: relative;
         box-sizing: border-box;
         grid-area: header;
@@ -274,32 +260,32 @@
         touch-action: none; /* Required to support touch actions such as swipe by the panel */
     }
 
-    .alpheios-panel-mobile__header-logo {
+    .alph-panel-pwa__hdr-logo {
         flex-grow: 0;
         justify-content: flex-start;
     }
 
-    .alpheios-panel-mobile__header-selection {
+    .alph-panel-pwa__hdr-selection {
         font-size: 16px;
         font-weight: 700;
         color: $alpheios-toolbar-color;
     }
 
-    .alpheios-panel-mobile__header-word {
+    .alph-panel-pwa__hdr-word {
         font-size: 14px;
         position: relative;
         top: -1px;
     }
 
-    .#{$alpheios-uikit-namespace} .alpheios-panel-mobile__header-logo-img {
+    .#{$alpheios-uikit-namespace} .alph-panel-pwa__hdr-logo-img {
         width: auto;
         height: 30px;
         padding-top: 5px;
     }
 
-    .alpheios-panel-mobile__header-action-btn,
-    .alpheios-panel-mobile__header-action-btn.active:hover,
-    .alpheios-panel-mobile__header-action-btn.active:focus {
+    .alph-panel-pwa__hdr-action-btn,
+    .alph-panel-pwa__hdr-action-btn.active:hover,
+    .alph-panel-pwa__hdr-action-btn.active:focus {
         display: block;
         width: 20px;
         height: 20px;
@@ -311,23 +297,23 @@
         stroke: $alpheios-link-color-dark-bg;
     }
 
-    .alpheios-panel-mobile__header-action-btn:hover,
-    .alpheios-panel-mobile__header-action-btn:focus,
-    .alpheios-panel-mobile__header-action-btn.active {
+    .alph-panel-pwa__hdr-action-btn:hover,
+    .alph-panel-pwa__hdr-action-btn:focus,
+    .alph-panel-pwa__hdr-action-btn.active {
         fill: $alpheios-link-hover-color;
         stroke: $alpheios-link-hover-color;
     }
 
-    .alpheios-panel-mobile__header-action-btn.alpheios-panel-mobile__header-action-btn--narrow {
+    .alph-panel-pwa__hdr-action-btn.alph-panel-pwa__hdr-action-btn--narrow {
         margin: 0;
     }
 
-    .alpheios-panel-mobile__body {
+    .alph-panel-pwa__body {
         display: flex;
         height: calc(#{$alpheios-panel-height} - #{$alpheios-panel-header-height});
     }
 
-    .alpheios-panel-mobile__content {
+    .alph-panel-pwa__content {
         overflow: auto;
         grid-area: content;
         direction: ltr;
@@ -336,7 +322,7 @@
         width: 100vw;
     }
 
-    .alpheios-panel-mobile__notifications {
+    .alph-panel-pwa__notifications {
         display: none;
         position: relative;
         padding: 10px;
@@ -346,17 +332,11 @@
         justify-content: space-between;
     }
 
-    @media (min-width: $alpheios-mobile-breakpoint) {
-        .alpheios-panel-mobile__notifications {
-            padding: 10px 20px;
-        }
-    }
-
-    .alpheios-panel-mobile__notifications-text {
+    .alph-panel-pwa__notifications-text {
         flex-grow: 1;
     }
 
-    .alpheios-panel-mobile__notifications-close-btn {
+    .alph-panel-pwa__notifications-close-btn {
         width: 20px;
         height: 20px;
         margin: 0;
@@ -365,67 +345,66 @@
         stroke: $alpheios-link-color-dark-bg;
     }
 
-    .alpheios-panel-mobile__notifications-close-btn:hover,
-    .alpheios-panel-mobile__notifications-close-btn:focus {
+    .alph-panel-pwa__notifications-close-btn:hover,
+    .alph-panel-pwa__notifications-close-btn:focus {
         fill: $alpheios-link-hover-color;
         stroke: $alpheios-link-hover-color;
     }
 
-    .alpheios-panel-mobile__notifications--lang-switcher {
+    .alph-panel-pwa__notifications--lang-switcher {
         font-size: 12px;
         margin-right: 10px;
     }
 
-    .alpheios-panel-mobile__notifications--lang-switcher .uk-select {
+    .alph-panel-pwa__notifications--lang-switcher .uk-select {
         width: 120px;
         height: 25px;
     }
 
-    .alpheios-panel-mobile__notifications--important {
+    .alph-panel-pwa__notifications--important {
         background: $alpheios-icon-color;
     }
 
-    [data-notification-visible="true"] .alpheios-panel-mobile__notifications {
+    [data-notification-visible="true"] .alph-panel-pwa__notifications {
         display: flex;
     }
 
-    .alpheios-panel-mobile__tab-panel {
+    .alph-panel-pwa__tab-panel {
         display: flex;
         flex-grow: 1;
         flex-direction: column;
         padding: 20px;
     }
 
-    .alpheios-panel-mobile__tab-panel--fw {
+    .alph-panel-pwa__tab-panel--fw {
         width: 100%;
     }
 
-    .alpheios-panel-mobile__tab-panel--no-padding {
+    .alph-panel-pwa__tab-panel--no-padding {
         padding: 0;
     }
 
-    .alpheios-panel-mobile__message {
+    .alph-panel-pwa__message {
         margin-bottom: 0.5rem;
     }
 
-    .alpheios-panel-mobile__options-item {
+    .alph-panel-pwa__options-item {
         margin-bottom: 0.5rem;
         max-width: 300px;
     }
 
-    .alpheios-panel-mobile__contentitem {
+    .alph-panel-pwa__contentitem {
         margin-bottom: 1em;
     }
 
-    .alpheios-panel-mobile__header-nav-item {
+    .alph-panel-pwa__hdr-nav-item {
         cursor: pointer;
         text-transform: capitalize;
     }
 
-    .alpheios-panel-mobile__header-nav-btn {
+    .alph-panel-pwa__hdr-nav-btn {
         display: block;
         position: relative;
-        top: -2px;
         width: 20px;
         height: 20px;
         margin: 0 15px 0 5px;
@@ -435,28 +414,33 @@
         background-size: contain;
     }
 
-    .alpheios-panel-mobile__header-nav-btn.alpheios-panel-mobile__header-nav-btn--short {
+    .alph-panel-pwa__hdr-menu .alph-panel-pwa__hdr-nav-btn {
+        top: -4px;
+        left: 3px;
+    }
+
+    .alph-panel-pwa__hdr-nav-btn.alph-panel-pwa__hdr-nav-btn--short {
         margin: -10px 5px 20px;
     }
 
-    .alpheios-panel-mobile__header-nav-btn,
-    .alpheios-panel-mobile__header-nav-item.active:hover .alpheios-panel-mobile__header-nav-btn,
-    .alpheios-panel-mobile__header-nav-item.active:focus .alpheios-panel-mobile__header-nav-btn {
+    .alph-panel-pwa__hdr-nav-btn,
+    .alph-panel-pwa__hdr-nav-item.active:hover .alph-panel-pwa__hdr-nav-btn,
+    .alph-panel-pwa__hdr-nav-item.active:focus .alph-panel-pwa__hdr-nav-btn {
         fill: $alpheios-link-color-dark-bg;
         stroke: $alpheios-link-color-dark-bg;
     }
 
-    .alpheios-panel-mobile__header-nav-item:hover .alpheios-panel-mobile__header-nav-btn,
-    .alpheios-panel-mobile__header-nav-item:focus .alpheios-panel-mobile__header-nav-btn,
-    .alpheios-panel-mobile__header-nav-item.active .alpheios-panel-mobile__header-nav-btn {
+    .alph-panel-pwa__hdr-nav-item:hover .alph-panel-pwa__hdr-nav-btn,
+    .alph-panel-pwa__hdr-nav-item:focus .alph-panel-pwa__hdr-nav-btn,
+    .alph-panel-pwa__hdr-nav-item.active .alph-panel-pwa__hdr-nav-btn {
         fill: $alpheios-link-hover-color;
         stroke: $alpheios-link-hover-color;
     }
 
     @media (hover: none) {
-        .alpheios-panel-mobile__header-nav-btn,
-        .alpheios-panel-mobile__header-nav-item:hover .alpheios-panel-mobile__header-nav-btn,
-        .alpheios-panel-mobile__header-nav-item:focus .alpheios-panel-mobile__header-nav-btn {
+        .alph-panel-pwa__hdr-nav-btn,
+        .alph-panel-pwa__hdr-nav-item:hover .alph-panel-pwa__hdr-nav-btn,
+        .alph-panel-pwa__hdr-nav-item:focus .alph-panel-pwa__hdr-nav-btn {
             display: block;
             width: 20px;
             height: 20px;
@@ -467,61 +451,70 @@
             stroke: $alpheios-link-color-dark-bg;
         }
 
-        .alpheios-panel-mobile__header-nav-item.active .alpheios-panel-mobile__header-nav-btn,
-        .alpheios-panel-mobile__header-nav-item.active:hover .alpheios-panel-mobile__header-nav-btn,
-        .alpheios-panel-mobile__header-nav-item.active:focus .alpheios-panel-mobile__header-nav-btn {
+        .alph-panel-pwa__hdr-nav-item.active .alph-panel-pwa__hdr-nav-btn,
+        .alph-panel-pwa__hdr-nav-item.active:hover .alph-panel-pwa__hdr-nav-btn,
+        .alph-panel-pwa__hdr-nav-item.active:focus .alph-panel-pwa__hdr-nav-btn {
             fill: $alpheios-link-hover-color;
             stroke: $alpheios-link-hover-color;
         }
     }
 
     // region Styles of nested components
-    .alpheios-panel-mobile .alpheios-popup__morph-cont {
+    .alph-panel-pwa .alpheios-popup__morph-cont {
         overflow: visible;
         margin: 0 0 2rem;
         padding: 0;
         border: none;
     }
 
-    .alpheios-panel-mobile .alpheios-morph__lexemes {
+    .alph-panel-pwa .alpheios-morph__lexemes {
         font-size: 0.875rem;
     }
 
-    .alpheios-panel-mobile .alpheios-popup__morph-cont-providers-header {
+    .alph-panel-pwa .alpheios-popup__morph-cont-providers-header {
         font-size: 0.875rem;
         margin-top: 1.5rem;
     }
-
     // endregion Styles of nested components
 
     // region Mobile menu styles
-    .alpheios-panel-mobile__header {
+    .alph-panel-pwa__hdr {
         display: flex;
         justify-content: space-between;
         padding: 0 15px;
     }
 
-    .alpheios-panel-mobile__header-nav-btn--mobile-menu {
+    .alph-panel-pwa__hdr-nav-btn--mobile-menu {
         position: relative;
         top: 5px;
         margin: 0;
     }
 
-    .alpheios-panel-mobile__header-logo {
+    .alph-panel-pwa__hdr-logo {
         display: none;
     }
 
-    .alpheios-panel-mobile__header-toolbar-mini {
+    .alph-panel-pwa__hdr-toolbar-mini {
         flex-grow: 1;
         text-transform: capitalize;
         text-align: center;
         position: relative;
-        top: 7px;
         display: flex;
         justify-content: center;
+        align-items: stretch;
     }
 
-    .alpheios-panel-mobile__header-menu {
+    .alph-panel-pwa__hdr-toolbar-mini .alph-panel-pwa__hdr-nav-item {
+        padding: 0 15px;
+    }
+
+    .alph-panel-pwa__hdr-toolbar-mini .alph-panel-pwa__hdr-nav-btn {
+        margin: 0;
+        position: relative;
+        top: 6px;
+    }
+
+    .alph-panel-pwa__hdr-menu {
         position: absolute;
         top: $alpheios-panel-header-height;
         left: 0;
@@ -537,17 +530,17 @@
         direction: ltr;
     }
 
-    .alpheios-panel-mobile__header-menu.open {
+    .alph-panel-pwa__hdr-menu.open {
         display: flex;
         justify-content: space-evenly;
         z-index: 10;
     }
 
-    .alpheios-panel-mobile__header-menu .tooltiptext {
+    .alph-panel-pwa__hdr-menu .tooltiptext {
         display: none;
     }
 
-    .alpheios-panel-mobile__header-btn-group--end {
+    .alph-panel-pwa__hdr-btn-group--end {
         display: flex;
         flex-wrap: nowrap;
         flex-direction: column;
@@ -555,11 +548,7 @@
         box-sizing: border-box;
     }
 
-    .alpheios-panel-mobile__header-nav-item {
-
-    }
-
-    .alpheios-panel-mobile__header-menu .alpheios-panel-mobile__header-nav-item {
+    .alph-panel-pwa__hdr-menu .alph-panel-pwa__hdr-nav-item {
         display: flex;
         align-items: center;
         padding: 10px;
@@ -568,16 +557,16 @@
     }
 
     @media (min-width: $alpheios-mobile-breakpoint) {
-        .alpheios-panel-mobile__header-toolbar-mini,
-        .alpheios-panel-mobile__header-nav-btn--mobile-menu {
+        .alph-panel-pwa__hdr-toolbar-mini,
+        .alph-panel-pwa__hdr-nav-btn--mobile-menu {
             display: none;
         }
 
-        .alpheios-panel-mobile__header-logo {
+        .alph-panel-pwa__hdr-logo {
             display: block;
         }
 
-        .alpheios-panel-mobile__header-menu {
+        .alph-panel-pwa__hdr-menu {
             position: static;
             width: auto;
             height: auto;
@@ -587,36 +576,39 @@
             flex-direction: row;
         }
 
-        .alpheios-panel-mobile__header-menu .alpheios-panel-mobile__header-nav-item {
+        .alph-panel-pwa__hdr-menu .alph-panel-pwa__hdr-nav-item {
             padding: 0;
             border-bottom: none;
             flex-grow: 0;
         }
 
-        .alpheios-panel-mobile__header-menu.open {
+        .alph-panel-pwa__hdr-menu.open {
             justify-content: center;
         }
 
-        .alpheios-panel-mobile__header-btn-group--end {
+        .alph-panel-pwa__hdr-btn-group--end {
             position: static;
             flex-direction: row;
             justify-content: flex-end;
         }
 
-        .alpheios-panel-mobile__header-nav-item {
+        .alph-panel-pwa__hdr-nav-item {
             padding: 0;
             border: none;
         }
 
-        .alpheios-panel-mobile__header-nav-btn {
+        .alph-panel-pwa__hdr-nav-btn {
             margin: 0 15px;
         }
 
-        .alpheios-panel-mobile__header-nav-btn-text {
+        .alph-panel-pwa__hdr-nav-btn-text {
             display: none;
         }
-    }
 
+        .alph-panel-pwa__notifications {
+            padding: 10px 20px;
+        }
+    }
     // endregion Mobile menu styles
 
     // region Tooltip fix
@@ -624,40 +616,39 @@
         margin-left: initial;
         transform: translateX(-50%)
     }
-
     // endregion Tooltip fix
 
-    p.alpheios-panel-mobile__progress-message {
+    p.alph-panel-pwa__progress-message {
         padding: 0 1rem;
         margin-bottom: 10px;
     }
 
-    .alpheios-panel-mobile__progress-message-accent {
+    .alph-panel-pwa__progress-message-accent {
         color: $alpheios-toolbar-color;
         font-weight: 700;
     }
 
     // region Wait animation
-    .alpheios-panel-mobile__progress-wrapper {
+    .alph-panel-pwa__progress-wrapper {
         height: 1.2rem;
         margin: 0 1rem 2rem;
         font-size: 0.875rem;
     }
 
-    .alpheios-panel-mobile__progress-border {
+    .alph-panel-pwa__progress-border {
         border: 2px solid $alpheios-icon-color;
         height: 100%;
         padding: 2px;
     }
 
-    .alpheios-panel-mobile__progress-whitespace {
+    .alph-panel-pwa__progress-whitespace {
         overflow: hidden;
         height: 100%;
         margin: 0 auto;
         position: relative;
     }
 
-    .alpheios-panel-mobile__progress-line {
+    .alph-panel-pwa__progress-line {
         position: absolute;
         height: 100%;
         width: 100%;
@@ -665,7 +656,7 @@
         animation: cssload-slide 5.75s steps(40) infinite;
     }
 
-    .alpheios-panel-mobile__progress-text {
+    .alph-panel-pwa__progress-text {
         text-transform: uppercase;
         color: $alpheios-copy-color;
         position: absolute;

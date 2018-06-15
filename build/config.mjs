@@ -89,7 +89,7 @@ const webpack = {
     plugins: [
       new HtmlWebpackPlugin({
         filename: 'index.html',
-        template: path.join(projectRoot, 'src/index-dev.html')
+        template: path.join(projectRoot, 'src/test-content/index-dev.html')
       }),
       new HtmlWebpackPlugin({
         filename: 'caesar-gallic-war.html',
@@ -102,7 +102,7 @@ const webpack = {
       }),
       new HtmlWebpackPlugin({
         filename: 'odyssey.html',
-        template: path.join(projectRoot, 'src/content/odyssey.html')
+        template: path.join(projectRoot, 'src/test-content/odyssey.html')
       }),
       new HtmlWebpackPlugin({
         filename: 'divan.html',

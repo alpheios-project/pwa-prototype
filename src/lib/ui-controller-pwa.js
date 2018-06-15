@@ -8,7 +8,7 @@ import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
 // A panel component
 // import Panel from '../../node_modules/alpheios-components/src/vue-components/panel.vue'
 
-import PanelMobile from '../components/panel-mobile.vue'
+import Panel from '../components/panel-pwa.vue'
 import TabGroup from './tab-group.js'
 
 import L10n from '../../node_modules/alpheios-components/src/lib/l10n/l10n.js'
@@ -28,7 +28,7 @@ const languageNames = new Map([
   [Constants.LANG_PERSIAN, 'Persian']
 ])
 
-export default class UIControllerMobile extends BaseUIController {
+export default class UiControllerPwa extends BaseUIController {
   /**
    * @constructor
    * @param {UIStateAPI} state - State object for the parent application
@@ -48,9 +48,9 @@ export default class UIControllerMobile extends BaseUIController {
     this.options = options
     this.resourceOptions = resourceOptions
     this.uiOptions = uiOptions
-    this.settings = UIControllerMobile.settingValues
+    this.settings = UiControllerPwa.settingValues
     this.irregularBaseFontSizeClassName = 'alpheios-irregular-base-font-size'
-    this.irregularBaseFontSize = !UIControllerMobile.hasRegularBaseFontSize()
+    this.irregularBaseFontSize = !UiControllerPwa.hasRegularBaseFontSize()
 
     /**
      * An object that is used by `info` component to display a PWA name and a version
@@ -120,22 +120,22 @@ export default class UIControllerMobile extends BaseUIController {
 </svg>
     `
 
-    let tabGroup = new TabGroup(
+    let tabs = new TabGroup(
       ['info', infoIcon, '', 'info'],
       ['morphology', morphIcon, '', 'morphology', true, true],
       ['definitions', definitionsIcon, '', 'definitions', true],
-      ['inflections', inflectionsIcon, '', 'inflections', true],
-      ['grammar', grammarIcon, '', 'grammar'],
-      ['treebank', treebankIcon, '', 'treebank'],
+      ['inflections', inflectionsIcon, '', 'inflections', true, false, true],
+      ['grammar', grammarIcon, '', 'grammar', false, false, true],
+      ['treebank', treebankIcon, '', 'treebank', false, false, true],
       ['options', optionsIcon, '', 'options'],
-      ['status', statusIcon, '', 'status']
+      ['status', statusIcon, '', 'status', false, false, true]
     )
 
     const templateDefaults = {
       html: Template,
       panelId: 'alpheios-panel',
       panelComponents: {
-        panel: PanelMobile
+        panel: Panel
       },
       defaultPanelComponent: 'panel',
       draggable: true,
@@ -173,11 +173,12 @@ export default class UIControllerMobile extends BaseUIController {
     // Initialize components
     this.panel = new Vue({
       el: `#${this.template.panelId}`,
-      components: { panel: PanelMobile },
+      components: { panel: Panel },
       data: {
         panelData: {
+          state: this.state,
           isOpen: false,
-          tabGroup: tabGroup,
+          tabs: tabs,
           verboseMode: this.state.verboseMode,
           grammarRes: {},
           lexemes: [],
@@ -210,7 +211,7 @@ export default class UIControllerMobile extends BaseUIController {
           },
           infoComponentData: {
             manifest: this.manifest,
-            languageName: UIControllerMobile.getLanguageName(this.state.currentLanguage)
+            languageName: UiControllerPwa.getLanguageName(this.state.currentLanguage)
           },
           messages: [],
           notification: {
@@ -224,6 +225,7 @@ export default class UIControllerMobile extends BaseUIController {
             languageName: ''
           },
           settings: this.options.items,
+          // This object will be passed to the treebank component
           treebankComponentData: {
             data: {
               word: {},
@@ -281,6 +283,7 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         clearContent: function () {
+          this.panelData.tabs.reset()
           this.panelData.morphDataReady = false
           this.panelData.morphDataNotFound = false
           this.panelData.shortDefinitions = []
@@ -320,7 +323,7 @@ export default class UIControllerMobile extends BaseUIController {
           this.panelData.notification.visible = true
           let languageName
           if (homonym) {
-            languageName = UIControllerMobile.getLanguageName(homonym.languageID)
+            languageName = UiControllerPwa.getLanguageName(homonym.languageID)
           } else {
             languageName = this.panelData.l10n.messages.TEXT_NOTICE_LANGUAGE_UNKNOWN // TODO this wil be unnecessary when the morphological adapter returns a consistent response for erors
           }
@@ -336,7 +339,7 @@ export default class UIControllerMobile extends BaseUIController {
         },
 
         showStatusInfo: function (selectionText, languageID) {
-          this.panelData.status.languageName = UIControllerMobile.getLanguageName(languageID)
+          this.panelData.status.languageName = UiControllerPwa.getLanguageName(languageID)
           this.panelData.status.selectedText = selectionText
         },
 
@@ -378,8 +381,23 @@ export default class UIControllerMobile extends BaseUIController {
 
         sendFeature: function (feature) {
           this.requestGrammar(feature)
-          this.tabGroup.select('grammar')
           return this
+        },
+
+        componentEvent: function (component, type, data) {
+          console.log('Component event', component, type, data)
+          if (component === 'inflections') {
+            if (type === 'dataUpdate') {
+              // Inflections component data has been updated
+              console.log(`Inflections data update`)
+              if (data.hasMatchingViews) {
+                console.log('Inflections enabled')
+                this.panelData.tabs.enable('inflections')
+              } else {
+                this.panelData.tabs.disable('inflections')
+              }
+            }
+          }
         },
 
         newLexicalRequest: function () {
@@ -568,7 +586,7 @@ export default class UIControllerMobile extends BaseUIController {
 
   newLexicalRequest () {
     this.panel.newLexicalRequest()
-    this.clear().open().panel.panelData.tabGroup.select('morphology')
+    this.clear().open().panel.panelData.tabs.select('morphology')
     return this
   }
 
@@ -608,8 +626,10 @@ export default class UIControllerMobile extends BaseUIController {
   updateGrammar (urls) {
     if (urls.length > 0) {
       this.panel.panelData.grammarRes = urls[0]
+      this.panel.panelData.tabs.enable('grammar')
     } else {
       this.panel.panelData.grammarRes = { provider: this.l10n.messages.TEXT_NOTICE_GRAMMAR_NOTFOUND }
+      this.panel.panelData.tabs.disable('grammar')
     }
     // todo show TOC or not found
   }
@@ -663,33 +683,52 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   updatePageAnnotationData (data) {
-    this.panel.panelData.treebankComponentData.data.page = data.treebank.page || {}
-  }
-
-  updateWordAnnotationData (data) {
+    console.log('Update page annotation data')
     if (data && data.treebank) {
-      this.panel.panelData.treebankComponentData.data.word = data.treebank.word || {}
-      this.panel.panelData.hasTreebank = data.treebank.word
-    } else {
-      this.panel.panelData.treebankComponentData.data.word = {}
-      this.panel.panelData.hasTreebank = false
+      this.panel.panelData.treebankComponentData.data.page = data.treebank.page || {}
+      this.panel.panelData.tabs.enable('treebank')
     }
   }
 
+  updateWordAnnotationData (data) {
+    console.log('Update word annotation data')
+    if (data && data.treebank) {
+      this.panel.panelData.treebankComponentData.data.word = data.treebank.word || {}
+      this.panel.panelData.hasTreebank = data.treebank.word
+      this.panel.panelData.tabs.enable('treebank')
+    } else {
+      this.panel.panelData.treebankComponentData.data.word = {}
+      this.panel.panelData.hasTreebank = false
+      this.panel.panelData.tabs.disable('treebank')
+    }
+  }
+
+  /**
+   * This method is called every time a selection language changes and once on page initialization
+   * @param {string} currentLanguage - A language code
+   */
   updateLanguage (currentLanguage) {
-    this.state.setItem('currentLanguage', currentLanguage)
-    let languageID = LanguageModelFactory.getLanguageIdFromCode(currentLanguage)
-    this.panel.requestGrammar({ type: 'table-of-contents', value: '', languageID: languageID })
-    this.panel.enableInflections(LanguageModelFactory.getLanguageModel(languageID).canInflect())
-    this.panel.panelData.infoComponentData.languageName = UIControllerMobile.getLanguageName(languageID)
-    Vue.set(this.panel.panelData, 'currentLanguageName', UIControllerMobile.getLanguageName(languageID))
-    console.log(`Current language is ${this.state.currentLanguage}`)
+    // TODO: update components to use `selectionLang` instead of `currentLanguage` and `currentLanguageName`
+    if (!this.state.selectionLang.is(currentLanguage)) {
+      this.state.selectionLang.set(currentLanguage)
+      this.state.setItem('currentLanguage', currentLanguage)
+      let languageID = LanguageModelFactory.getLanguageIdFromCode(currentLanguage)
+      this.panel.requestGrammar({type: 'table-of-contents', value: '', languageID: languageID})
+      this.panel.enableInflections(LanguageModelFactory.getLanguageModel(languageID).canInflect())
+      this.panel.panelData.infoComponentData.languageName = UiControllerPwa.getLanguageName(languageID)
+      Vue.set(this.panel.panelData, 'currentLanguageName', UiControllerPwa.getLanguageName(languageID))
+    }
   }
 
   updateVerboseMode () {
     this.state.setItem('verboseMode', this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     HTMLConsole.instance.enable(this.options.items.verboseMode.currentValue === this.settings.verboseMode)
     this.panel.panelData.verboseMode = this.state.verboseMode
+    if (this.options.items.verboseMode.currentValue === this.settings.verboseMode) {
+      this.panel.panelData.tabs.enable('status')
+    } else {
+      this.panel.panelData.tabs.disable('status')
+    }
   }
 
   updateInflections (inflectionData, homonym) {
@@ -711,7 +750,7 @@ export default class UIControllerMobile extends BaseUIController {
 
   setRootComponentClasses () {
     let classes = []
-    if (!UIControllerMobile.hasRegularBaseFontSize()) {
+    if (!UiControllerPwa.hasRegularBaseFontSize()) {
       classes.push(this.constructor.defaults.irregularBaseFontSizeClassName)
     }
     classes.push(`auk--${this.uiOptions.items.skin.currentValue}`)
@@ -724,11 +763,11 @@ export default class UIControllerMobile extends BaseUIController {
   }
 
   selectPrevTab () {
-    this.panel.panelData.tabGroup.selectPrev()
+    this.panel.panelData.tabs.selectPrev()
   }
 
   selectNextTab () {
-    this.panel.panelData.tabGroup.selectNext()
+    this.panel.panelData.tabs.selectNext()
   }
 
   getSelectedText (event) {
