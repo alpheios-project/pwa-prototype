@@ -381,6 +381,7 @@ export default class UiControllerPwa extends BaseUIController {
 
         sendFeature: function (feature) {
           this.requestGrammar(feature)
+          this.panelData.tabs.select('grammar')
           return this
         },
 
