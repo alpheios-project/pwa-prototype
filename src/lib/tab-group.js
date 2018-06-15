@@ -18,7 +18,6 @@ export default class TabGroup {
         this._items.get(initialItem.name).reset(initialItem)
       }
     }
-    console.log(`Tab group has been reset`)
     return this
   }
 

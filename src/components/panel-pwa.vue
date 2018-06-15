@@ -17,7 +17,7 @@
             <div class="alph-panel-pwa__hdr-toolbar-mini">
                 <div v-for="tabItem in data.tabs.vueDM" v-show="!tabItem.disabled && tabItem.favorite"
                      class="alph-panel-pwa__hdr-nav-item"
-                     v-bind:class="{ active: tabItem.selected }" @click="data.tabs.select(tabItem.tabName)">
+                     v-bind:class="{ active: tabItem.selected }" @click="selectTabItem(tabItem.tabName)">
                     <span class="alph-panel-pwa__hdr-nav-btn" v-html="tabItem.icon"></span>
                 </div>
             </div>
@@ -26,7 +26,7 @@
                  data-alph-exclude-all-cpe="true">
                 <div v-for="tabItem in data.tabs.vueDM" v-show="!tabItem.disabled"
                      class="alph-panel-pwa__hdr-nav-item"
-                     v-bind:class="{ active: tabItem.selected }" @click="selectMenuItem(tabItem.tabName)">
+                     v-bind:class="{ active: tabItem.selected }" @click="selectTabItem(tabItem.tabName)">
                     <span class="alph-panel-pwa__hdr-nav-btn" v-html="tabItem.icon"></span>
                     <span class="alph-panel-pwa__hdr-nav-btn-text">{{ tabItem.tabName }}</span>
                 </div>
@@ -205,7 +205,7 @@
         this.$emit('componentevent', 'inflections', type, data)
       },
 
-      selectMenuItem (name) {
+      selectTabItem (name) {
         this.mobileMenuOpen = false
         this.data.tabs.select(name)
       },
@@ -441,12 +441,6 @@
         .alph-panel-pwa__hdr-nav-btn,
         .alph-panel-pwa__hdr-nav-item:hover .alph-panel-pwa__hdr-nav-btn,
         .alph-panel-pwa__hdr-nav-item:focus .alph-panel-pwa__hdr-nav-btn {
-            display: block;
-            width: 20px;
-            height: 20px;
-            margin: 0 15px;
-            text-align: center;
-            cursor: pointer;
             fill: $alpheios-link-color-dark-bg;
             stroke: $alpheios-link-color-dark-bg;
         }
