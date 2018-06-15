@@ -15,7 +15,7 @@
     "component": "Panel"
   },
   "TEXT_INFO_READER_DESCRIPTION": {
-    "message": "This is a prototype of a mobile-friendly Alpheios reader application intended to offer a consistent user experience across devices and in varying network conditions. We envision offering a selection of texts accessible as individual applications on your mobile device. Alpheios services will be progressively available while offline based upon individual usage. This release is a prototype only. Our primary goal is to solicit feedback on mobile design paradigms and user preferences for Alpheios functionality in a mobile environment.",
+    "message": "This is a prototype of a mobile-friendly Alpheios reader application intended to provide a consistent user experience across devices and in varying network conditions. We envision offering a selection of texts accessible as individual applications on your mobile device. We also hope to give the user greater control over which features and content can be available for offline use, based upon the specific need at any given time. This release requires an online connection and is a prototype only. Our primary goal is to solicit feedback on mobile design features and user preferences for Alpheios functionality in a mobile environment.",
     "description": "info text",
     "component": "Panel"
   },
