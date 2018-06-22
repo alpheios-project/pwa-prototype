@@ -320,6 +320,7 @@
         box-sizing: border-box;
         display: flex;
         width: 100vw;
+        position: relative; // Need to set element as an offset parent for panel content items
     }
 
     .alph-panel-pwa__notifications {
