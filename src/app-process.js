@@ -1,11 +1,10 @@
 import {Constants} from 'alpheios-data-models'
 import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
 import {Lexicons} from 'alpheios-lexicon-client'
-import { HTMLSelector, LexicalQuery, LanguageOptionDefaults, UIOptionDefaults, DefaultsLoader,
+import { HTMLSelector, LexicalQuery, ContentOptionDefaults, LanguageOptionDefaults, UIOptionDefaults,
   Options, LocalStorageArea, UIStateAPI, Language, HTMLConsole, LongTap, MouseDblClick, Swipe } from 'alpheios-components'
 // import TextSelector from '../node_modules/alpheios-components/src/lib/selection/text-selector.js'
 import UiControllerPwa from './lib/ui-controller-pwa.js'
-import ContentOptionDefaults from './settings/content-options-defaults.json'
 import Package from '../package.json'
 
 // Popup components
@@ -36,10 +35,10 @@ export default class AppProcess {
     this.state.selectionLang = new Language() // A new name to avoid conflicts with currently used `currentLanguage`
     this.state.status = UIStateAPI.statuses.script.PENDING
     this.state.panelStatus = UIStateAPI.statuses.panel.CLOSED
-    this.options = new Options(DefaultsLoader.fromJSON(ContentOptionDefaults), LocalStorageArea)
+    this.options = new Options(ContentOptionDefaults, LocalStorageArea)
     this.maAdapter = new AlpheiosTuftsAdapter() // Morphological analyzer adapter, with default arguments
-    this.langOptions = new Options(DefaultsLoader.fromJSON(LanguageOptionDefaults), LocalStorageArea)
-    this.uiOptions = new Options(DefaultsLoader.fromJSON(UIOptionDefaults), LocalStorageArea)
+    this.langOptions = new Options(LanguageOptionDefaults, LocalStorageArea)
+    this.uiOptions = new Options(UIOptionDefaults, LocalStorageArea)
 
     for (const skin of availableSkins) { this.uiOptions.items.skin.addValue(skin.value, skin.text) }
     const template = {
@@ -49,7 +48,7 @@ export default class AppProcess {
     this.uiOptions.items.popup.addValue('popupMobile', 'Popup Mobile')
     let pckg
     try {
-      pckg = JSON.parse(Package)
+      pckg = Package
       console.log(`PWA version is ${pckg.version}`)
     } catch (e) {
       throw new Error(`Cannot parse package.json, its format is probably incorrect`)

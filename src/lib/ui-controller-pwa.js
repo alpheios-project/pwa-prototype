@@ -1,5 +1,6 @@
 /* global Node */
 import {Lexeme, Feature, Definition, LanguageModelFactory, Constants} from 'alpheios-data-models'
+import { ViewSetFactory } from 'alpheios-inflection-tables'
 import { HTMLSelector, LexicalQuery, HTMLConsole } from 'alpheios-components'
 import {Lexicons} from 'alpheios-lexicon-client'
 // import {ObjectMonitor as ExpObjMon} from 'alpheios-experience'
@@ -79,7 +80,7 @@ export default class UiControllerPwa extends BaseUIController {
 <?xml version="1.0" encoding="utf-8"?>
 <svg viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg">
     <path stroke-width="0" d="M6,18.71 L6,14 L1,14 L1,1 L19,1 L19,14 L10.71,14 L6,18.71 L6,18.71 Z M2,13 L7,13 L7,16.29 L10.29,13 L18,13 L18,2 L2,2 L2,13 L2,13 Z"></path>
-</svg>    
+</svg>
     `
     const inflectionsIcon = `
 <?xml version="1.0" encoding="utf-8"?>
@@ -124,7 +125,7 @@ export default class UiControllerPwa extends BaseUIController {
       ['info', infoIcon, '', 'info'],
       ['morphology', morphIcon, '', 'morphology', true, true],
       ['definitions', definitionsIcon, '', 'definitions', true],
-      ['inflections', inflectionsIcon, '', 'inflections', true, false, true],
+      ['inflections', inflectionsIcon, '', 'inflections', true, false, false],
       ['grammar', grammarIcon, '', 'grammar', false, false, true],
       ['treebank', treebankIcon, '', 'treebank', false, false, true],
       ['options', optionsIcon, '', 'options'],
@@ -142,6 +143,7 @@ export default class UiControllerPwa extends BaseUIController {
       resizable: true
     }
     this.template = Object.assign(templateDefaults, template)
+    this.inflectionsViewSet = null // Holds inflection tables ViewSet
 
     /* let ComponentClass = Vue.extend(TestComponent)
     let componentProps = {
@@ -180,6 +182,7 @@ export default class UiControllerPwa extends BaseUIController {
           isOpen: false,
           tabs: tabs,
           verboseMode: this.state.verboseMode,
+          grammarAvailable: false,
           grammarRes: {},
           lexemes: [],
           definitions: {},
@@ -189,12 +192,15 @@ export default class UiControllerPwa extends BaseUIController {
           showProviders: false,
           inflectionComponentData: {
             visible: false,
-            enabled: false,
-            inflectionData: false // If no inflection data present, it is set to false
+            inflectionViewSet: false // If no inflection data present, it is set to false
           },
-          inflDataReady: false,
+          inflectionsEnabled: false,
+          inflectionsWaitState: false,
+          inflectionBrowserEnabled: false,
+          inflBrowserTablesCollapsed: null,
           lexicalDataContainerID: 'panel-alpheios-lexical-data-container',
           morphComponentID: 'panel-alpheios-morph-component',
+          inflDataReady: this.inflDataReady,
           morphDataReady: false, // Whether we have morphological data for a word ready to show
           morphDataNotFound: false, // Whether morphological data exists for a selected word in a morphological analyzer
           shortDefinitions: [],
@@ -324,6 +330,8 @@ export default class UiControllerPwa extends BaseUIController {
           let languageName
           if (homonym) {
             languageName = UiControllerPwa.getLanguageName(homonym.languageID)
+          } else if (this.panelData.infoComponentData.languageName) {
+            languageName = this.panelData.infoComponentData.languageName
           } else {
             languageName = this.panelData.l10n.messages.TEXT_NOTICE_LANGUAGE_UNKNOWN // TODO this wil be unnecessary when the morphological adapter returns a consistent response for erors
           }
@@ -371,14 +379,6 @@ export default class UiControllerPwa extends BaseUIController {
           return this
         },
 
-        updateInflections: function (inflectionData) {
-          this.panelData.inflectionComponentData.inflectionData = inflectionData
-        },
-
-        enableInflections: function (enabled) {
-          this.panelData.inflectionComponentData.enabled = enabled
-        },
-
         sendFeature: function (feature) {
           this.requestGrammar(feature)
           this.panelData.tabs.select('grammar')
@@ -391,7 +391,7 @@ export default class UiControllerPwa extends BaseUIController {
             if (type === 'dataUpdate') {
               // Inflections component data has been updated
               console.log(`Inflections data update`)
-              if (data.hasMatchingViews) {
+              if (this.panelData.inflDataReady) {
                 console.log('Inflections enabled')
                 this.panelData.tabs.enable('inflections')
               } else {
@@ -421,18 +421,27 @@ export default class UiControllerPwa extends BaseUIController {
         },
 
         settingChange: function (name, value) {
-          this.options.items[name].setTextValue(value)
+          // TODO we need to refactor handling of boolean options
+          if (name === 'enableLemmaTranslations') {
+            this.options.items[name].setValue(value)
+          } else {
+            this.options.items[name].setTextValue(value)
+          }
           switch (name) {
             case 'locale':
               if (this.uiController.presenter) {
                 this.uiController.presenter.setLocale(this.options.items.locale.currentValue)
               }
+              this.uiController.updateLemmaTranslations()
               break
             case 'preferredLanguage':
               this.uiController.updateLanguage(this.options.items.preferredLanguage.currentValue)
               break
             case 'verboseMode':
               this.uiController.updateVerboseMode()
+              break
+            case 'enableLemmaTranslations':
+              this.uiController.updateLemmaTranslations()
               break
           }
         },
@@ -460,8 +469,12 @@ export default class UiControllerPwa extends BaseUIController {
       this.resourceOptions.load(() => {
         this.state.activateUI()
         console.log('UI options are loaded')
-        this.updateLanguage(this.options.items.preferredLanguage.currentValue)
+        const currentLanguageID = LanguageModelFactory.getLanguageIdFromCode(this.options.items.preferredLanguage.currentValue)
+        this.options.items.lookupLangOverride.setValue(false)
+        this.updateLanguage(currentLanguageID)
         this.updateVerboseMode()
+        this.updateLemmaTranslations()
+        this.notifyInflectionBrowser()
       })
     })
 
@@ -478,7 +491,8 @@ export default class UiControllerPwa extends BaseUIController {
   static get settingValues () {
     return {
       uiTypePanel: 'panel',
-      verboseMode: 'verbose'
+      verboseMode: 'verbose',
+      enableLemmaTranslations: false
     }
   }
 
@@ -493,7 +507,7 @@ export default class UiControllerPwa extends BaseUIController {
     console.log(`Z-index max value is ${zIndex}, calculation time is ${timeDiff} ms`)
 
     if (zIndex >= zIndexDefualt) {
-      if (zIndex < Number.POSITIVE_INFINITY) { zIndex++ } // To be one level higher that the highest element on a page
+      if (zIndex < Number.POSITIVE_INFINITY) { zIndex++ } // To be one level higher that the highest element on a pag
     } else {
       zIndex = zIndexDefualt
     }
@@ -556,8 +570,17 @@ export default class UiControllerPwa extends BaseUIController {
     this.panel.showImportantNotification(message)
   }
 
-  static getLanguageName (languageID) {
-    return languageNames.has(languageID) ? languageNames.get(languageID) : ''
+  /**
+   * Gets language name by either language ID (a symbol) or language code (string)
+   * @param {symbol|string} language - Either language ID or language code (see constants in `data-models` for definitions)
+   * @return {string} A language name
+   */
+  static getLanguageName (language) {
+    let langID
+    let langCode // eslint-disable-line
+    // Compatibility code in case method be called with languageCode instead of ID. Remove when not needed
+    ;({ languageID: langID, languageCode: langCode } = LanguageModelFactory.getLanguageAttrs(language))
+    return languageNames.has(langID) ? languageNames.get(langID) : ''
   }
 
   showLanguageInfo (homonym) {
@@ -585,8 +608,12 @@ export default class UiControllerPwa extends BaseUIController {
     return this
   }
 
-  newLexicalRequest () {
+  newLexicalRequest (languageID) {
     this.panel.newLexicalRequest()
+    this.panel.panelData.inflectionsEnabled = ViewSetFactory.hasInflectionsEnabled(languageID)
+    this.panel.panelData.inflectionsWaitState = true // Homonym is retrieved and inflection data is calculated
+    this.panel.panelData.grammarAvailable = false
+    this.panel.panelData.inflBrowserTablesCollapsed = true // Collapse all inflection tables in a browser
     this.clear().open().panel.panelData.tabs.select('morphology')
     return this
   }
@@ -615,11 +642,16 @@ export default class UiControllerPwa extends BaseUIController {
       if (l.provider) {
         providers.set(l.provider, 1)
       }
-      l.meaning.shortDefs.forEach((d) => {
-        if (d.provider) {
-          providers.set(d.provider, 1)
-        }
-      })
+      if (l.meaning && l.meaning.shortDefs) {
+        l.meaning.shortDefs.forEach((d) => {
+          if (d.provider) {
+            providers.set(d.provider, 1)
+          }
+        })
+      }
+      if (l.lemma && l.lemma.translation && l.lemma.translation.provider) {
+        providers.set(l.lemma.translation.provider, 1)
+      }
     })
     this.panel.panelData.providers = Array.from(providers.keys())
   }
@@ -627,6 +659,7 @@ export default class UiControllerPwa extends BaseUIController {
   updateGrammar (urls) {
     if (urls.length > 0) {
       this.panel.panelData.grammarRes = urls[0]
+      this.panel.panelData.grammarAvailable = true
       this.panel.panelData.tabs.enable('grammar')
     } else {
       this.panel.panelData.grammarRes = { provider: this.l10n.messages.TEXT_NOTICE_GRAMMAR_NOTFOUND }
@@ -708,17 +741,13 @@ export default class UiControllerPwa extends BaseUIController {
    * This method is called every time a selection language changes and once on page initialization
    * @param {string} currentLanguage - A language code
    */
-  updateLanguage (currentLanguage) {
-    // TODO: update components to use `selectionLang` instead of `currentLanguage` and `currentLanguageName`
-    if (!this.state.selectionLang.is(currentLanguage)) {
-      this.state.selectionLang.set(currentLanguage)
-      this.state.setItem('currentLanguage', currentLanguage)
-      let languageID = LanguageModelFactory.getLanguageIdFromCode(currentLanguage)
-      this.panel.requestGrammar({type: 'table-of-contents', value: '', languageID: languageID})
-      this.panel.enableInflections(LanguageModelFactory.getLanguageModel(languageID).canInflect())
-      this.panel.panelData.infoComponentData.languageName = UiControllerPwa.getLanguageName(languageID)
-      Vue.set(this.panel.panelData, 'currentLanguageName', UiControllerPwa.getLanguageName(languageID))
-    }
+  updateLanguage (currentLanguageID) {
+    this.state.setItem('currentLanguage', LanguageModelFactory.getLanguageCodeFromId(currentLanguageID))
+
+    this.panel.requestGrammar({ type: 'table-of-contents', value: '', languageID: currentLanguageID })
+    this.panel.panelData.inflDataReady = this.inflDataReady
+    this.panel.panelData.infoComponentData.languageName = UiControllerPwa.getLanguageName(currentLanguageID)
+    console.log(`Current language is ${this.state.currentLanguage}`)
   }
 
   updateVerboseMode () {
@@ -732,11 +761,42 @@ export default class UiControllerPwa extends BaseUIController {
     }
   }
 
-  updateInflections (inflectionData, homonym) {
-    let enabled = LanguageModelFactory.getLanguageModel(homonym.languageID).canInflect()
-    this.panel.enableInflections(enabled)
-    this.panel.updateInflections(inflectionData, homonym)
-    this.panel.panelData.inflDataReady = enabled && inflectionData.hasInflectionSets
+  updateLemmaTranslations () {
+    if (this.options.items.enableLemmaTranslations.currentValue && !this.options.items.locale.currentValue.match(/en-/)) {
+      this.state.setItem('lemmaTranslationLang', this.options.items.locale.currentValue)
+    } else {
+      this.state.setItem('lemmaTranslationLang', null)
+    }
+  }
+
+  notifyInflectionBrowser () {
+    this.panel.panelData.inflectionBrowserEnabled = true
+  }
+
+  updateInflections (homonym) {
+    this.inflectionsViewSet = ViewSetFactory.create(homonym, this.options.items.locale.currentValue)
+
+    this.panel.panelData.inflectionComponentData.inflectionViewSet = this.inflectionsViewSet
+    if (this.inflectionsViewSet.hasMatchingViews) {
+      this.addMessage(this.l10n.messages.TEXT_NOTICE_INFLDATA_READY)
+    }
+    this.panel.panelData.inflectionsWaitState = false
+    this.panel.panelData.inflDataReady = this.inflDataReady
+  }
+
+  lexicalRequestFailed () {
+    this.panel.panelData.inflectionsWaitState = false
+  }
+  lexicalRequestComplete () {
+    this.panel.panelData.inflBrowserTablesCollapsed = null // Reset inflection browser tables state
+  }
+
+  lexicalRequestSucceeded () {
+    this.panel.panelData.inflectionsWaitState = false
+  }
+
+  get inflDataReady () {
+    return this.inflectionsViewSet && this.inflectionsViewSet.hasMatchingViews
   }
 
   clear () {

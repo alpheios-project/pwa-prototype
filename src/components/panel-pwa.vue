@@ -112,9 +112,11 @@
 
             <!-- v-show="inflectionsTabVisible" -->
             <div v-show="data.tabs.vueDM.inflections.selected" :id="inflectionsPanelID" class="alph-panel-pwa__tab-panel">
-                <inflections class="alph-panel-pwa-inflections"
+                <inflections class="alpheios-panel-pwa-inflections"
+                             :inflections-enabled="data.inflectionsEnabled" :inflection-browser-enabled="data.inflectionBrowserEnabled"
+                             :infl-browser-tables-collapsed="data.inflBrowserTablesCollapsed"
                              :data="data.inflectionComponentData" :locale="data.settings.locale.currentValue"
-                             :messages="data.l10n.messages" @contentwidth="setContentWidth" @event="inflectionsEvent">
+                             :messages="data.l10n.messages" :wait-state="data.inflectionsWaitState" @contentwidth="setContentWidth">
                 </inflections>
             </div>
 
