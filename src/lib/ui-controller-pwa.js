@@ -1,8 +1,8 @@
 /* global Node */
-import {Lexeme, Feature, Definition, LanguageModelFactory, Constants} from 'alpheios-data-models'
+import { Lexeme, Feature, Definition, LanguageModelFactory, Constants } from 'alpheios-data-models'
 import { ViewSetFactory } from 'alpheios-inflection-tables'
 import { HTMLSelector, LexicalQuery, HTMLConsole } from 'alpheios-components'
-import {Lexicons} from 'alpheios-lexicon-client'
+import { Lexicons } from 'alpheios-lexicon-client'
 // import {ObjectMonitor as ExpObjMon} from 'alpheios-experience'
 import Vue from 'vue/dist/vue' // Vue in a runtime + compiler configuration
 
@@ -846,7 +846,7 @@ export default class UiControllerPwa extends BaseUIController {
         maAdapter: this.maAdapter,
         lexicons: Lexicons,
         resourceOptions: this.langOptions,
-        langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
+        langOpts: { [Constants.LANG_PERSIAN]: { lookupMorphLast: true } } // TODO this should be externalized
       }).getData()
     }
   }

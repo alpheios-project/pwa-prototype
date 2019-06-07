@@ -14,7 +14,7 @@ self.addEventListener('install', event => {
   swScriptURL = new URL(self.location)
 
   // Get URL objects for each client's location.
-  self.clients.matchAll({includeUncontrolled: true}).then(clients => {
+  self.clients.matchAll({ includeUncontrolled: true }).then(clients => {
     for (const client of clients) {
       console.log(`Clients are`)
       console.log(clients)
@@ -66,7 +66,7 @@ if (workbox) {
         data = data.replace(`</body>`, injectionScripts + `</body>`)
 
         return new Response(data, {
-          headers: {'Content-Type': 'text/html'}
+          headers: { 'Content-Type': 'text/html' }
         })
       }).catch(function (err) {
         console.log(`Fetch failed for ${evt.request.url}:`, err)
@@ -109,7 +109,7 @@ if (workbox) {
   )
 
   // Error handler
-  workbox.routing.setCatchHandler(({url, event, params}) => {
+  workbox.routing.setCatchHandler(({ url, event, params }) => {
     console.log(`Workbox routing failed:`, url, event, params)
   })
 } else {
@@ -132,7 +132,7 @@ self.addEventListener('message', (event) => {
 })
 
 if ('storage' in navigator && 'estimate' in navigator.storage) {
-  navigator.storage.estimate().then(({usage, quota}) => {
+  navigator.storage.estimate().then(({ usage, quota }) => {
     console.log(`Using ${usage} out of ${quota} bytes (${Math.round(usage / quota * 100)} %).`)
   }).catch(error => {
     console.error('Loading storage estimate failed:')

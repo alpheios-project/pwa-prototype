@@ -1,6 +1,6 @@
-import {Constants} from 'alpheios-data-models'
-import {AlpheiosTuftsAdapter} from 'alpheios-morph-client'
-import {Lexicons} from 'alpheios-lexicon-client'
+import { Constants } from 'alpheios-data-models'
+import { AlpheiosTuftsAdapter } from 'alpheios-morph-client'
+import { Lexicons } from 'alpheios-lexicon-client'
 import { HTMLSelector, LexicalQuery, ContentOptionDefaults, LanguageOptionDefaults, UIOptionDefaults,
   Options, LocalStorageArea, UIStateAPI, Language, HTMLConsole, LongTap, MouseDblClick, Swipe } from 'alpheios-components'
 // import TextSelector from '../node_modules/alpheios-components/src/lib/selection/text-selector.js'
@@ -120,7 +120,7 @@ export default class AppProcess {
         maAdapter: this.maAdapter,
         lexicons: Lexicons,
         resourceOptions: this.langOptions,
-        langOpts: {[Constants.LANG_PERSIAN]: {lookupMorphLast: true}} // TODO this should be externalized
+        langOpts: { [Constants.LANG_PERSIAN]: { lookupMorphLast: true } } // TODO this should be externalized
       }).getData()
     }
   }
